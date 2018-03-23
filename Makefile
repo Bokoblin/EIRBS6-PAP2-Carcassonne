@@ -35,7 +35,7 @@ all: test
 .PHONY: build
 build: $(SERVER_EXECUTABLE)
 	@for client in `find src/client -name "*.c" | sed -e "s/\.c$$//" `; do \
-		echo building $${client} library; \
+		echo building $${client}.c; \
 		$(CC) $(CFLAGS) -c -fPIC $${client}.c -o $${client}.o -lm; \
 		$(CC) -shared -o $${client}.so $${client}.o -ldl; \
 	done
