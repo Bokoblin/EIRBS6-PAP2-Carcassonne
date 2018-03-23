@@ -9,8 +9,8 @@ int main(int argc, char **argv)
   char const* (*get_client1_name)(void);
   char *error;
   
-  handle = dlopen ("../install/client1.so", RTLD_NOW);
-  /* If an error occured */
+  handle = dlopen("../install/client1.so", RTLD_NOW);
+  /* If an error has occurred */
   if (!handle) {
     fputs (dlerror(), stderr);
     exit(1);
