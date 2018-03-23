@@ -34,6 +34,7 @@ all: test
 
 .PHONY: build
 build: $(SERVER_EXECUTABLE)
+	@echo building $(SERVER_EXECUTABLE)
 	@for client in `find src/client -name "*.c" | sed -e "s/\.c$$//" `; do \
 		echo building $${client}.c; \
 		$(CC) $(CFLAGS) -c -fPIC $${client}.c -o $${client}.o -lm; \
@@ -71,12 +72,13 @@ $(TEST_EXECUTABLE): $(TEST_OBJECTS) $(APP_OBJECTS_NO_MAIN)
 
 .PHONY: install
 install: build
-	mkdir -p install/server
-	mkdir -p install/client
-	mv server install/server
-	mv $(SRC_DIR)/client/*.so install/client
-	rm -f $(SOURCE_OBJECTS)
-	rm -f $(SERVER_OBJECTS)
+	@mkdir -p install/server
+	@mkdir -p install/client
+	@mv server install/server
+	@mv $(SRC_DIR)/client/*.so install/client
+	@rm -rf $(CLIENT_OBJECTS)
+	@rm -rf $(SERVER_OBJECTS)
+	@echo Files installed in "${PWD}/install"
 
 
 #######################################################
