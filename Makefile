@@ -34,9 +34,9 @@ all: test
 
 .PHONY: build
 build: $(SERVER_EXECUTABLE)
-	@for client in `find src/client -name "*.c"`; do \
+	@for client in `find src/client -name "*.c" | sed -e "s/\.c$$//" `; do \
 		echo building $${client} library; \
-		$(CC) $(CFLAGS) -c -fPIC $${client} -o $${client}.o -lm; \
+		$(CC) $(CFLAGS) -c -fPIC $${client}.c -o $${client}.o -lm; \
 		$(CC) -shared -o $${client}.so $${client}.o -ldl; \
 	done
 
@@ -70,8 +70,7 @@ $(TEST_EXECUTABLE): $(TEST_OBJECTS) $(APP_OBJECTS_NO_MAIN)
 #######################################################
 
 .PHONY: install
-install:
-	make build
+install: build
 	mkdir -p install/server
 	mkdir -p install/client
 	mv server install/server
