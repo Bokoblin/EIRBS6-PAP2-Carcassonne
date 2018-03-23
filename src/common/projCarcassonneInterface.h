@@ -1,6 +1,6 @@
 #ifndef CARCASSONNE_INTERFACE_H
 #define CARCASSONNE_INTERFACE_H
-
+#include <stdlib.h>
 /* Positions */
 struct position { unsigned int x,y; };
 
