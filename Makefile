@@ -1,12 +1,14 @@
-CC = gcc
+CC=gcc
 CFLAGS=-c -Wall -Wextra -std=c99
 
 SRC_DIR=src
 TST_DIR=tst
 INS_DIR=install
 
-APP_SOURCES=$(wildcard $(SRC_DIR)/*.c)
-APP_OBJECTS=$(APP_SOURCES:.c=.o)
+SERVER_SOURCES=$(wildcard $(SRC_DIR)/server/*.c)
+SERVER_OBJECTS=$(SERVER_SOURCES:.c=.o)
+CLIENT_SOURCES=$(wildcard $(SRC_DIR)/client/*.c)
+CLIENT_OBJECTS=$(CLIENT_SOURCES:.c=.o)
 
 #Temp until knowing what mains we'll have
 APP_SOURCES_NO_MAIN=$(filter-out src/main.c, $(wildcard $(SRC_DIR)/*.c))
@@ -15,7 +17,7 @@ APP_OBJECTS_NO_MAIN=$(APP_SOURCES_NO_MAIN:.c=.o)
 TEST_SOURCES=$(wildcard $(TST_DIR)/*.c)
 TEST_OBJECTS=$(TEST_SOURCES:.c=.o)
 
-APP_EXECUTABLE=server
+SERVER_EXECUTABLE=server
 TEST_EXECUTABLE=tests
 
 
@@ -31,13 +33,19 @@ all: test
 #######################################################
 
 .PHONY: build
-build: $(APP_SOURCES) $(APP_EXECUTABLE)
+build: $(SERVER_EXECUTABLE)
+	@for client in `find src/client -name "*.c"`; do \
+		echo building $${client} library; \
+		$(CC) $(CFLAGS) -c -fPIC $${client} -o $${client}.o -lm; \
+		$(CC) -shared -o $${client}.so $${client}.o -ldl; \
+	done
 
-$(APP_EXECUTABLE): $(APP_OBJECTS)
-	$(CC) $(APP_OBJECTS) -o $@ -lm
+$(SERVER_EXECUTABLE): $(SERVER_OBJECTS)
+	$(CC) $(CFLAGS) $(SERVER_SOURCES) -o $@ -lm; \
 
-%.o: %.c
+$(SERVER_OBJECTS): $(SERVER_SOURCES)
 	$(CC) -c $(CFLAGS) $< -o $@ -lm
+
 
 
 #######################################################
@@ -63,12 +71,13 @@ $(TEST_EXECUTABLE): $(TEST_OBJECTS) $(APP_OBJECTS_NO_MAIN)
 
 .PHONY: install
 install:
-	build
+	make build
 	mkdir -p install/server
 	mkdir -p install/client
 	mv server install/server
-	mv *.so install/client
-	rm -f $(APP_OBJECTS)
+	mv $(SRC_DIR)/client/*.so install/client
+	rm -f $(SOURCE_OBJECTS)
+	rm -f $(SERVER_OBJECTS)
 
 
 #######################################################
@@ -77,7 +86,10 @@ install:
 
 .PHONY: clean
 clean:
-	rm -f $(APP_OBJECTS) $(APP_EXECUTABLE)
-	rm -f $(TEST_OBJECTS) $(TEST_EXECUTABLE)
+	rm -rf *.o
+	rm -rf *.so
+	rm -rf $(SOURCE_OBJECTS)
+	rm -rf $(SERVER_OBJECTS)
+	rm -rf $(SERVER_EXECUTABLE)
 	rm -rf install/*
 	
