@@ -47,12 +47,13 @@ build: prebuild $(SERVER_EXECUTABLE)
 	done
 	@echo Building complete.
 
+$(SERVER_OBJECTS): $(SERVER_SOURCES)
+	$(CC) -c $(CFLAGS) $< -o $@
+
 $(SERVER_EXECUTABLE): $(SERVER_OBJECTS)
 	@echo building server...
-	$(CC) $(CFLAGS) $(SERVER_SOURCES) -o $@ -lm; \
+	$(CC) $(SERVER_OBJECTS) -o $@ -ldl
 
-$(SERVER_OBJECTS): $(SERVER_SOURCES)
-	$(CC) -c $(CFLAGS) $< -o $@ -lm
 
 
 #######################################################
