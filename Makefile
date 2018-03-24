@@ -47,13 +47,18 @@ build: prebuild $(SERVER_EXECUTABLE)
 	done
 	@echo Building complete.
 
-$(SERVER_OBJECTS): $(SERVER_SOURCES)
-	$(CC) -c $(CFLAGS) $< -o $@
+utils.o: $(SRC_DIR)/common/utils.c $(SRC_DIR)/common/utils.h
+	${CC} ${CFLAGS} $(SRC_DIR)/common/utils.c -c
 
-$(SERVER_EXECUTABLE): $(SERVER_OBJECTS)
+server.o: $(SRC_DIR)/server/server.c
+	${CC} ${CFLAGS} $(SRC_DIR)/server/server.c -c
+
+client_container.o: $(SRC_DIR)/server/client_container.c $(SRC_DIR)/server/client_container.h
+	${CC} ${CFLAGS} $(SRC_DIR)/server/client_container.c -c
+
+$(SERVER_EXECUTABLE): server.o client_container.o utils.o
 	@echo building server...
-	$(CC) $(SERVER_OBJECTS) -o $@ -ldl
-
+	$(CC) server.o utils.o client_container.o -o $@ -ldl
 
 
 #######################################################
