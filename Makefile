@@ -18,15 +18,24 @@ TEST_EXECUTABLE=tests
 
 
 #######################################################
-###				MAKE INSTRUCTIONS
+###				MAKE DEFAULT COMMAND
 #######################################################
 
-all:
-	@echo Available commands:
-	@echo -e '\t' make build
-	@echo -e '\t' make test
-	@echo -e '\t' make install
-	@echo -e '\t' make clean
+all: help
+
+
+#######################################################
+###				MAKE INSTRUCTIONS / HELP
+#######################################################
+
+.PHONY: help
+help:
+	@echo -e Available commands:'\n' \
+		'\t' make help			'\n' \
+		'\t' make build			'\n' \
+		'\t' make test			'\n' \
+		'\t' make install		'\n' \
+		'\t' make clean
 
 
 #######################################################

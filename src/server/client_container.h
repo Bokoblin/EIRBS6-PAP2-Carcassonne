@@ -15,6 +15,7 @@ struct clients
     size_t max_size;
 };
 
+
 /**
  * @brief Inits the clients structure
  * @param clients_count the number of clients to add
@@ -23,6 +24,7 @@ struct clients
  * @date 24/03/18
  */
 struct clients* init_client_container(unsigned int clients_count);
+
 
 /**
  * @brief Release memory of the container

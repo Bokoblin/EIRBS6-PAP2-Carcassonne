@@ -20,6 +20,7 @@
  */
 void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *clients_count);
 
+
 /**
  * Displays an error message and exits the application
  * @param message the error message to print

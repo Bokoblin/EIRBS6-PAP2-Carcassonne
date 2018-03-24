@@ -12,6 +12,7 @@
  */
 struct position { unsigned int x, y; };
 
+
 /**
  * @brief Sides of the cards
  */
@@ -159,6 +160,7 @@ struct move
  */
 char const* get_player_name();
 
+
 /** Player initialization
  * PARAM:
  * - id: player ID
@@ -167,6 +169,7 @@ char const* get_player_name();
  * - 0 <= id < n_players
  */
 void initialize(unsigned int id, unsigned int n_players);
+
 
 /**
  * Computes next move
@@ -184,6 +187,7 @@ void initialize(unsigned int id, unsigned int n_players);
  * - the next move for the player.
  */
 struct move play(enum card_id card, struct move const previous_moves[], size_t n_moves);
+
 
 /**
  * Announces the end of the game to the player,
