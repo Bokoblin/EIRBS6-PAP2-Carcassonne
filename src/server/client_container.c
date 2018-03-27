@@ -1,9 +1,9 @@
 #include "client_container.h"
 #include "../common/utils.h"
 
-struct clients* init_client_container(unsigned int clients_count)
+struct client_container* init_client_container(unsigned int clients_count)
 {
-    struct clients *clients = malloc(sizeof(struct clients));
+    struct client_container *clients = malloc(sizeof(struct client_container));
     clients->current_size = 0;
     clients->max_size = 0;
 
@@ -23,7 +23,7 @@ struct clients* init_client_container(unsigned int clients_count)
     return clients;
 }
 
-void free_client_container(struct clients* container)
+void free_client_container(struct client_container* container)
 {
     free(container->clients_files_array);
     free(container->clients_pointer_array);

@@ -7,7 +7,7 @@
 /**
  * @brief Clients list structure
  */
-struct clients
+struct client_container
 {
     void** clients_pointer_array;
     char** clients_files_array;
@@ -23,7 +23,7 @@ struct clients
  * @author Arthur
  * @date 24/03/18
  */
-struct clients* init_client_container(unsigned int clients_count);
+struct client_container* init_client_container(unsigned int clients_count);
 
 
 /**
@@ -33,6 +33,6 @@ struct clients* init_client_container(unsigned int clients_count);
  * @author Arthur
  * @date 24/03/18
  */
-void free_client_container(struct clients* container);
+void free_client_container(struct client_container* container);
 
 #endif

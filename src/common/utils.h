@@ -22,6 +22,15 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
 
 
 /**
+ * @brief Checks that no dlerror has occurred
+ *
+ * @author Arthur
+ * @date 27/03/2018
+ */
+void assert_no_dlerror();
+
+
+/**
  * Displays an error message and exits the application
  * @param message the error message to print
  *

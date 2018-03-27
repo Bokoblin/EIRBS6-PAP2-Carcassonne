@@ -7,43 +7,31 @@
 
 char const* get_player_name()
 {
-  /*
-  char* name;
-  name = (char*) malloc(20 * sizeof(char));
-  printf("Entrez le nom du joueur:\n");
-  scanf("%s", name);
-  return name;
-  */
-  return("Joueur1");
+    return("Joueur1");
 }
 
 void initialize(unsigned int id, unsigned int n_players)
 {
-    //TODO: Is it a client function? OUI TOUTES LES FONCTIONS SONT IMPLÉMENTÉES PAR LE CLIENTS
-  printf("initialise fonctionne pour %s\n", get_player_name());
+    (void) id;
+    (void) n_players;
+    printf("Placeholder execution of \"initialize\" for %s\n", get_player_name());
 }
 
 struct move play(enum card_id card, struct move const previous_moves[], size_t n_moves)
 {
-    //TODO
-   printf("play fonctionne pour %s\n", get_player_name());
-};
+    (void) card;
+    (void) previous_moves;
+    (void) n_moves;
 
-/* Announces the end of the game to the player, and cleans up the
-   memory he may have been using.
- * POSTCOND:
- * - every allocation done during the calls to initialize and play
- *   functions must have been freed
- */
-void finalize()
-{
-    //TODO: Is it a client function?
-   printf("finalize fonctionne pour %s\n", get_player_name());
+    printf("Placeholder execution of \"play\" for %s\n", get_player_name());
+
+    //struct move *move_placeholder = malloc(sizeof(move_placeholder));
+    //move_placeholder->card = LAST_CARD; //placeholder
+    //return *move_placeholder;
 }
 
-int main()
+
+void finalize()
 {
-  char const *A = get_player_name();
-  printf("%s\n", A);
-  return 0;
+    printf("Placeholder execution of \"finalize\" for %s\n", get_player_name());
 }

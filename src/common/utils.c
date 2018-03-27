@@ -1,4 +1,5 @@
 #include <string.h>
+#include <dlfcn.h>
 #include "utils.h"
 
 void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *clients_count)
@@ -18,8 +19,15 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
     }
 
     for (int i = 0; i < argc; i++)
-        if (strstr(argv[i], "./install/client/") != NULL) //FIXME
+        if (strstr(argv[i], "./install/client/") != NULL)
             (*clients_count)++;
+}
+
+void assert_no_dlerror()
+{
+    char *error;
+    if ((error = dlerror()) != NULL)
+        exit_on_error(error);
 }
 
 void exit_on_error(char *message)
