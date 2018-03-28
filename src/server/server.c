@@ -61,18 +61,18 @@ int main(int argc, char** argv)
 
     struct move previous_moves[] = {};
 
-    const char * (*play)(enum card_id, struct move const[], size_t);
+    struct move (*play)(enum card_id, struct move const[], size_t);
 
     for (size_t i = 0; i < clients->current_size; i++) {
         play = dlsym(clients->clients_pointer_array[i], "play");
         assert_no_dlerror();
-        play(CARD_PLAIN_CITY, previous_moves, 0);
+        struct move current_move = play(CARD_PLAIN_CITY, previous_moves, 0);
     }
 
 
     //=== Finalize each client
 
-    const char * (*finalize)(void);
+    void (*finalize)(void);
 
     for (size_t i = 0; i < clients->current_size; i++) {
         finalize = dlsym(clients->clients_pointer_array[i], "finalize");
