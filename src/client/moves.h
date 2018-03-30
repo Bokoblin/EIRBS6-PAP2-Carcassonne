@@ -6,9 +6,11 @@
 
 
 /**
- * @brief Find an extremity on the boardgame from the start point card
+ * @brief Find an extremity on the gameboard 
+ * @param board the gameboard
+ * @return a struct 
  */
-struct card *find_extremity(struct card *start_point);
+struct card *find_extremity(struct board* board);
 
 
 /**
@@ -19,18 +21,5 @@ struct card *find_extremity(struct card *start_point);
  */
 int is_valid_emplacement(struct card *extremity, struct card *placable_card);
 
-
-/**
- * @brief Rotate the given card in the clockwise turn
- * @param card is the card you want to rotate
- */
-void clokwise_rotation(struct card *card);
-
-
-/**
- * @brief Rotate the given card in the trigonometric turn
- * @param card is the card you want to rotate
- */
-void trigo_rotation(struct card *card);
 
 #endif
