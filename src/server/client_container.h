@@ -1,20 +1,39 @@
-#ifndef CLIENTS_STRUCT_H
-#define CLIENTS_STRUCT_H
+#ifndef CLIENTS_CONTAINER_H
+#define CLIENTS_CONTAINER_H
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "../common/utils.h"
+
+enum card_id;
+struct move;
+
+struct client
+{
+    void* lib_ptr;
+    const char * (*get_player_name)(void);
+    const char * (*initialize)(unsigned int, unsigned int);
+    struct move (*play)(enum card_id, const struct move*, size_t);
+    void (*finalize)(void);
+};
 
 /**
  * @brief Clients list structure
  */
 struct client_container
 {
-    void** clients_pointer_array;
-    char** clients_files_array;
+    struct client** clients_array;
     size_t current_size;
-    size_t max_size;
 };
 
+/**
+ * @brief Inits the client
+ * @return a newly allocated struct client pointer
+ *
+ * @author Arthur
+ * @date 28/03/18
+ */
+struct client* init_client();
 
 /**
  * @brief Inits the clients structure

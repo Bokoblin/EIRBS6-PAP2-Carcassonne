@@ -1,31 +1,46 @@
 #include "client_container.h"
-#include "../common/utils.h"
+
+struct client* init_client()
+{
+    struct client * c = malloc(sizeof(struct client));
+
+    if (c == NULL) {
+        exit_on_error("Malloc failure on: struct client *");
+    } else {
+        c->lib_ptr = NULL;
+        c->get_player_name = NULL;
+        c->initialize = NULL;
+        c->play = NULL;
+        c->finalize = NULL;
+    }
+
+    return c;
+}
 
 struct client_container* init_client_container(unsigned int clients_count)
 {
-    struct client_container *clients = malloc(sizeof(struct client_container));
-    clients->current_size = 0;
-    clients->max_size = 0;
+    struct client_container *container = malloc(sizeof(struct client_container));
+    container->current_size = 0;
 
-    if (clients_count == 0)
-        return clients;
+    container->clients_array = malloc(clients_count * sizeof(struct client));
+    if (container->clients_array == NULL)
+        exit_on_error("Malloc failure on: struct client_container *");
 
-    clients->clients_files_array = malloc(clients_count * sizeof(char*));
-    if (clients->clients_files_array == NULL)
-        exit_on_error("Malloc failure on clients_files_array void**");
+    container->current_size = clients_count;
 
-    clients->clients_pointer_array = malloc(clients_count * sizeof(void*));
-    if (clients->clients_pointer_array == NULL)
-        exit_on_error("Malloc failure on clients_pointer_array void**");
+    for (unsigned int i=0; i < container->current_size; i++)
+        container->clients_array[i] = init_client();
 
-    clients->max_size = clients_count;
-
-    return clients;
+    return container;
 }
 
 void free_client_container(struct client_container* container)
 {
-    free(container->clients_files_array);
-    free(container->clients_pointer_array);
-    free(container);
+    if (container != NULL) {
+        for (unsigned int i=0; i < container->current_size; i++)
+            free(container->clients_array[i]);
+
+        free(container->clients_array);
+        free(container);
+    }
 }

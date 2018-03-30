@@ -29,7 +29,6 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     return move_placeholder;
 }
 
-
 void finalize()
 {
     printf("Placeholder execution of \"finalize\" for %s\n", get_player_name());
