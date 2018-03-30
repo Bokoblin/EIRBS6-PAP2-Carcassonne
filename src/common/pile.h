@@ -33,9 +33,8 @@ void *pile__unstack(struct pile *pile);
 /**
  * @brief Free all allocated memory used by the pile
  * @param pile is to pile you want to free
- * @return 0 if stacked successfully, -1 if an error occured
  */
-int pile__free(struct pile *pile);
+void pile__free(struct pile *pile);
 
 
 #endif
