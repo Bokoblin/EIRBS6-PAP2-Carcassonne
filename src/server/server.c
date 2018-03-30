@@ -46,6 +46,35 @@ void register_clients(int argc, const char **argv, const struct client_container
     }
 }
 
+struct move* previous_moves__empty(unsigned int client_count)
+{
+    struct move *previous_moves = malloc(client_count * sizeof(struct move));
+    if (previous_moves == NULL)
+        exit_on_error("Malloc failure on: struct client_container *");
+    else {
+        for (size_t i = 0; i < client_count; i++) {
+            struct move move_placeholder = {FAILED, (unsigned int) i, LAST_CARD, { 3, 4 }, NORTH, NO_MEEPLE};
+            previous_moves[i] = move_placeholder;
+        }
+    }
+
+    return previous_moves;
+}
+
+void previous_moves__add(struct move *previous_moves, unsigned int array_size, struct move new_move)
+{
+    if (array_size > 0 ) {
+        if (array_size == 1) {
+            previous_moves[0] = new_move;
+        } else {
+            for (unsigned int i = 0; i < array_size-1; i++) {
+                previous_moves[i] = previous_moves[i+1];
+            }
+            previous_moves[array_size - 1] = new_move;
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
     unsigned int is_graphic = DEFAULT_GRAPHIC_MODE_FLAG;
@@ -76,11 +105,16 @@ int main(int argc, char** argv)
 
     //=== Make each player play once
 
-    struct move previous_moves[] = {};
+    struct move *previous_moves = previous_moves__empty(clients->current_size);
+
     for (size_t i = 0; i < clients->current_size; i++) {
-        if (clients->clients_array[i]->play != NULL)
-            clients->clients_array[i]->play(CARD_PLAIN_CITY, previous_moves, 0);
+        if (clients->clients_array[i]->play != NULL) {
+            struct move new_move = clients->clients_array[i]->play(CARD_PLAIN_CITY, previous_moves, 0);
+            previous_moves__add(previous_moves, clients->current_size, new_move);
+        }
     }
+
+    free(previous_moves);
 
     //=== Finalize each player
 

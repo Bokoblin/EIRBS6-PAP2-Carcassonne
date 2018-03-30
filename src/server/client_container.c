@@ -20,17 +20,22 @@ struct client* init_client()
 struct client_container* init_client_container(unsigned int clients_count)
 {
     struct client_container *container = malloc(sizeof(struct client_container));
-    container->current_size = 0;
-
-    container->clients_array = malloc(clients_count * sizeof(struct client));
-    if (container->clients_array == NULL)
+    if (container == NULL)
         exit_on_error("Malloc failure on: struct client_container *");
+    else {
+        container->current_size = 0;
 
-    container->current_size = clients_count;
+        container->clients_array = malloc(clients_count * sizeof(struct client));
+        if (container->clients_array == NULL)
+            exit_on_error("Malloc failure on: struct client **");
 
-    for (unsigned int i=0; i < container->current_size; i++)
-        container->clients_array[i] = init_client();
+        container->current_size = clients_count;
 
+        for (unsigned int i=0; i < container->current_size; i++)
+            container->clients_array[i] = init_client();
+
+
+    }
     return container;
 }
 

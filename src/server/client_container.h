@@ -23,7 +23,7 @@ struct client
 struct client_container
 {
     struct client** clients_array;
-    size_t current_size;
+    unsigned int current_size;
 };
 
 /**
