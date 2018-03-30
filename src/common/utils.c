@@ -11,7 +11,7 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
                 *is_graphic = 1;
                 break;
             case 'h':
-                printf("Usage: ./install/server/server [-g] ./install/client/*.so\n");
+                printf("Usage: ./install/server [-g] ./install/*.so\n");
                 exit(EXIT_SUCCESS);
             default:
                 break;
@@ -19,7 +19,7 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
     }
 
     for (int i = 0; i < argc; i++)
-        if (strstr(argv[i], "./install/client/") != NULL)
+        if (strstr(argv[i], ".so") != NULL)
             (*clients_count)++;
 }
 

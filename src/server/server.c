@@ -23,7 +23,7 @@ void register_clients(int argc, const char **argv, const struct client_container
 
     while (nb_clients_registered < clients_count && args_index < argc) {
         const char* current_arg = argv[args_index];
-        if (strstr(current_arg, "./install/client/") != NULL) {
+        if (strstr(current_arg, ".so") != NULL) {
             printf("Registering: %s\n", current_arg);
             clients->clients_array[nb_clients_registered]->lib_ptr = dlopen(current_arg, RTLD_NOW);
             assert_no_dlerror();
@@ -92,8 +92,10 @@ int main(int argc, char** argv)
     //=== Cleaning resources
 
     for (size_t i = 0; i < clients->current_size; i++) {
-        if (clients->clients_array[i]->lib_ptr != NULL)
+        if (clients->clients_array[i]->lib_ptr != NULL) {
             dlclose(clients->clients_array[i]->lib_ptr);
+            assert_no_dlerror();
+        }
     }
 
     free_client_container(clients);

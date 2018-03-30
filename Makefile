@@ -35,7 +35,8 @@ help:
 		'\t' make build			'\n' \
 		'\t' make test			'\n' \
 		'\t' make install		'\n' \
-		'\t' make clean
+		'\t' make clean			'\n' \
+		'\t' make run
 
 
 #######################################################
@@ -104,10 +105,8 @@ install: build
 	@echo
 	@echo Starting installation...
 	@echo Installation directory: "${PWD}/$(INS_DIR)"
-	@mkdir -p $(INS_DIR)/server
-	@mkdir -p $(INS_DIR)/client
-	@mv server $(INS_DIR)/server
-	@mv $(SRC_DIR)/client/*.so $(INS_DIR)/client
+	@mv server $(INS_DIR)
+	@mv $(SRC_DIR)/client/*.so $(INS_DIR)
 	@rm -rf $(CLIENT_OBJECTS)
 	@rm -rf $(SERVER_OBJECTS)
 	@echo Installation complete.
@@ -127,3 +126,13 @@ clean:
 	@rm -rf $(SERVER_EXECUTABLE)
 	@rm -rf install/*
 	@echo Cleanup complete.
+
+
+#######################################################
+###				MAKE RUN
+#######################################################
+
+.PHONY: run
+run:
+	@echo Running program...
+	./install/server ./install/*.so
