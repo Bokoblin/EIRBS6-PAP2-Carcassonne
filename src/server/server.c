@@ -15,9 +15,6 @@
  * @param argv argument content array
  * @param clients the clients container
  * @param clients_count the clients to register count
- *
- * @author Arthur
- * @date 30/03/18
  */
 void register_clients(int argc, const char **argv, const struct client_container *clients, unsigned int clients_count)
 {

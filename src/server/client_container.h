@@ -29,18 +29,13 @@ struct client_container
 /**
  * @brief Inits the client
  * @return a newly allocated struct client pointer
- *
- * @author Arthur
- * @date 28/03/18
  */
 struct client* init_client();
 
 /**
  * @brief Inits the clients structure
  * @param clients_count the number of clients to add
- *
- * @author Arthur
- * @date 24/03/18
+ * @return a newly created client container
  */
 struct client_container* init_client_container(unsigned int clients_count);
 
@@ -48,9 +43,6 @@ struct client_container* init_client_container(unsigned int clients_count);
 /**
  * @brief Release memory of the container
  * @param container the client container
- *
- * @author Arthur
- * @date 24/03/18
  */
 void free_client_container(struct client_container* container);
 
