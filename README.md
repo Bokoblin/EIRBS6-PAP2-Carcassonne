@@ -5,6 +5,8 @@
 This project is the second programming project at ENSEIRB.
 Project period : 23/03/2018 - 27/04/2018
 
+Jalon 1: until commit #22
+
 
 ### Authors
 
