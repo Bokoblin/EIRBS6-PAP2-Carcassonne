@@ -15,8 +15,8 @@
  * Lists all the possible area types on a card
  */
 enum area_type{
-  PATH,
-  TOWN,
+  ROAD,
+  CITY,
   FIELD,
   INTERSECTION,
   ABBEY,
@@ -46,6 +46,7 @@ struct card{
   enum area_type type_north_east; // {NE}
   enum area_type type_north; // {N}
   enum area_type type_north_west; // {NW}
+  enum area_type type_west_north; // {WN}
   enum area_type type_west; // {W}
   enum area_type type_west_south; // {WS}
   enum area_type type_south_west; // {SW}
@@ -85,18 +86,32 @@ struct card* empty_card(enum card_id id);
  */
 int place(struct card* new_card, struct card** neighbor_list);
 
-
+/**
+ * @brief Release memory allocated to the gameboard
+ * @param game the gameboard
+ */
 void free_board(struct board* game);
 
+
+/**
+ * @brief Release memory allocated to the card structure
+ * @param game the gameboard
+ */
 void free_card(struct card* card);
 
+
+/**
+ * @brief draw a card
+ * @param p the cards stack
+ * @return a card enum
+ */
 enum card draw_card(struct pile* p);
 
 /**
  * @brief Rotate the given card in the clockwise turn
  * @param card is the card you want to rotate
  */
-void clokwise_rotation(struct card *card);
+void clockwise_rotation(struct card *card);
 
 
 /**
