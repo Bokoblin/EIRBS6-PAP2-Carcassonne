@@ -20,6 +20,7 @@ enum area_type{
   FIELD,
   INTERSECTION,
   ABBEY,
+  UNVALID_AREA,
 };
 
 
@@ -29,6 +30,7 @@ enum area_type{
  */
 struct board{
   struct card* first_card;
+  unsigned int fp_capacity;
   struct card** free_positions;
 };
 
@@ -105,7 +107,7 @@ void free_card(struct card* card);
  * @param p the cards stack
  * @return a card enum
  */
-enum card draw_card(struct pile* p);
+enum card_id draw_card(struct pile* p);
 
 /**
  * @brief Rotate the given card in the clockwise turn

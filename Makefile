@@ -10,7 +10,7 @@ SERVER_OBJECTS=$(SERVER_SOURCES:.c=.o)
 CLIENT_SOURCES=$(wildcard $(SRC_DIR)/client/*.c)
 CLIENT_OBJECTS=$(CLIENT_SOURCES:.c=.o)
 
-TEST_SOURCES=$(wildcard $(TST_DIR)/*.c)
+TEST_SOURCES=$(wildcard $(TST_DIR)/*.c $(SRC_DIR)/common/pile.c)
 TEST_OBJECTS=$(TEST_SOURCES:.c=.o)
 
 SERVER_EXECUTABLE=server
@@ -65,6 +65,9 @@ server.o: $(SRC_DIR)/server/server.c
 
 client_container.o: $(SRC_DIR)/server/client_container.c $(SRC_DIR)/server/client_container.h
 	${CC} ${CFLAGS} $(SRC_DIR)/server/client_container.c -c
+
+pile.o: $(SRC_DIR)/common/pile.c $(SRC_DIR)/common/pile.h
+	${CC} ${CFLAGS} $(SRC_DIR)/common/pile.c -c
 
 $(SERVER_EXECUTABLE): server.o client_container.o utils.o
 	@echo building server...
@@ -124,6 +127,7 @@ clean:
 	@rm -rf $(SOURCE_OBJECTS)
 	@rm -rf $(SERVER_OBJECTS)
 	@rm -rf $(SERVER_EXECUTABLE)
+	@rm -rf $(TEST_OBJECTS)
 	@rm -rf install/*
 	@echo Cleanup complete.
 
