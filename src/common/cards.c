@@ -10,7 +10,6 @@ struct board* initialize_board ()
   b->fp_capacity = DEFAULT_FREE_POSITIONS_SIZE;
   b->free_positions = malloc(sizeof(struct card) * b->fp_capacity);
   b->free_positions[0] = b->first_card;
-  //TODO initialize free_positions with the four cards that match the first one
   //Baptiste : I though the free_positions array was the list of cards next to free spaces (extremity cards)
   return b;
 }
@@ -63,6 +62,19 @@ void clockwise_rotation (struct card *card)
   card->west = card->south;
   card->south = card->east;
   card->east = tmp_north;  
+  enum area_type tmp = card->type_north;
+  card->type_north = card->type_north_west;
+  card->type_north_west = card->type_west_north;
+  card->type_west_north = card->type_west;
+  card->type_west = card->type_west_south;
+  card->type_west_south = card->type_south_west;
+  card->type_south_west = card->type_south;
+  card->type_south = card->type_south_east;
+  card->type_south_east = card->type_east_south;
+  card->type_east_south = card->type_east;
+  card->type_east = card->type_east_north;
+  card->type_east_north = card->type_north_east;
+  card->type_north_east = tmp;
 }
 
 void trigo_rotation (struct card *card)
@@ -73,6 +85,19 @@ void trigo_rotation (struct card *card)
   card->east = card->south;
   card->south = card->west;
   card->west = tmp_north;
+  enum area_type tmp = card->type_north;
+  card->type_north = card->type_north_east; 
+  card->type_area_north_east = card->type_east_north; 
+  card->type_east_north = card->type_east;
+  card->type_east = card->type_east_south;
+  card->type_east_south = card->type_south_east;
+  card->type_south_east = card->type_south;
+  card->type_south = card->type_south_west;
+  card->type_south_west = card->type_west_south;
+  card->type_west_south = card->type_west;
+  card->type_west = card->type_west_north;
+  card->type_west_north = card->type_north_west;
+  card->type_north_west = tmp;
 }
 
 int place(struct card* new_card, struct card** neighbor_list);
