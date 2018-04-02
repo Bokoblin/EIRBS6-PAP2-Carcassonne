@@ -38,7 +38,9 @@ void card__free(struct card *card)
 
 int card__place(struct card *new_card, struct card **neighbor_list)
 {
-    //TODO
+    //TODO : card__place impl
+
+    return -1;
 }
 
 enum card_id card__draw(struct stack *s)

@@ -32,8 +32,10 @@ The following commands are available :
 make [help]  #To show the available commands
 make build   #To build the project
 make test    #To build and start the tests
+make memory  #To build and start the tests with valgrind check
 make install #To install the project in /install
 make clean   #To remove objects files, executables and installation
+make run     #To run program once installed (make install before required)
 ```
 
 ### Code conventions
