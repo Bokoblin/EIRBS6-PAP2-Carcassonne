@@ -87,7 +87,7 @@ void trigo_rotation (struct card *card)
   card->west = tmp_north;
   enum area_type tmp = card->type_north;
   card->type_north = card->type_north_east; 
-  card->type_area_north_east = card->type_east_north; 
+  card->type_north_east = card->type_east_north; 
   card->type_east_north = card->type_east;
   card->type_east = card->type_east_south;
   card->type_east_south = card->type_south_east;
