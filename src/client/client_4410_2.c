@@ -1,4 +1,4 @@
-#include "../common/projCarcassonneInterface.h"
+#include "../common/common_interface.h"
 #include <stdio.h>
 
 /////////////////////////////////////////////////////////

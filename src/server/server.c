@@ -3,7 +3,7 @@
 #include <dlfcn.h>
 #include <string.h>
 #include "../server/client_container.h"
-#include "../common/projCarcassonneInterface.h"
+#include "../common/common_interface.h"
 
 #define DEFAULT_GRAPHIC_MODE_FLAG 0
 #define DEFAULT_CLIENT_COUNT 0

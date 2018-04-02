@@ -4,9 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../common/utils.h"
-
-enum card_id;
-struct move;
+#include "../common/common_interface.h"
 
 struct client
 {

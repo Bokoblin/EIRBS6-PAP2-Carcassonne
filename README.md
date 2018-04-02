@@ -43,9 +43,10 @@ make clean   #To remove objects files, executables and installation
 - Put functions/structures start bracket on the line after the prototype
     (small structures, getters, setters can be inline though)
 - Put statements/loops start bracket on the same line separated by a space
+- Don't add spaces between function name and the argument list in parenthesis
 - You don't have to put brackets for one-line statements
 - Put two lines between each function in headers
 - Put one line between each function in implementation
 - Use Javadoc style documentation
-- Write `TODO` or `FIXME` in uppercase in comments when you respectively need to do, fix something
+- Write `NOTE`, `TODO` or `FIXME` in uppercase in comments when you respectively need to notice, do or fix something
 - Don't put spaces after an open parenthesis / before a close parenthesis
