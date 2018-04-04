@@ -5,6 +5,7 @@
 #include "stack.h"
 #include "area_type.h"
 
+#define MAX_ZONES (LAST_POS-1)
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURE
@@ -12,29 +13,36 @@
 
 
 /**
- * @brief Struct card
- * Describes a single card
+ * @brief card_type
+ * Describes the card of that type
+ */
+struct card_type
+{
+  enum card_id id;
+  enum area_type areas[MAX_ZONES]; // indexed by enum place 
+};
+
+/**
+ * @brief orientation
+ * Lists all the possible orientations of the card comparing to its card_type
+ */
+enum orientation 
+{
+  NORTH_TO_NORTH, // the north of card_type coincide with the north of the card
+  NORTH_TO_WEST,  // the north of card_type coincide with the west of the card
+  NORTH_TO_SOUTH, // the north of card_type coincide with the south of the card
+  NORTH_TO_EAST   // the north of card_type coincide with the east of the card
+};
+
+/**
+ * @brief card
+ * Gives the type of the card et its orientation
  */
 struct card
 {
-    enum card_id id;
-    struct card* north;
-    struct card* south;
-    struct card* east;
-    struct card* west;
-    enum area_type type_north_east; // {NE}
-    enum area_type type_north; // {N}
-    enum area_type type_north_west; // {NW}
-    enum area_type type_west_north; // {WN}
-    enum area_type type_west; // {W}
-    enum area_type type_west_south; // {WS}
-    enum area_type type_south_west; // {SW}
-    enum area_type type_south; // {S}
-    enum area_type type_south_east; // {SE}
-    enum area_type type_east_north; // {EN}
-    enum area_type type_east; // {E}
-    enum area_type type_east_south; // {ES}
-    enum area_type type_center; // {C}
+  struct card_type *type;
+  struct card * neighbors[4]; // Indexed by enum direction
+  enum orientation orientation; 
 };
 
 
@@ -42,12 +50,12 @@ struct card
 ///     COMMON FUNCTIONS
 ////////////////////////////////////////////////////////////////////
 
-/** 
- * @brief Initialize a card depending on its identity
- * @param id card ID 
- * @return a pointer towards a newly created card
+/**
+ * @brief Initializes a card with the type card_type
+ * @param card_type pointer towards the type of card wanted 
+ * @return struct card
  */
-struct card* card__empty(enum card_id id);
+struct card* initialize_card(struct card_type *card_type);
 
 /**
  * @brief Release memory allocated to the card structure
@@ -55,7 +63,22 @@ struct card* card__empty(enum card_id id);
  */
 void card__free(struct card *card);
 
+/**
+ * @brief get the area type 
+ * @param card 
+ * @param place the zone that we want to get
+ * @return the area_type of the area place
+ */
+enum area_type get_area(struct card *card, enum place place);
 
+/**
+ * @brief decide if two cards match in a certain direction
+ * @param card_1
+ * @param card_2
+ * @param direction the direction in which the cards are compared
+ * @return 1 if the cards match, 0 if they don't
+ */
+int matching_areas(struct card *card_1, struct card *card_2, enum direction direction);
 /**
  * @brief Place the new card relatively to its neighbors and update their structure
  * @param new_card the card to place
@@ -73,17 +96,12 @@ int card__place(struct card *new_card, struct card **neighbor_list);
 enum card_id card__draw(struct stack *s);
 
 /**
- * @brief Rotate the given card in the clockwise turn
- * @param card the card to rotate
+ * @brief Sets the orientation of the card
+ * @param card the card oriented
+ * @param orientation the orientation wanted
  */
-void card__clockwise_rotation(struct card *card);
+void set_orientation(struct card *card, enum orientation orientation);
 
-
-/**
- * @brief Rotate the given card in the trigonometric turn
- * @param card the card to rotate
- */
-void card__trigo_rotation(struct card *card);
 
 #endif
 
