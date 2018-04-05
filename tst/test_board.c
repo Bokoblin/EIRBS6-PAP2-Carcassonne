@@ -2,14 +2,30 @@
 #include "test_utils.h"
 #include "../src/common/board.h"
 
-int test_init_board()
+int test_board__empty()
 {
     printf("%s... ", __func__);
 
-    struct board* b = init_board();
-    free(b); // not to free just to show "make memory"
+    struct board* b1 = board__empty();
 
-    //TODO : test_init_board
+    if (board__first_card(b1)->id != CARD_JUNCTION_THREE) {
+        board__free(b1);
+        return !SUCCESS;
+    }
+
+    if (b1->free_positions_array == NULL) {
+        board__free(b1);
+        return !SUCCESS;
+    }
+
+    board__free(b1);
+
+    return SUCCESS;
+}
+
+int test_board__add_card()
+{
+    //TODO
 
     return !SUCCESS;
 }
@@ -18,7 +34,8 @@ int main()
 {
     printf("----------- TEST STACK -----------\n");
 
-    print_success(test_init_board());
+    print_success(test_board__empty());
+    print_success(test_board__add_card());
 
     return SUCCESS;
 }

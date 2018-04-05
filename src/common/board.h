@@ -16,9 +16,9 @@
  */
 struct board
 {
-    struct card* first_card;
+    struct card** free_positions_array;
     unsigned int fp_capacity;
-    struct card** free_positions;
+    unsigned int fp_size;
 };
 
 
@@ -31,14 +31,31 @@ struct board
  * @brief Initialize a gameboard
  * @return a pointer towards a newly created board
  */
-struct board* init_board();
+struct board* board__empty();
+
+
+/**
+ * @brief Indicate first card of the board
+ * @param b the gameboard
+ * @return a card pointer
+ */
+struct card* board__first_card(struct board *b);
+
+
+/**
+ * @brief Add a card to the board
+ * @param b the board
+ * @param c a card
+ * @return 0 on succes, -1 otherwise
+ */
+int board__add_card(struct board *b, struct card* c);
 
 
 /**
  * @brief Release memory allocated to the gameboard
- * @param game the gameboard
+ * @param b the gameboard
  */
-void free_board(struct board* game);
+void board__free(struct board *b);
 
 #endif
 
