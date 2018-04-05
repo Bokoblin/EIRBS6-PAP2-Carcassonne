@@ -18,6 +18,26 @@ void card__free(struct card *card)
     free(card);
 }
 
+enum area_type get_area(struct card *card, enum place place)
+{
+  if (place == POS_CENTER) return card->type->areas[place-1];
+  return card->type->areas[(place-1+3*card->orientation)%12];
+}
+
+int matching_cards(struct card *card_1, struct card *card_2, enum direction direction)
+{
+  for(int i = 0 ; i < 3 ; i++){
+    if(get_area(card_1, direction*3+1+i) != get_area(card_2, direction*3+1+i)) return 0; 
+  }
+  return 1;
+}
+
+void card_link(struct card *card_1, struct card *card_2, enum direction direction)
+{
+  card_1->areas[direction] = card_2;
+  card_2->areas[(direction+2)%4] = card_1;
+}
+
 int card__place(struct card *new_card, struct card **neighbor_list)
 {
     //TODO : card__place impl

@@ -57,11 +57,13 @@ struct card
  */
 struct card* initialize_card(struct card_type *card_type);
 
+
 /**
  * @brief Release memory allocated to the card structure
  * @param game the gameboard
  */
 void card__free(struct card *card);
+
 
 /**
  * @brief get the area type 
@@ -71,14 +73,26 @@ void card__free(struct card *card);
  */
 enum area_type get_area(struct card *card, enum place place);
 
+
 /**
  * @brief decide if two cards match in a certain direction
  * @param card_1
  * @param card_2
  * @param direction the direction in which the cards are compared
- * @return 1 if the cards match, 0 if they don't
+ * @return 1 if the cards match, 0 otherwise
  */
-int matching_areas(struct card *card_1, struct card *card_2, enum direction direction);
+int matching_cards(struct card *card_1, struct card *card_2, enum direction direction);
+
+
+/**
+ * @brief link two cards to each other in a certain direction
+ * @param card_1
+ * @param card_2
+ * @param direction the direction in which the cards match (relative to card_1)
+ */
+void card_link(struct card *card_1, struct card *card_2, enum direction direction);
+ 
+
 /**
  * @brief Place the new card relatively to its neighbors and update their structure
  * @param new_card the card to place
@@ -94,6 +108,7 @@ int card__place(struct card *new_card, struct card **neighbor_list);
  * @return the card dealt
  */
 enum card_id card__draw(struct stack *s);
+
 
 /**
  * @brief Sets the orientation of the card
