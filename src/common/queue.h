@@ -1,8 +1,6 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "common_interface.h"
-
 struct queue;
 
 /**

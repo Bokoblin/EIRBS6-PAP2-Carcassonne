@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "test_utils.h"
 #include "../src/common/queue.h"
+#include "../src/common/common_interface.h"
 
 ////////////////////////////////////////////////////////////////////
 ///     USER FUNCTIONS IMPLEMENTATION

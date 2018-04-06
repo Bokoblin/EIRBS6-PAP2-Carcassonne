@@ -1,8 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include "common_interface.h"
-
 struct stack;
 
 /**
