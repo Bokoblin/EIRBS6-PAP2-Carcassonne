@@ -12,9 +12,12 @@
 
 struct stack
 {
-    enum card_id *array;
+    void* *array;
     unsigned int capacity;
     unsigned int head;
+    void* (*operator_copy) (void*);
+    void (*operator_delete) (void*);
+    void (*operator_debug) (void*);
 };
 
 
@@ -22,7 +25,9 @@ struct stack
 ///     STACK FUNCTIONS IMPLEMENTATION
 ////////////////////////////////////////////////////////////////////
 
-struct stack *stack__empty()
+struct stack *stack__empty(void* (*copy) (void*),
+                           void (*my_delete) (void*),
+                           void (*debug) (void*))
 {
     struct stack *s = malloc(sizeof(struct stack));
     if (s == NULL) {
@@ -30,9 +35,11 @@ struct stack *stack__empty()
     } else {
         s->capacity = DEFAULT_STACK_CAPACITY;
         s->head = 0;
-        s->array = malloc(sizeof(enum card_id) * (s->capacity));
+        s->array = malloc(sizeof(void*) * (s->capacity));
+        s->operator_copy = copy;
+        s->operator_delete = my_delete;
+        s->operator_debug = debug;
     }
-
     return s;
 }
 
@@ -41,48 +48,51 @@ int stack__is_empty(struct stack *s)
     return (s->head == 0);
 }
 
-int stack__push(struct stack *s, enum card_id element)
+int stack__push(struct stack *s, void* element)
 {
     assert(s->array != NULL);
-    if (element > LAST_CARD)
+    if (element == NULL)
         return -1;
 
     /* Adjust capacity if necessary */
     if (s->head == s->capacity){
         s->capacity = s->capacity * 2;
-        s->array = realloc(s->array, sizeof(enum card_id) * s->capacity);
+        s->array = realloc(s->array, sizeof(void*) * s->capacity);
         assert(s->array != NULL);
     }
 
-    s->array[s->head] = element;
+    s->array[s->head] = s->operator_copy(element);
     s->head++;
     return 0;
 }
 
-enum card_id stack__peek(struct stack *s)
+void* stack__peek(struct stack *s)
 {
     assert(s->array != NULL);
     if (stack__is_empty(s))
-        return LAST_CARD;
+        return NULL;
 
-    return s->array[s->head-1];
+    return s->operator_copy(s->array[s->head-1]);
 }
 
-enum card_id stack__pop(struct stack *s)
+void* stack__pop(struct stack *s)
 {
     assert(s->array != NULL);
     if (stack__is_empty(s))
-        return LAST_CARD;
+        return NULL;
 
     // Adjust capacity if necessary
     if ((s->head <= s->capacity / 4) && (s->capacity > DEFAULT_STACK_CAPACITY)) {
         s->capacity = s->capacity / 2;
-        s->array = realloc(s->array, sizeof(enum card_id) * s->capacity);
+        s->array = realloc(s->array, sizeof(void*) * s->capacity);
         assert(s->array != NULL);
     }
 
     s->head--;
-    return s->array[s->head];
+    void* returned = s->operator_copy(s->array[s->head]);
+    s->operator_delete(s->array[s->head]);
+    s->array[s->head] = NULL;
+    return returned;
 }
 
 
@@ -94,6 +104,10 @@ unsigned int stack__length(struct stack *s)
 
 void stack__free(struct stack *s)
 {
+    for (unsigned int i = 0; i < s->head; i++){
+        if (s->array[i] != NULL)
+            s->operator_delete(s->array[i]);
+    }
     free(s->array);
     free(s);
 }
@@ -102,8 +116,8 @@ void stack__free(struct stack *s)
 void stack__debug(struct stack *s)
 {
     if (stack__is_empty(s) != 0)
-        printf("Pile is empty.");
+        printf("Stack is empty.");
     else
         for (unsigned int i = 0; i < s->head; i++)
-            printf("%d ", s->array[i]);
+            s->operator_debug(s->array[i]);
 }

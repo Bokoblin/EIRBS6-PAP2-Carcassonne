@@ -10,7 +10,9 @@ struct stack;
  * @note Complexity: O(1)
  * @return a newly created stack
  */
-struct stack *stack__empty();
+struct stack *stack__empty(void* (*operator_copy) (void*),
+        void (*operator_delete) (void*),
+        void (*operator_debug) (void*));
 
 
 /**
@@ -31,7 +33,7 @@ int stack__is_empty(struct stack *s);
  * @return 0 on success
  * @return -1 otherwise
  */
-int stack__push(struct stack *s, enum card_id element);
+int stack__push(struct stack *s, void* element);
 
 
 /**
@@ -40,7 +42,7 @@ int stack__push(struct stack *s, enum card_id element);
  * @param s the stack
  * @return an enumeration representing the element on top
  */
-enum card_id stack__peek(struct stack *s);
+void* stack__peek(struct stack *s);
 
 
 /**
@@ -49,7 +51,7 @@ enum card_id stack__peek(struct stack *s);
  * @param s the stack
  * @return an enumeration representing the popped element
  */
-enum card_id stack__pop(struct stack *s);
+void* stack__pop(struct stack *s);
 
 
 /**

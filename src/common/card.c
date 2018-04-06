@@ -51,7 +51,10 @@ int card__place(struct card *new_card, struct card **neighbor_list)
 
 enum card_id card__draw(struct stack *s)
 {
-    return stack__pop(s);
+    enum card_id *poped_card = stack__pop(s);
+    enum card_id returned = *poped_card;
+    free(poped_card);
+    return returned;
 }
 
 void card__set_orientation(struct card *card, enum orientation orientation)
