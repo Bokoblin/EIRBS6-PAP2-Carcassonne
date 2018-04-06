@@ -8,7 +8,7 @@ int test_board__empty()
 
     struct board* b1 = board__empty();
 
-    if (board__first_card(b1)->type.id != CARD_JUNCTION_THREE) {
+    if (board__first_card(b1)->type.id != CARD_JUNCTION_CITY) {  //FIXME: check if it's that
         board__free(b1);
         return !SUCCESS;
     }

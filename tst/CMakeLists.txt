@@ -14,29 +14,35 @@ set(TEST_QUEUE test_queue)
 file(GLOB TEST_BOARD_SOURCE_FILES
         "test_utils.h"
         "test_board.c"
-        "../src/common/*.h"
-        "../src/common/*.c"
+        "../src/common/board.h"
+        "../src/common/board.c"
+        "../src/common/common_interface.h"
         )
 
 file(GLOB TEST_CARD_SOURCE_FILES
         "test_utils.h"
         "test_card.c"
-        "../src/common/*.h"
-        "../src/common/*.c"
+        "../src/common/card.h"
+        "../src/common/card.c"
+        "../src/common/common_interface.h"
         )
 
 file(GLOB TEST_STACK_SOURCE_FILES
         "test_utils.h"
         "test_stack.c"
-        "../src/common/*.h"
-        "../src/common/*.c"
+        "../src/common/utils.h"
+        "../src/common/utils.c"
+        "../src/common/stack.h"
+        "../src/common/stack.c"
         )
 
 file(GLOB TEST_QUEUE_SOURCE_FILES
         "test_utils.h"
         "test_queue.c"
-        "../src/common/*.h"
-        "../src/common/*.c"
+        "../src/common/utils.h"
+        "../src/common/utils.c"
+        "../src/common/queue.h"
+        "../src/common/queue.c"
         )
       
 #----------------------------

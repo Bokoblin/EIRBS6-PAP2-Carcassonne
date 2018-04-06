@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "test_utils.h"
+#include "../src/common/common_interface.h"
 #include "../src/common/card.h"
 
 void* operator_copy(void* given_card)
@@ -60,12 +61,13 @@ int test_card__get_area()
    printf("%s... ", __func__);
 
 
-   struct card_type ct = {CARD_MONASTERY_ALONE, {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
+   struct card_type ct = {CARD_MONASTERY_ALONE,
+           {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
 
    struct card *c = card__empty(ct);
 
    for (int i = 1 ; i < (MAX_ZONES-1) ; i++) {
-        if (card__get_area(c, i) != FIELD) {
+        if (card__get_area(c, (enum place) i) != FIELD) {
             card__free(c);
             return !SUCCESS;
         }
@@ -87,9 +89,11 @@ int test_card__are_matching_direction_success_case()
 {
     printf("%s... ", __func__);
 
-    struct card_type ct1 = {CARD_MONASTERY_ALONE, {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
+    struct card_type ct1 = {CARD_MONASTERY_ALONE,
+            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
 
-    struct card_type ct2 = {CARD_MONASTERY_ROAD, {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
+    struct card_type ct2 = {CARD_MONASTERY_ROAD,
+            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
 
     struct card *c1 = card__empty(ct1);
 
@@ -114,9 +118,11 @@ int test_card__are_matching_direction_failure_case()
 {
     printf("%s... ", __func__);
 
-    struct card_type ct1 = {CARD_MONASTERY_ALONE, {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
+    struct card_type ct1 = {CARD_MONASTERY_ALONE,
+            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
 
-    struct card_type ct2 = {CARD_PLAIN_CITY_ROAD, {FIELD, FIELD, ROAD, FIELD, ROAD, FIELD, CITY, CITY, CITY, CITY, CITY, CITY, FIELD}};
+    struct card_type ct2 = {CARD_PLAIN_CITY_ROAD,
+            {FIELD, FIELD, ROAD, FIELD, ROAD, FIELD, CITY, CITY, CITY, CITY, CITY, CITY, FIELD}};
 
     struct card *c1 = card__empty(ct1);
 
@@ -141,9 +147,11 @@ int test_card__link_at_direction()
 {
     printf("%s... ", __func__);
 
-    struct card_type ct1 = {CARD_MONASTERY_ALONE, {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
+    struct card_type ct1 = {CARD_MONASTERY_ALONE,
+            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
 
-    struct card_type ct2 = {CARD_MONASTERY_ROAD, {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
+    struct card_type ct2 = {CARD_MONASTERY_ROAD,
+            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
 
     struct card *c1 = card__empty(ct1);
 

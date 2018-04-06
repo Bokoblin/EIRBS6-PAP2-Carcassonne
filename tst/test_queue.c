@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "test_utils.h"
-#include "../src/common/queue.h"
 #include "../src/common/common_interface.h"
+#include "../src/common/queue.h"
 
 ////////////////////////////////////////////////////////////////////
 ///     USER FUNCTIONS IMPLEMENTATION
@@ -70,7 +70,7 @@ int test_queue__is_empty_on_non_empty_queue()
 
     struct queue *p = queue__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card = CARD_MONASTERY_ALONE;
-    queue__enqueue(p, &card);
+    queue__enqueue(p, &card); //FIXME: failure
 
     if (queue__is_empty(p)) {
         queue__free(p);

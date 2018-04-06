@@ -18,8 +18,6 @@ struct board* board__empty()
         struct card_type ct = { CARD_JUNCTION_CITY, { ROAD, CITY, ROAD, ROAD}}; //FIXME: check if it's that
         b->free_positions_array[0] = card__empty(ct);
         b->fp_size = 1;
-        //NOTE: Baptiste : I thought the free_positions_array array
-        // was the list of cards next to free spaces (extremity cards)
     }
 
     return b;
