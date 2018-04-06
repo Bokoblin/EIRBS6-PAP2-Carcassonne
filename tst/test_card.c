@@ -6,9 +6,23 @@ int test_card__empty()
 {
     printf("%s... ", __func__);
 
-    //TODO : test_card__empty
+    struct card_type ct = { CARD_JUNCTION_CITY, { ROAD, CITY, ROAD, ROAD}}; //FIXME: check if it's that
 
-    return !SUCCESS;
+    struct card* c = card__empty(ct);
+
+    if (c->type.id != CARD_JUNCTION_CITY) {
+        card__free(c);
+        return !SUCCESS;
+    }
+
+    if (c->orientation != DEFAULT_ORIENTATION) {
+        card__free(c);
+        return !SUCCESS;
+    }
+
+    card__free(c);
+
+    return SUCCESS;
 }
 
 

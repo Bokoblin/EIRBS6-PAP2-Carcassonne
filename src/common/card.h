@@ -6,6 +6,7 @@
 #include "area_type.h"
 
 #define MAX_ZONES (LAST_POS-1)
+#define DEFAULT_ORIENTATION NORTH_TO_NORTH
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURE
@@ -40,7 +41,7 @@ enum orientation
  */
 struct card
 {
-  struct card_type *type;
+  struct card_type type;
   struct card * neighbors[4]; // Indexed by enum direction
   enum orientation orientation; 
 };
@@ -53,9 +54,9 @@ struct card
 /**
  * @brief Initializes a card with the type card_type
  * @param card_type pointer towards the type of card wanted 
- * @return struct card
+ * @return a pointer towards a newly created card
  */
-struct card* initialize_card(struct card_type *card_type);
+struct card* card__empty(struct card_type card_type);
 
 
 /**
@@ -71,7 +72,7 @@ void card__free(struct card *card);
  * @param place the zone that we want to get
  * @return the area_type of the area place
  */
-enum area_type get_area(struct card *card, enum place place);
+enum area_type card__get_area(struct card *card, enum place place);
 
 
 /**
@@ -81,7 +82,7 @@ enum area_type get_area(struct card *card, enum place place);
  * @param direction the direction in which the cards are compared
  * @return 1 if the cards match, 0 otherwise
  */
-int matching_cards(struct card *card_1, struct card *card_2, enum direction direction);
+int card__are_matching_direction(struct card *card_1, struct card *card_2, enum direction direction);
 
 
 /**
@@ -90,7 +91,7 @@ int matching_cards(struct card *card_1, struct card *card_2, enum direction dire
  * @param card_2
  * @param direction the direction in which the cards match (relative to card_1)
  */
-void card_link(struct card *card_1, struct card *card_2, enum direction direction);
+void card__link_at_direction(struct card *card_1, struct card *card_2, enum direction direction);
  
 
 /**
@@ -115,7 +116,7 @@ enum card_id card__draw(struct stack *s);
  * @param card the card oriented
  * @param orientation the orientation wanted
  */
-void set_orientation(struct card *card, enum orientation orientation);
+void card__set_orientation(struct card *card, enum orientation orientation);
 
 
 #endif
