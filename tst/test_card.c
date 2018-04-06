@@ -68,7 +68,7 @@ int test_card__trigo_rotation()
 
 int main()
 {
-    printf("----------- TEST STACK -----------\n");
+    printf("----------- TEST CARD -----------\n");
 
     print_success(test_card__empty());
     print_success(test_card__place());

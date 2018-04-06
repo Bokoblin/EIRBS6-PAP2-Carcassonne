@@ -32,7 +32,7 @@ int test_board__add_card()
 
 int main()
 {
-    printf("----------- TEST STACK -----------\n");
+    printf("----------- TEST BOARD -----------\n");
 
     print_success(test_board__empty());
     print_success(test_board__add_card());

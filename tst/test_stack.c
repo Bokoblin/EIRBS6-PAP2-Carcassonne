@@ -26,9 +26,6 @@ void operator_debug(void* given_card)
     printf("%d", *_given_card);
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////////
 ///     STACK FUNCTIONS TESTS
 ////////////////////////////////////////////////////////////////////
@@ -50,7 +47,6 @@ int test_stack__empty()
     return SUCCESS;
 }
 
-
 int test_stack__is_empty_on_empty_stack()
 {
     printf("%s... ", __func__);
@@ -66,7 +62,6 @@ int test_stack__is_empty_on_empty_stack()
 
     return SUCCESS;
 }
-
 
 int test_stack__is_empty_on_non_empty_stack()
 {
@@ -85,7 +80,6 @@ int test_stack__is_empty_on_non_empty_stack()
 
     return SUCCESS;
 }
-
 
 int test_stack__push_on_non_empty_stack()
 {
@@ -110,7 +104,6 @@ int test_stack__push_on_non_empty_stack()
     return SUCCESS;
 }
 
-
 int test_stack_NULL()
 {
     printf("%s... ", __func__);
@@ -126,7 +119,6 @@ int test_stack_NULL()
     stack__free(p);
     return SUCCESS;
 }
-
 
 int test_stack__push_on_multiple_elements()
 {
@@ -148,7 +140,6 @@ int test_stack__push_on_multiple_elements()
 
     return SUCCESS;
 }
-
 
 int test_stack__peek()
 {
@@ -176,7 +167,6 @@ int test_stack__peek()
     return SUCCESS;
 }
 
-
 int test_stack__pop_on_empty_stack()
 {
     printf("%s... ", __func__);
@@ -192,7 +182,6 @@ int test_stack__pop_on_empty_stack()
     stack__free(s);
     return SUCCESS;
 }
-
 
 int test_stack__pop_on_non_empty_stack()
 {
@@ -223,7 +212,6 @@ int test_stack__pop_on_non_empty_stack()
     return SUCCESS;
 }
 
-
 int test_stack_length()
 {
     printf("%s... ", __func__);
@@ -250,7 +238,6 @@ int test_stack_length()
     return SUCCESS;
 }
 
-
 int test_stack_debug()
 {
     printf("%s (expected 5 6 7 8 5)... ", __func__);
@@ -273,7 +260,6 @@ int test_stack_debug()
 
     return SUCCESS;
 }
-
 
 int main()
 {
