@@ -45,20 +45,23 @@ struct stack *stack__empty(void* (*copy) (void*),
 
 int stack__is_empty(struct stack *s)
 {
+    if (s == NULL)
+        return -1;
+
     return (s->head == 0);
 }
 
 int stack__push(struct stack *s, void* element)
 {
-    assert(s->array != NULL);
-    if (element == NULL)
+    if (s == NULL || s->array == NULL || element == NULL)
         return -1;
 
     /* Adjust capacity if necessary */
     if (s->head == s->capacity){
         s->capacity = s->capacity * 2;
         s->array = realloc(s->array, sizeof(void*) * s->capacity);
-        assert(s->array != NULL);
+        if (s->array == NULL)
+            return -1;
     }
 
     s->array[s->head] = s->operator_copy(element);
@@ -68,8 +71,7 @@ int stack__push(struct stack *s, void* element)
 
 void* stack__peek(struct stack *s)
 {
-    assert(s->array != NULL);
-    if (stack__is_empty(s))
+    if (s == NULL || s->array == NULL || stack__is_empty(s))
         return NULL;
 
     return s->operator_copy(s->array[s->head-1]);
@@ -77,15 +79,15 @@ void* stack__peek(struct stack *s)
 
 void* stack__pop(struct stack *s)
 {
-    assert(s->array != NULL);
-    if (stack__is_empty(s))
+    if (s == NULL || s->array == NULL || stack__is_empty(s))
         return NULL;
 
     // Adjust capacity if necessary
     if ((s->head <= s->capacity / 4) && (s->capacity > DEFAULT_STACK_CAPACITY)) {
         s->capacity = s->capacity / 2;
         s->array = realloc(s->array, sizeof(void*) * s->capacity);
-        assert(s->array != NULL);
+        if (s->array == NULL)
+            return NULL;
     }
 
     s->head--;
@@ -98,12 +100,17 @@ void* stack__pop(struct stack *s)
 
 unsigned int stack__length(struct stack *s)
 {
+    if (s == NULL)
+        return -1;
     return s->head;
 }
 
 
 void stack__free(struct stack *s)
 {
+    if (s == NULL || s->array == NULL)
+        return;
+
     for (unsigned int i = 0; i < s->head; i++){
         if (s->array[i] != NULL)
             s->operator_delete(s->array[i]);
@@ -115,6 +122,9 @@ void stack__free(struct stack *s)
 
 void stack__debug(struct stack *s)
 {
+    if (s == NULL || s->array == NULL)
+        return;
+
     if (stack__is_empty(s) != 0)
         printf("Stack is empty.");
     else
