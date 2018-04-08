@@ -58,5 +58,3 @@ int board__add_card(struct board *b, struct card* c);
 void board__free(struct board *b);
 
 #endif
-
-//TODO: Arthur : Tests

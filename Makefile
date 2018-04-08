@@ -8,7 +8,7 @@ CC 		= gcc
 CFLAGS	= -Wall -Wextra -std=c99 -g -O0
 CPPFLAGS= -I ${SRC_DIR} -I ${TST_DIR} -I ${INS_DIR}
 
-SERVER_SOURCES 	= $(wildcard $(SRC_DIR)/server/*.c $(SRC_DIR)/common/utils.c)
+SERVER_SOURCES 	= $(wildcard $(SRC_DIR)/server/*.c $(SRC_DIR)/common/*.c)
 CLIENT_SOURCES 	= $(wildcard $(SRC_DIR)/client/*.c)
 TESTS_SOURCES 	= $(wildcard $(TST_DIR)/*.c $(SRC_DIR)/common/*.c)
 

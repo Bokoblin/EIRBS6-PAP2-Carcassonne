@@ -120,5 +120,3 @@ void card__set_orientation(struct card *card, enum orientation orientation);
 
 
 #endif
-
-//TODO: Arthur : Tests
