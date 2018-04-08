@@ -210,7 +210,8 @@ int test_queue__dequeue_on_non_empty_queue()
     enum card_id *dequeued_c2 = queue__dequeue(q);
 
     if (!queue__is_empty(q)
-            || (*dequeued_c1 != CARD_MONASTERY_ROAD) || (*dequeued_c2 != CARD_MONASTERY_ALONE)) {
+            || (*dequeued_c1 != CARD_MONASTERY_ROAD)
+            || (*dequeued_c2 != CARD_MONASTERY_ALONE)) {
         free(dequeued_c1);
         free(dequeued_c2);
         queue__free(q);

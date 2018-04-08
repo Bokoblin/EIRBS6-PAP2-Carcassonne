@@ -37,6 +37,6 @@ void exit_on_error(char* message);
  * @param b a value
  * @return a modulo
  */
-unsigned int positive_modulo(int a, int b);
+size_t positive_modulo(int a, int b);
 
 #endif

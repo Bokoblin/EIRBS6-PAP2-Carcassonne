@@ -38,13 +38,11 @@ void exit_on_error(char *message)
     exit(EXIT_FAILURE);
 }
 
-unsigned int positive_modulo(int a, int b)
+size_t positive_modulo(int a, int b)
 {
     if (b <= 0)
         return 0;
-
-    while (a < 0)
-        a += b;
-
-    return (unsigned int) (a%b);
+    if (a >= 0)
+        return (size_t) (a%b);
+    return (size_t) ((-a)%b);
 }

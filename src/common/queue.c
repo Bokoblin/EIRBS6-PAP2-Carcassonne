@@ -73,8 +73,8 @@ int queue__enqueue(struct queue *q, void* element)
 
         // Copy of the queue in the new allocated memory to avoid modulo issue
         size_t new_top = q->capacity / 2;
-        unsigned int i = (unsigned int) q->top;
-        unsigned int j = (unsigned int) new_top;
+        size_t i = q->top;
+        size_t j = new_top;
         while (positive_modulo((int) (q->top + q->size), (int) new_top) != i) {
             q->array[j] = q->array[i];
             i = positive_modulo(i, (int) new_top);
@@ -136,7 +136,7 @@ void queue__free(struct queue *q)
     if (q == NULL || q->array == NULL)
         return;
 
-    unsigned int i = (unsigned int) q->top;
+    size_t i = q->top;
     while (positive_modulo((int) (q->top + q->size), (int) q->capacity) != i) {
         q->operator_delete(q->array[i]);
         i = positive_modulo(i, (int) q->capacity);
@@ -154,7 +154,7 @@ void queue__debug(struct queue *q)
     if (queue__is_empty(q) != 0)
         printf("Queue is empty.\n");
     else {
-        unsigned int i = (unsigned int) q->top;
+        size_t i = q->top;
         while (positive_modulo((int) (q->top + q->size), (int) q->capacity) != i) {
             q->operator_debug(q->array[i]);
             i = positive_modulo(i, (int) q->capacity);
