@@ -45,6 +45,15 @@ void* queue__first(struct queue *q);
 
 
 /**
+ * @brief Retrieve the element on the end of the queue without removing it
+ * @note Complexity: O(1)
+ * @param q the queue
+ * @return an enumeration representing the element on the end
+ */
+void* queue__last(struct queue *q);
+
+
+/**
  * @brief Pop an element out of the queue
  * @note Complexity: O(1)
  * @param q the queue
