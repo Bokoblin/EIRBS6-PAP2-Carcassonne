@@ -1,7 +1,7 @@
 #include <dlfcn.h>
 #include <string.h>
 #include <assert.h>
-#include "../server/client_container.h"
+#include "player_container.h"
 #include "../common/common_interface.h"
 #include "../common/queue.h"
 #include "../common/stack.h"
@@ -14,10 +14,11 @@
 ///     FUNCTIONS DECLARATION
 ////////////////////////////////////////////////////////////////////
 
-void register_clients(int argc, const char **argv, const struct client_container *clients, unsigned int clients_count);
+void register_players(int argc, const char **argv, const struct player_container *players, unsigned int nb_players);
+struct player* compute_next_player(struct player_container *players);
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves);
-void free_resources(const struct client_container *clients);
-void game_main(const struct client_container *players);
+void free_resources(const struct player_container *players);
+void game_main(struct player_container *players);
 
 
 ////////////////////////////////////////////////////////////////////
@@ -76,56 +77,56 @@ void move_queue_debug_operator(struct move* m)
     printf("\tplace: %d\n", m->place);
 }
 
+
 ////////////////////////////////////////////////////////////////////
 ///     FUNCTIONS IMPLEMENTATION & MAIN
 ////////////////////////////////////////////////////////////////////
 
 /**
- * @brief Registers all client libraries passes in program arguments
+ * @brief Registers all player libraries passed in program arguments
  * @param argc argument count
  * @param argv argument content array
- * @param clients the clients container
- * @param clients_count the clients to register count
+ * @param players the players container
+ * @param nb_players the number of players to register
  */
-void register_clients(int argc, const char **argv, const struct client_container *clients, unsigned int clients_count)
+void register_players(int argc, const char **argv, const struct player_container *players, unsigned int nb_players)
 {
-    unsigned int nb_clients_registered = 0;
+    unsigned int nb_players_registered = 0;
     int args_index = 0;
 
-    while (nb_clients_registered < clients_count && args_index < argc) {
+    while (nb_players_registered < nb_players && args_index < argc) {
         const char* current_arg = argv[args_index];
         if (strstr(current_arg, ".so") != NULL) {
             printf("Registering: %s\n", current_arg);
-            clients->clients_array[nb_clients_registered]->lib_ptr = dlopen(current_arg, RTLD_NOW);
+            players->player_array[nb_players_registered]->lib_ptr = dlopen(current_arg, RTLD_NOW);
             assert_no_dlerror();
-            clients->clients_array[nb_clients_registered]->get_player_name
-                    = dlsym(clients->clients_array[nb_clients_registered]->lib_ptr, "get_player_name");
+            players->player_array[nb_players_registered]->get_player_name
+                    = dlsym(players->player_array[nb_players_registered]->lib_ptr, "get_player_name");
             assert_no_dlerror();
-            clients->clients_array[nb_clients_registered]->initialize
-                    = dlsym(clients->clients_array[nb_clients_registered]->lib_ptr, "initialize");
+            players->player_array[nb_players_registered]->initialize
+                    = dlsym(players->player_array[nb_players_registered]->lib_ptr, "initialize");
             assert_no_dlerror();
-            clients->clients_array[nb_clients_registered]->play
-                    = dlsym(clients->clients_array[nb_clients_registered]->lib_ptr, "play");
+            players->player_array[nb_players_registered]->play
+                    = dlsym(players->player_array[nb_players_registered]->lib_ptr, "play");
             assert_no_dlerror();
-            clients->clients_array[nb_clients_registered]->finalize
-                    = dlsym(clients->clients_array[nb_clients_registered]->lib_ptr, "finalize");
+            players->player_array[nb_players_registered]->finalize
+                    = dlsym(players->player_array[nb_players_registered]->lib_ptr, "finalize");
             assert_no_dlerror();
 
-            nb_clients_registered++;
+            nb_players_registered++;
         }
         args_index++;
     }
 }
 
-struct client* compute_next_player(const struct client_container *players)
+struct player* compute_next_player(struct player_container *players)
 {
-    assert(players->clients_array != NULL);
-
-    unsigned int next_p = rand() % players->current_size; //TODO (placeholder for now)
-    return players->clients_array[next_p];
+    assert(players->player_array != NULL);
+    players->current_player = (players->current_player + 1) % players->current_size;
+    return players->player_array[players->current_player];
 }
 
-void game_main(const struct client_container *players)
+void game_main(struct player_container *players)
 {
     //=== Card stack initialization
 
@@ -148,14 +149,14 @@ void game_main(const struct client_container *players)
     //=== Player initialization
 
     for (unsigned int i = 0; i < players->current_size; i++) {
-        players->clients_array[i]->initialize(i, players->current_size);
+        players->player_array[i]->initialize(i, players->current_size);
     }
 
     //=== Game loop
 
     while (!stack__is_empty(drawing_stack) && players->current_size > 0) {
         enum card_id c = card__draw(drawing_stack);
-        struct client *p = compute_next_player(players);
+        struct player *p = compute_next_player(players);
         struct move *moves_array = build_previous_moves_array(moves, players->current_size);
         queue__dequeue(moves);
         struct move m = p->play(c, moves_array, players->current_size);
@@ -166,7 +167,7 @@ void game_main(const struct client_container *players)
     //=== Players finalization
 
     for (size_t i = 0; i < players->current_size; i++) {
-        players->clients_array[i]->finalize();
+        players->player_array[i]->finalize();
     }
 
     stack__free(drawing_stack);
@@ -193,11 +194,11 @@ struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_mov
     return moves_array;
 }
 
-void free_resources(const struct client_container *clients)
+void free_resources(const struct player_container *players)
 {
-    for (size_t i = 0; i < clients->current_size; i++) {
-        if (clients->clients_array[i]->lib_ptr != NULL) {
-            dlclose(clients->clients_array[i]->lib_ptr);
+    for (size_t i = 0; i < players->current_size; i++) {
+        if (players->player_array[i]->lib_ptr != NULL) {
+            dlclose(players->player_array[i]->lib_ptr);
             assert_no_dlerror();
         }
     }
@@ -210,36 +211,36 @@ int main(int argc, char** argv)
     parse_opts(argc, argv, &is_graphic, &clients_count);
 
 
-    //=== Register clients
+    //=== Register players
 
-    struct client_container *clients = init_client_container(clients_count);
-    register_clients(argc, (const char **) argv, clients, clients_count);
+    struct player_container *players = init_player_container(clients_count);
+    register_players(argc, (const char **) argv, players, clients_count);
 
-    //=== Check clients initialization
+    //=== Check players initialization
 
-    for (size_t i = 0; i < clients->current_size; i++) {
-        assert(clients->clients_array[i]->initialize != NULL);
-        assert(clients->clients_array[i]->play != NULL);
-        assert(clients->clients_array[i]->get_player_name != NULL);
-        assert(clients->clients_array[i]->finalize != NULL);
+    for (size_t i = 0; i < players->current_size; i++) {
+        assert(players->player_array[i]->initialize != NULL);
+        assert(players->player_array[i]->play != NULL);
+        assert(players->player_array[i]->get_player_name != NULL);
+        assert(players->player_array[i]->finalize != NULL);
     }
 
-    //=== Display clients name
+    //=== Display players name
 
-    if (clients->current_size > 0)
+    if (players->current_size > 0)
         printf("Display all players:\n");
-    for (size_t i = 0; i < clients->current_size; i++) {
-        printf("\t- PLAYER#%d: %s\n", (int) (i+1), clients->clients_array[i]->get_player_name());
+    for (size_t i = 0; i < players->current_size; i++) {
+        printf("\t- PLAYER#%d: %s\n", (int) (i+1), players->player_array[i]->get_player_name());
     }
 
     //=== Start the game
 
-    game_main(clients);
+    game_main(players);
 
     //=== Free used resources & memory
 
-    free_resources(clients);
-    free_client_container(clients);
+    free_resources(players);
+    free_player_container(players);
 
     return EXIT_SUCCESS;
 }

@@ -12,9 +12,9 @@
 void print_success(int result)
 {
     if (result)
-        printf("\x1B[31mFAILED\e[0m\n");
+        printf("\x1B[31mFAILED\x1B[0m\n");
     else
-        printf("\x1B[32mSUCCESS\e[0m\n");
+        printf("\x1B[32mSUCCESS\x1B[0m\n");
 }
 
 

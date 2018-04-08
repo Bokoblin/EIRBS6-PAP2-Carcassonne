@@ -192,8 +192,11 @@ board.o: $(SRC_DIR)/common/board.c $(SRC_DIR)/common/board.h
 card.o: $(SRC_DIR)/common/card.c $(SRC_DIR)/common/card.h
 	${CC} ${CFLAGS} $(SRC_DIR)/common/card.c -c
 
-client_container.o: $(SRC_DIR)/server/client_container.c $(SRC_DIR)/server/client_container.h
-	${CC} ${CFLAGS} $(SRC_DIR)/server/client_container.c -c
+player.o: $(SRC_DIR)/server/player.c $(SRC_DIR)/server/player.h
+	${CC} ${CFLAGS} $(SRC_DIR)/server/player.c -c
+
+player_container.o: $(SRC_DIR)/server/player_container.c $(SRC_DIR)/server/player_container.h
+	${CC} ${CFLAGS} $(SRC_DIR)/server/player_container.c -c
 
 moves.o: $(SRC_DIR)/client/moves.c $(SRC_DIR)/client/moves.h
 	${CC} ${CFLAGS} $(SRC_DIR)/client/moves.c -c
