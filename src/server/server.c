@@ -126,23 +126,43 @@ struct client* compute_next_player(const struct client_container *players)
 
 void game_main(const struct client_container *players)
 {
+    //=== Card stack initialization
+
     struct stack* drawing_stack =
             stack__empty(card_stack_copy_operator, card_stack_delete_operator, card_stack_debug_operator);
+
+    for (unsigned int i = 0; i < CARD_NUMBER; i++) {
+        //FIXME: Init with accurate card repartition following rules
+        //+ shuffle
+        struct card_type ct1 = {CARD_MONASTERY_ALONE,
+                {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
+        struct card *c = card__empty(ct1);
+        stack__push(drawing_stack, c);
+    }
+
+    //=== Moves queue initialization
+
     struct queue* moves = queue__empty(move_queue_copy_operator, move_queue_delete_operator, move_queue_debug_operator);
+
+    //=== Player initialization
 
     for (unsigned int i = 0; i < players->current_size; i++) {
         players->clients_array[i]->initialize(i, players->current_size);
     }
+
+    //=== Game loop
 
     while (!stack__is_empty(drawing_stack) && players->current_size > 0) {
         enum card_id c = card__draw(drawing_stack);
         struct client *p = compute_next_player(players);
         struct move *moves_array = build_previous_moves_array(moves, players->current_size);
         queue__dequeue(moves);
-        struct move m = p->play(c, moves_array, 0);
+        struct move m = p->play(c, moves_array, players->current_size);
         queue__enqueue(moves, &m);
         free(moves_array);
     }
+
+    //=== Players finalization
 
     for (size_t i = 0; i < players->current_size; i++) {
         players->clients_array[i]->finalize();
@@ -154,12 +174,21 @@ void game_main(const struct client_container *players)
 
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves)
 {
+    if (moves == NULL)
+        exit_on_error("NULL moves queue");
+
     struct move *moves_array = malloc(sizeof(struct move) * nb_moves);
-    for (unsigned int i = 0; i < nb_moves; i++) {
-        struct move *m = (struct move*) queue__dequeue(moves);
-        moves_array[i] = *m;
-        queue__enqueue(moves, m);
+    if (moves_array == NULL)
+        exit_on_error("Malloc failure on struct move*");
+
+    if (!queue__is_empty(moves)) {
+        for (unsigned int i = 0; i < nb_moves; i++) {
+            struct move *m = (struct move*) queue__dequeue(moves);
+            moves_array[i] = *m;
+            queue__enqueue(moves, m);
+        }
     }
+
     return moves_array;
 }
 

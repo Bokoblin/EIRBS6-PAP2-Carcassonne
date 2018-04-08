@@ -52,6 +52,8 @@ int test_card__place()
 
     //TODO : test_card__place
 
+    printf("- Not tested yet - ");
+
     return !SUCCESS;
 }
 

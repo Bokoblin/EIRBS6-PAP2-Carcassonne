@@ -25,7 +25,11 @@ int test_board__empty()
 
 int test_board__add_card()
 {
-    //TODO
+    printf("%s... ", __func__);
+
+    //TODO : test_board__add_card
+
+    printf("- Not tested yet - ");
 
     return !SUCCESS;
 }

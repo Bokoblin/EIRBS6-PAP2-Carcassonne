@@ -10,6 +10,9 @@
 
 void* operator_copy(void* given_card)
 {
+    if (given_card == NULL)
+        return NULL;
+
     enum card_id *_given_card = given_card;
     enum card_id *new_card = malloc(sizeof(enum card_id));
     *new_card = *_given_card;
@@ -24,7 +27,8 @@ void operator_delete(void* given_card)
 void operator_debug(void* given_card)
 {
     enum card_id *_given_card = given_card;
-    printf("%d", *_given_card);
+    setvbuf (stdout, NULL, _IONBF, 0);
+    printf("%d ", *_given_card);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -36,14 +40,14 @@ int test_queue__empty()
 {
     printf("%s... ", __func__);
 
-    struct queue *p = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
 
-    if (p == NULL) {
-        queue__free(p);
+    if (q == NULL) {
+        queue__free(q);
         return !SUCCESS;
     }
 
-    queue__free(p);
+    queue__free(q);
 
     return SUCCESS;
 }
@@ -52,14 +56,14 @@ int test_queue__is_empty_on_empty_queue()
 {
     printf("%s... ", __func__);
 
-    struct queue *p = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
 
-    if (!queue__is_empty(p)) {
-        queue__free(p);
+    if (!queue__is_empty(q)) {
+        queue__free(q);
         return !SUCCESS;
     }
 
-    queue__free(p);
+    queue__free(q);
 
     return SUCCESS;
 }
@@ -68,16 +72,20 @@ int test_queue__is_empty_on_non_empty_queue()
 {
     printf("%s... ", __func__);
 
-    struct queue *p = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card = CARD_MONASTERY_ALONE;
-    queue__enqueue(p, &card); //FIXME: failure
-
-    if (queue__is_empty(p)) {
-        queue__free(p);
+    
+    if (queue__enqueue(q, &card) != SUCCESS) {
+        queue__free(q);
         return !SUCCESS;
     }
 
-    queue__free(p);
+    if (queue__is_empty(q)) {
+        queue__free(q);
+        return !SUCCESS;
+    }
+
+    queue__free(q);
 
     return SUCCESS;
 }
@@ -86,22 +94,22 @@ int test_queue__enqueue_on_non_empty_queue()
 {
     printf("%s... ", __func__);
 
-    struct queue *p = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card1 = CARD_MONASTERY_ALONE;
     enum card_id card2 = CARD_CITY_ALL_SIDES;
     enum card_id card3 = CARD_ROAD_STRAIGHT_CITY;
     enum card_id card4 = CARD_CITY_ONE_SIDE;
-    queue__enqueue(p, &card1);
-    queue__enqueue(p, &card2);
-    queue__enqueue(p, &card3);
-    queue__enqueue(p, &card4);
-    queue__enqueue(p, &card1);
+    queue__enqueue(q, &card1);
+    queue__enqueue(q, &card2);
+    queue__enqueue(q, &card3);
+    queue__enqueue(q, &card4);
+    queue__enqueue(q, &card1);
 
-    if (queue__length(p) != 5) {
-        queue__free(p);
+    if (queue__length(q) != 5) {
+        queue__free(q);
         return !SUCCESS;
     }
-    queue__free(p);
+    queue__free(q);
     return SUCCESS;
 }
 
@@ -109,15 +117,15 @@ int test_queue_NULL()
 {
     printf("%s... ", __func__);
 
-    struct queue *p = queue__empty(&operator_copy, &operator_delete, &operator_debug);
-    queue__enqueue(p, NULL);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    queue__enqueue(q, NULL);
 
-    if (!queue__is_empty(p)) {
-        queue__free(p);
+    if (!queue__is_empty(q)) {
+        queue__free(q);
         return !SUCCESS;
     }
 
-    queue__free(p);
+    queue__free(q);
     return SUCCESS;
 }
 
@@ -125,19 +133,19 @@ int test_queue__enqueue_on_multiple_elements()
 {
     printf("%s... ", __func__);
 
-    struct queue *s = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card = CARD_MONASTERY_ALONE;
 
     for (unsigned int i = 0; i < 500; i++) {
-        queue__enqueue(s, &card);
+        queue__enqueue(q, &card);
     }
 
-    if (queue__length(s) < 500) {
-        queue__free(s);
+    if (queue__length(q) < 500) {
+        queue__free(q);
         return !SUCCESS;
     }
 
-    queue__free(s);
+    queue__free(q);
 
     return SUCCESS;
 }
@@ -146,24 +154,26 @@ int test_queue__first()
 {
     printf("%s... ", __func__);
 
-    struct queue *s = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
 
-    if (!queue__is_empty(s) || queue__first(s) != NULL) {
-        queue__free(s);
+    if (!queue__is_empty(q) || queue__first(q) != NULL) {
+        queue__free(q);
         return !SUCCESS;
     }
 
     enum card_id card = CARD_CITY_THREE;
-    queue__enqueue(s, &card);
+    queue__enqueue(q, &card);
 
-    enum card_id *first = queue__first(s);
-    if (queue__is_empty(s) ||  *first != CARD_CITY_THREE) {
+    enum card_id *first = queue__first(q);
+
+    if (queue__is_empty(q) ||  *first != CARD_CITY_THREE) {
         free(first);
-        queue__free(s);
+        queue__free(q);
         return !SUCCESS;
     }
+
     free(first);
-    queue__free(s);
+    queue__free(q);
 
     return SUCCESS;
 }
@@ -172,15 +182,16 @@ int test_queue__dequeue_on_empty_queue()
 {
     printf("%s... ", __func__);
 
-    struct queue *s = queue__empty(&operator_copy, &operator_delete, &operator_debug);
-    enum card_id *unqueueed = queue__dequeue(s);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    enum card_id *dequeued_e = queue__dequeue(q);
 
-    if (NULL != unqueueed) {
-        queue__free(s);
+    if (dequeued_e != NULL) {
+        free(dequeued_e);
+        queue__free(q);
         return !SUCCESS;
     }
 
-    queue__free(s);
+    queue__free(q);
     return SUCCESS;
 }
 
@@ -188,27 +199,27 @@ int test_queue__dequeue_on_non_empty_queue()
 {
     printf("%s... ", __func__);
 
-    struct queue *s = queue__empty(&operator_copy, &operator_delete, &operator_debug);
-    enum card_id card1 = CARD_MONASTERY_ROAD;
-    enum card_id card2 = CARD_MONASTERY_ALONE;
-    queue__enqueue(s, &card1);
-    queue__enqueue(s, &card2);
-    enum card_id *unqueueed2 = queue__dequeue(s);
-    enum card_id *unqueueed1 = queue__dequeue(s);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    enum card_id c1 = CARD_MONASTERY_ROAD;
+    enum card_id c2 = CARD_MONASTERY_ALONE;
 
+    queue__enqueue(q, &c1);
+    queue__enqueue(q, &c2); //FIXME: apparent memory leak
 
-    if (!queue__is_empty(s)
-            || (*unqueueed1 != CARD_MONASTERY_ROAD)
-            || (*unqueueed2 != CARD_MONASTERY_ALONE)) {
-        queue__free(s);
-        free(unqueueed1);
-        free(unqueueed2);
+    enum card_id *dequeued_c1 = queue__dequeue(q);
+    enum card_id *dequeued_c2 = queue__dequeue(q);
+
+    if (!queue__is_empty(q)
+            || (*dequeued_c1 != CARD_MONASTERY_ROAD) || (*dequeued_c2 != CARD_MONASTERY_ALONE)) {
+        free(dequeued_c1);
+        free(dequeued_c2);
+        queue__free(q);
         return !SUCCESS;
     }
 
-    free(unqueueed1);
-    free(unqueueed2);
-    queue__free(s);
+    free(dequeued_c1);
+    free(dequeued_c2);
+    queue__free(q);
 
     return SUCCESS;
 }
@@ -217,24 +228,24 @@ int test_queue_length()
 {
     printf("%s... ", __func__);
 
-    struct queue *s = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card1 = CARD_ROAD_TURN_RIGHT_CITY;
     enum card_id card2 = CARD_ROAD_TURN_LEFT_CITY;
-    queue__enqueue(s, &card1);
+    queue__enqueue(q, &card1);
 
-    if (queue__length(s) != 1) {
-        queue__free(s);
+    if (queue__length(q) != 1) {
+        queue__free(q);
         return !SUCCESS;
     }
 
-    queue__enqueue(s, &card2);
+    queue__enqueue(q, &card2);
 
-    if (queue__length(s) != 2) {
-        queue__free(s);
+    if (queue__length(q) != 2) {
+        queue__free(q);
         return !SUCCESS;
     }
 
-    queue__free(s);
+    queue__free(q);
 
     return SUCCESS;
 }
@@ -243,21 +254,21 @@ int test_queue_debug()
 {
     printf("%s (expected 5 6 7 8 5)... ", __func__);
 
-    struct queue *s = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card1 = CARD_CITY_TUNNEL_SHLD;
     enum card_id card2 = CARD_CITY_TUNNEL;
     enum card_id card3 = CARD_PLAIN_TUNNEL;
     enum card_id card4 = CARD_PLAIN_TWO_CITIES;
 
-    queue__enqueue(s, &card1);
-    queue__enqueue(s, &card2);
-    queue__enqueue(s, &card3);
-    queue__enqueue(s, &card4);
-    queue__enqueue(s, &card1);
+    queue__enqueue(q, &card1);
+    queue__enqueue(q, &card2);
+    queue__enqueue(q, &card3);
+    queue__enqueue(q, &card4);
+    queue__enqueue(q, &card1);
 
-    queue__debug(s);
+    queue__debug(q);
 
-    queue__free(s);
+    queue__free(q);
 
     return SUCCESS;
 }
