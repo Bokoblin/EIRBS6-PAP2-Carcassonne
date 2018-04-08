@@ -65,11 +65,10 @@ int queue__enqueue(struct queue *q, void* element)
 
     // Adjust capacity if necessary
     if (q->size == q->capacity) {
-        q->array = realloc(q->array, sizeof(void *) * q->capacity * 2);
+        q->capacity = q->capacity * 2;
+        q->array = realloc(q->array, sizeof(void *) * q->capacity);
         if (q->array == NULL)
             exit_on_error("Realloc failure on: void**");
-        else
-            q->capacity = q->capacity * 2;
 
         // Copy of the queue in the new allocated memory to avoid modulo issue
         size_t new_top = q->capacity / 2;
@@ -77,8 +76,7 @@ int queue__enqueue(struct queue *q, void* element)
         size_t j = new_top;
         while (positive_modulo((int) (q->top + q->size), (int) new_top) != i) {
             q->array[j] = q->array[i];
-            i = positive_modulo(i, (int) new_top);
-            i++;
+            i = positive_modulo(i + 1, (int) new_top);
             j++;
         }
         q->top = new_top;
@@ -94,15 +92,14 @@ void* queue__dequeue(struct queue *q)
     if (q == NULL || q->array == NULL || queue__is_empty(q))
         return NULL;
 
-
     //TODO : free some space if the queue size > queue capacity
 
     void *dequeued_e = q->operator_copy(q->array[positive_modulo((int) q->top, (int) q->capacity)]);
-    q->top = positive_modulo((int) (q->top + 1), (int) q->capacity);
-    q->size--;
-
     q->operator_delete(q->array[positive_modulo((int) q->top, (int) q->capacity)]);
     q->array[positive_modulo((int) q->top, (int) q->capacity)] = NULL;
+
+    q->top = positive_modulo((int) (q->top + 1), (int) q->capacity);
+    q->size--;
 
     return dequeued_e;
 }
@@ -135,13 +132,14 @@ void queue__free(struct queue *q)
 {
     if (q == NULL || q->array == NULL)
         return;
-
+/*
     size_t i = q->top;
-    while (positive_modulo((int) (q->top + q->size), (int) q->capacity) != i) {
-        q->operator_delete(q->array[i]);
-        i = positive_modulo(i, (int) q->capacity);
-        i++;
+    while (i != positive_modulo((int) (q->top + q->size), (int) q->capacity)) {
+        if (q->array[i] != NULL)
+            q->operator_delete(q->array[i]);
+        i = positive_modulo((int) i + 1, (int) q->capacity);
     }
+    */
     free(q->array);
     free(q);
 }
@@ -155,10 +153,9 @@ void queue__debug(struct queue *q)
         printf("Queue is empty.\n");
     else {
         size_t i = q->top;
-        while (positive_modulo((int) (q->top + q->size), (int) q->capacity) != i) {
+        while (i != positive_modulo((int) (q->top + q->size), (int) q->capacity)) {
             q->operator_debug(q->array[i]);
-            i = positive_modulo(i, (int) q->capacity);
-            i++;
+            i = positive_modulo(i + 1, (int) q->capacity);
         }
     }
 }
