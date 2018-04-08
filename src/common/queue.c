@@ -109,7 +109,7 @@ void* queue__front(struct queue *q)
     if (q == NULL || q->array == NULL || queue__is_empty(q))
         return NULL;
 
-    return q->array[q->top];
+    return q->operator_copy(q->array[q->top]);
 }
 
 void* queue__back(struct queue *q)
@@ -117,7 +117,7 @@ void* queue__back(struct queue *q)
     if (q == NULL || q->array == NULL || queue__is_empty(q))
         return NULL;
 
-    return q->array[positive_modulo((int) (q->size + q->top), (int) q->capacity)];
+    return q->operator_copy(q->array[positive_modulo((int) (q->size + q->top), (int) q->capacity)]);
 }
 
 size_t queue__length(struct queue *q)
@@ -132,12 +132,21 @@ void queue__free(struct queue *q)
 {
     if (q == NULL || q->array == NULL)
         return;
-/*
+
+        //FIXME : Multiple frees
+    /*
     size_t i = q->top;
     while (i != positive_modulo((int) (q->top + q->size), (int) q->capacity)) {
         if (q->array[i] != NULL)
             q->operator_delete(q->array[i]);
         i = positive_modulo((int) i + 1, (int) q->capacity);
+    }
+    */
+
+    /*    //Use this only if everything not in the queue is NULL
+    for (size_t i = 0; i < q->capacity; i++){
+        if (q->array[i] != NULL)
+            q->operator_delete(q->array[i]);
     }
     */
     free(q->array);
