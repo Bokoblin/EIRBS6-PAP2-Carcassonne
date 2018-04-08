@@ -16,6 +16,12 @@ file(GLOB TEST_BOARD_SOURCE_FILES
         "test_board.c"
         "../src/common/board.h"
         "../src/common/board.c"
+        "../src/common/utils.h"
+        "../src/common/utils.c"
+        "../src/common/card.h"
+        "../src/common/card.c"
+        "../src/common/stack.h"
+        "../src/common/stack.c"
         "../src/common/common_interface.h"
         )
 
@@ -24,6 +30,10 @@ file(GLOB TEST_CARD_SOURCE_FILES
         "test_card.c"
         "../src/common/card.h"
         "../src/common/card.c"
+        "../src/common/utils.h"
+        "../src/common/utils.c"
+        "../src/common/stack.h"
+        "../src/common/stack.c"
         "../src/common/common_interface.h"
         )
 

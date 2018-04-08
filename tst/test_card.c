@@ -2,6 +2,7 @@
 #include "test_utils.h"
 #include "../src/common/common_interface.h"
 #include "../src/common/card.h"
+#include "../src/common/stack.h"
 
 void* operator_copy(void* given_card)
 {
