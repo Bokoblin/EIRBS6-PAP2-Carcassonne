@@ -1,10 +1,8 @@
 #ifndef CLIENTS_CONTAINER_H
 #define CLIENTS_CONTAINER_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "../common/utils.h"
 #include "../common/common_interface.h"
+#include "../common/utils.h"
 
 struct client
 {

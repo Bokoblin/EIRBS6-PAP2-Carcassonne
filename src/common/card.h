@@ -5,6 +5,7 @@
 #include "stack.h"
 #include "area_type.h"
 
+#define DIRECTION_NUMBER 4
 #define MAX_ZONES (LAST_POS-1)
 #define DEFAULT_ORIENTATION NORTH_TO_NORTH
 
@@ -42,7 +43,7 @@ enum orientation
 struct card
 {
   struct card_type type;
-  struct card * neighbors[4]; // Indexed by enum direction
+  struct card * neighbors[DIRECTION_NUMBER]; // Indexed by enum direction
   enum orientation orientation; 
 };
 
@@ -61,7 +62,7 @@ struct card* card__empty(struct card_type card_type);
 
 /**
  * @brief Release memory allocated to the card structure
- * @param game the gameboard
+ * @param card the card to free
  */
 void card__free(struct card *card);
 

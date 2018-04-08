@@ -96,19 +96,15 @@ int test_card__are_matching_direction_success_case()
             {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
 
     struct card *c1 = card__empty(ct1);
-
     struct card *c2 = card__empty(ct2);
 
-    int a = card__are_matching_direction(c1, c2, EAST);
-
-    if (a == 1) {
+    if (card__are_matching_direction(c1, c2, EAST)) {
         card__free(c1);
         card__free(c2);
         return SUCCESS;
     }
 
     card__free(c1);
-
     card__free(c2);
 
     return !SUCCESS;
@@ -125,19 +121,15 @@ int test_card__are_matching_direction_failure_case()
             {FIELD, FIELD, ROAD, FIELD, ROAD, FIELD, CITY, CITY, CITY, CITY, CITY, CITY, FIELD}};
 
     struct card *c1 = card__empty(ct1);
-
     struct card *c2 = card__empty(ct2);
 
-    int a = card__are_matching_direction(c1, c2, EAST);
-
-    if (a == 0) {
+    if (!card__are_matching_direction(c1, c2, EAST)) {
         card__free(c1);
         card__free(c2);
         return SUCCESS;
     }
 
     card__free(c1);
-
     card__free(c2);
 
     return !SUCCESS;
@@ -154,7 +146,6 @@ int test_card__link_at_direction()
             {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
 
     struct card *c1 = card__empty(ct1);
-
     struct card *c2 = card__empty(ct2);
 
     card__link_at_direction(c1, c2, EAST);
@@ -167,6 +158,7 @@ int test_card__link_at_direction()
 
     card__free(c1);
     card__free(c2);
+
     return !SUCCESS;
 }
 

@@ -40,7 +40,8 @@ help:
 		'\t' make memory		'\n' \
 		'\t' make install		'\n' \
 		'\t' make clean			'\n' \
-		'\t' make run
+		'\t' make run			'\n' \
+		'\t' make docs
 
 
 #######################################################
@@ -167,6 +168,15 @@ clean:
 run:
 	@echo Running program...
 	./install/server ./install/*.so
+
+
+#######################################################
+###				MAKE DOCUMENTATION
+#######################################################
+
+.PHONY: docs
+docs:
+	doxygen Doxyfile
 
 
 #######################################################
