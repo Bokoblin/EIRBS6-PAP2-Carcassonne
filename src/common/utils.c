@@ -37,3 +37,14 @@ void exit_on_error(char *message)
     fputs(". Now exiting...\n", stderr);
     exit(EXIT_FAILURE);
 }
+
+unsigned int positive_modulo(int a, int b)
+{
+    if (b <= 0)
+        return 0;
+
+    while (a < 0)
+        a += b;
+
+    return (unsigned int) (a%b);
+}

@@ -30,4 +30,13 @@ void assert_no_dlerror();
  */
 void exit_on_error(char* message);
 
+
+/**
+ * @bried Function calculating a positive modulo between two values
+ * @param a a value
+ * @param b a value
+ * @return a modulo
+ */
+unsigned int positive_modulo(int a, int b);
+
 #endif

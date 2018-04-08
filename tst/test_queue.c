@@ -156,7 +156,7 @@ int test_queue__first()
 
     struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
 
-    if (!queue__is_empty(q) || queue__first(q) != NULL) {
+    if (!queue__is_empty(q) || queue__front(q) != NULL) {
         queue__free(q);
         return !SUCCESS;
     }
@@ -164,7 +164,7 @@ int test_queue__first()
     enum card_id card = CARD_CITY_THREE;
     queue__enqueue(q, &card);
 
-    enum card_id *first = queue__first(q);
+    enum card_id *first = queue__front(q);
 
     if (queue__is_empty(q) ||  *first != CARD_CITY_THREE) {
         free(first);
@@ -204,9 +204,9 @@ int test_queue__dequeue_on_non_empty_queue()
     enum card_id c2 = CARD_MONASTERY_ALONE;
 
     queue__enqueue(q, &c1);
-    queue__enqueue(q, &c2); //FIXME: apparent memory leak
+    queue__enqueue(q, &c2);
 
-    enum card_id *dequeued_c1 = queue__dequeue(q);
+    enum card_id *dequeued_c1 = queue__dequeue(q); //FIXME: apparent memory error
     enum card_id *dequeued_c2 = queue__dequeue(q);
 
     if (!queue__is_empty(q)

@@ -1,6 +1,8 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
+#include <stddef.h>
+
 struct queue;
 
 /**
@@ -36,25 +38,27 @@ int queue__enqueue(struct queue *q, void* element);
 
 
 /**
- * @brief Retrieve the element on the top of the queue without removing it
+ * @brief Retrieve a copy of the front element
+ * @details The element must be manually freed by user afterward
  * @note Complexity: O(1)
  * @param q the queue
- * @return an enumeration representing the element on top
+ * @return an enumeration representing the element on front
  */
-void* queue__first(struct queue *q);
+void* queue__front(struct queue *q);
 
 
 /**
- * @brief Retrieve the element on the end of the queue without removing it
+ * @brief Retrieve a copy of the back element
  * @note Complexity: O(1)
  * @param q the queue
- * @return an enumeration representing the element on the end
+ * @return an enumeration representing the element on back
  */
-void* queue__last(struct queue *q);
+void* queue__back(struct queue *q);
 
 
 /**
- * @brief Pop an element out of the queue
+ * @brief Pop a copy of the front element out of the queue
+ * @details The element must be manually freed by user afterward
  * @note Complexity: O(1)
  * @param q the queue
  * @return an enumeration representing the popped element
@@ -68,7 +72,7 @@ void* queue__dequeue(struct queue *q);
  * @param q the queue
  * @return an integer corresponding to the number of elements in the queue
  */
-unsigned int queue__length(struct queue *q);
+size_t queue__length(struct queue *q);
 
 
 /**

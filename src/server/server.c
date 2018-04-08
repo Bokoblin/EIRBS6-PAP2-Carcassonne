@@ -120,8 +120,9 @@ void register_clients(int argc, const char **argv, const struct client_container
 struct client* compute_next_player(const struct client_container *players)
 {
     assert(players->clients_array != NULL);
-    //TODO (placeholder for now)
-    return players->clients_array[0];
+
+    unsigned int next_p = rand() % players->current_size; //TODO (placeholder for now)
+    return players->clients_array[next_p];
 }
 
 void game_main(const struct client_container *players)
