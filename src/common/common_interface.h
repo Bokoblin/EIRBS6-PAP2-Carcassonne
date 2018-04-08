@@ -11,7 +11,7 @@
 /**
  * @brief Positions
  */
-struct position { unsigned int x, y; };
+struct position { int x,y; };
 
 
 /**
@@ -183,6 +183,8 @@ void initialize(unsigned int id, unsigned int n_players);
  *   move issued by the player.
  * - n_moves: number of moves in previous_moves
  * PRECOND:
+ * - card is playable in the current state of the game, i.e there is at least
+ *   one location on the board where card can be played
  * - previous_moves is an array of at least n_moves elements.
  * - previous_moves is an ordered list of previous moves starting from the last
  *   move of the player. Every move invalidated by the server has action
