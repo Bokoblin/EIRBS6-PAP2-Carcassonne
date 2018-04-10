@@ -14,8 +14,8 @@ struct queue
 {
     void **array;
     size_t capacity;
-    size_t top;
-    size_t size;
+    size_t front;
+    size_t back;
     void* (*operator_copy) (void*);
     void (*operator_delete)(void *);
     void (*operator_debug)(void *);
@@ -40,8 +40,8 @@ struct queue *queue__empty(void* copy_op, void* delete_op, void* debug_op)
                 q->array[i] = NULL;
 
         q->capacity = DEFAULT_QUEUE_CAPACITY;
-        q->top = 0;
-        q->size = 0;
+        q->front = 0;
+        q->back = 0;
         q->operator_copy = copy_op;
         q->operator_delete = delete_op;
         q->operator_debug = debug_op;
@@ -52,119 +52,131 @@ struct queue *queue__empty(void* copy_op, void* delete_op, void* debug_op)
 
 int queue__is_empty(struct queue *q)
 {
-    if (q == NULL || q->array == NULL)
+    if (q == NULL)
         return 1;
 
-    return q->size == 0;
+    return queue__length(q) == 0;
 }
 
 int queue__enqueue(struct queue *q, void* element)
 {
-    if (q == NULL || q->array == NULL || element == NULL)
+    if (q == NULL || element == NULL)
         return -1;
 
     // Adjust capacity if necessary
-    if (q->size == q->capacity) {
-        q->capacity = q->capacity * 2;
+    if (queue__length(q) == q->capacity) {
+        size_t prev_capacity = q->capacity;
+        q->capacity *= 2;
         q->array = realloc(q->array, sizeof(void *) * q->capacity);
         if (q->array == NULL)
             exit_on_error("Realloc failure on: void**");
+        else
+            for (size_t i = prev_capacity; i < q->capacity; i++)
+                q->array[i] = NULL;
 
-        // Copy of the queue in the new allocated memory to avoid modulo issue
-        size_t new_top = q->capacity / 2;
-        size_t i = q->top;
-        size_t j = new_top;
-        while (positive_modulo((int) (q->top + q->size), (int) new_top) != i) {
-            q->array[j] = q->array[i];
-            i = positive_modulo(i + 1, (int) new_top);
-            j++;
+        q->back = prev_capacity;
+        for (size_t i = 0; i < q->front; i++) {
+            q->array[q->back] = q->array[i];
+            q->array[0] = NULL;
+            q->back++;
         }
-        q->top = new_top;
     }
 
-    q->array[positive_modulo((int) (q->size + q->top), (int) q->capacity)] = q->operator_copy(element);
-    q->size++;
+    q->array[q->back] = q->operator_copy(element);
+    q->back = (q->back + 1) % q->capacity;
 
     return 0;
 }
-void* queue__dequeue(struct queue *q)
+
+int queue__dequeue(struct queue *q)
 {
-    if (q == NULL || q->array == NULL || queue__is_empty(q))
-        return NULL;
+    if (q == NULL || queue__is_empty(q))
+        return -1;
 
-    //TODO : free some space if the queue size > queue capacity
+    q->operator_delete(q->array[q->front]);
+    q->array[q->front] = NULL;
+    q->front = (q->front + 1) %q->capacity;
 
-    void *dequeued_e = q->operator_copy(q->array[positive_modulo((int) q->top, (int) q->capacity)]);
-    q->operator_delete(q->array[positive_modulo((int) q->top, (int) q->capacity)]);
-    q->array[positive_modulo((int) q->top, (int) q->capacity)] = NULL;
+    if (queue__length(q) < q->capacity / 2 && q->capacity > 2) {
+        size_t new_pos = 0;
+        for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+            q->array[new_pos] = q->array[i];
+            q->array[i] = NULL;
+            new_pos++;
+        }
+        q->front = 0;
+        q->back = positive_modulo((int) (new_pos), (int) q->capacity);
 
-    q->top = positive_modulo((int) (q->top + 1), (int) q->capacity);
-    q->size--;
+        q->array = realloc(q->array, sizeof(void *) * q->capacity / 2);
+        if (q->array == NULL)
+            exit_on_error("Realloc failure on: void**");
+        else
+            q->capacity /= 2;
+    }
 
-    return dequeued_e;
+
+    return 0;
 }
 
 void* queue__front(struct queue *q)
 {
-    if (q == NULL || q->array == NULL || queue__is_empty(q))
+    if (q == NULL || queue__is_empty(q))
         return NULL;
 
-    return q->operator_copy(q->array[q->top]);
+    return q->operator_copy(q->array[q->front]);
 }
 
 void* queue__back(struct queue *q)
 {
-    if (q == NULL || q->array == NULL || queue__is_empty(q))
+    if (q == NULL || queue__is_empty(q))
         return NULL;
 
-    return q->operator_copy(q->array[positive_modulo((int) (q->size + q->top), (int) q->capacity)]);
+    if (q->back == 0)
+        return q->operator_copy(q->array[q->capacity - 1]);
+    else
+        return q->operator_copy(q->array[q->back-1]);
 }
 
 size_t queue__length(struct queue *q)
 {
-    if (q == NULL || q->array == NULL)
+    if (q == NULL)
         return 0;
 
-    return q->size;
+    if (q->back > q->front || q->array[q->front] == NULL)
+        return q->back - q->front;
+    else
+        return q->back + q->capacity - q->front;
 }
 
 void queue__free(struct queue *q)
 {
-    if (q == NULL || q->array == NULL)
+    if (q == NULL)
         return;
 
-        //FIXME : Multiple frees
-    /*
-    size_t i = q->top;
-    while (i != positive_modulo((int) (q->top + q->size), (int) q->capacity)) {
+    for (size_t i = 0; i < q->capacity; i++)
         if (q->array[i] != NULL)
             q->operator_delete(q->array[i]);
-        i = positive_modulo((int) i + 1, (int) q->capacity);
-    }
-    */
 
-    /*    //Use this only if everything not in the queue is NULL
-    for (size_t i = 0; i < q->capacity; i++){
-        if (q->array[i] != NULL)
-            q->operator_delete(q->array[i]);
-    }
-    */
     free(q->array);
     free(q);
 }
 
 void queue__debug(struct queue *q)
 {
-    if (q == NULL || q->array == NULL)
+    if (q == NULL)
         return;
 
-    if (queue__is_empty(q) != 0)
-        printf("Queue is empty.\n");
-    else {
-        size_t i = q->top;
-        while (i != positive_modulo((int) (q->top + q->size), (int) q->capacity)) {
-            q->operator_debug(q->array[i]);
-            i = positive_modulo(i + 1, (int) q->capacity);
-        }
+    printf("=== QUEUE DETAILS ===\n");
+    printf("Queue capacity: %zu\n", q->capacity);
+    printf("Queue size: %zu\n", queue__length(q));
+
+    printf("Queue content in queue order...\t");
+    for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+        q->operator_debug(q->array[i]);
     }
+    printf("\nQueue content in array order...\t");
+    for (size_t i = 0; i < q->capacity; i++) {
+        q->operator_debug(q->array[i]);
+    }
+    printf("\n");
 }

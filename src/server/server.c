@@ -140,6 +140,7 @@ void game_main(struct player_container *players)
                 {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
         struct card *c = card__empty(ct1);
         stack__push(drawing_stack, c);
+        card__free(c);
     }
 
     //=== Moves queue initialization
@@ -183,11 +184,13 @@ struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_mov
     if (moves_array == NULL)
         exit_on_error("Malloc failure on struct move*");
 
-    if (!queue__is_empty(moves)) {
+    else if (!queue__is_empty(moves)) {
         for (unsigned int i = 0; i < nb_moves; i++) {
-            struct move *m = (struct move*) queue__dequeue(moves);
+            struct move *m = queue__front(moves);
+            queue__dequeue(moves);
             moves_array[i] = *m;
             queue__enqueue(moves, m);
+            free(m);
         }
     }
 
