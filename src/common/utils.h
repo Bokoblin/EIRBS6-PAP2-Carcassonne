@@ -39,4 +39,13 @@ void exit_on_error(char* message);
  */
 size_t positive_modulo(int a, int b);
 
+
+/**
+ * Execute dlsym and check success state
+ * @param library_ptr the target pointer
+ * @param function_name the function name
+ * @return a pointer on the loaded lib
+ */
+void* safe_dlsym(void* library_ptr, char* function_name);
+
 #endif

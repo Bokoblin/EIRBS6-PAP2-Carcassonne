@@ -46,3 +46,14 @@ size_t positive_modulo(int a, int b)
         return (size_t) (a%b);
     return (size_t) ((-a)%b);
 }
+
+void* safe_dlsym(void* library_ptr, char* function_name)
+{
+    void *function_ptr = dlsym(library_ptr, function_name);
+    char *error;
+    if ((error = dlerror()) != NULL) {
+        dlclose(library_ptr);
+        exit_on_error(error);
+    }
+    return function_ptr;
+}

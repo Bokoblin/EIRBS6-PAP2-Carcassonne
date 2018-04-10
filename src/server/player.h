@@ -6,6 +6,7 @@
 
 struct player
 {
+    unsigned int id;
     void* lib_ptr;
     const char * (*get_player_name)(void);
     const char * (*initialize)(unsigned int, unsigned int);
@@ -17,12 +18,13 @@ struct player
  * @brief Inits the player
  * @return a newly allocated struct player pointer
  */
-struct player* init_player();
+struct player *player__init(unsigned int id, void *lib_ptr, void *get_name_ptr, void *init_ptr,
+                            void *play_ptr, void *final_ptr);
 
 /**
  * @brief Release memory of a player
  * @param p the player
  */
-void free_player(struct player *p);
+void player__free(struct player *p);
 
 #endif

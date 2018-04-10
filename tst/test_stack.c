@@ -8,7 +8,7 @@
 ///     USER FUNCTIONS IMPLEMENTATION
 ////////////////////////////////////////////////////////////////////
 
-void* card_stack_copy_operator(void *given_card)
+void* operator_copy(void *given_card)
 {
     enum card_id *_given_card = given_card;
     enum card_id *new_card = malloc(sizeof(enum card_id));
@@ -36,7 +36,7 @@ int test_stack__empty()
 {
     printf("%s... ", __func__);
 
-    struct stack *p = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *p = stack__empty(&operator_copy, &operator_delete, &operator_debug);
 
     if (p == NULL) {
         stack__free(p);
@@ -52,7 +52,7 @@ int test_stack__is_empty_on_empty_stack()
 {
     printf("%s... ", __func__);
 
-    struct stack *p = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *p = stack__empty(&operator_copy, &operator_delete, &operator_debug);
 
     if (!stack__is_empty(p)) {
         stack__free(p);
@@ -68,7 +68,7 @@ int test_stack__is_empty_on_non_empty_stack()
 {
     printf("%s... ", __func__);
 
-    struct stack *p = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *p = stack__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card = CARD_MONASTERY_ALONE;
     stack__push(p, &card);
 
@@ -86,7 +86,7 @@ int test_stack__push_on_non_empty_stack()
 {
     printf("%s... ", __func__);
 
-    struct stack *p = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *p = stack__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card1 = CARD_MONASTERY_ALONE;
     enum card_id card2 = CARD_CITY_ALL_SIDES;
     enum card_id card3 = CARD_ROAD_STRAIGHT_CITY;
@@ -109,7 +109,7 @@ int test_stack_NULL()
 {
     printf("%s... ", __func__);
 
-    struct stack *p = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *p = stack__empty(&operator_copy, &operator_delete, &operator_debug);
     stack__push(p, NULL);
 
     if (!stack__is_empty(p)) {
@@ -125,7 +125,7 @@ int test_stack__push_on_multiple_elements()
 {
     printf("%s... ", __func__);
 
-    struct stack *s = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card = CARD_MONASTERY_ALONE;
 
     for (unsigned int i = 0; i < 500; i++) {
@@ -146,7 +146,7 @@ int test_stack__peek()
 {
     printf("%s... ", __func__);
 
-    struct stack *s = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
 
     if (!stack__is_empty(s) || stack__peek(s) != NULL) {
         stack__free(s);
@@ -172,7 +172,7 @@ int test_stack__pop_on_empty_stack()
 {
     printf("%s... ", __func__);
 
-    struct stack *s = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id *unstacked = stack__pop(s);
 
     if (NULL != unstacked) {
@@ -188,7 +188,7 @@ int test_stack__pop_on_non_empty_stack()
 {
     printf("%s... ", __func__);
 
-    struct stack *s = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card1 = CARD_MONASTERY_ROAD;
     enum card_id card2 = CARD_MONASTERY_ALONE;
     stack__push(s, &card1);
@@ -217,7 +217,7 @@ int test_stack_length()
 {
     printf("%s... ", __func__);
 
-    struct stack *s = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card1 = CARD_ROAD_TURN_RIGHT_CITY;
     enum card_id card2 = CARD_ROAD_TURN_LEFT_CITY;
     stack__push(s, &card1);
@@ -243,7 +243,7 @@ int test_stack_debug()
 {
     printf("%s (expected 5 6 7 8 5)... ", __func__);
 
-    struct stack *s = stack__empty(&card_stack_copy_operator, &operator_delete, &operator_debug);
+    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card1 = CARD_CITY_TUNNEL_SHLD;
     enum card_id card2 = CARD_CITY_TUNNEL;
     enum card_id card3 = CARD_PLAIN_TUNNEL;

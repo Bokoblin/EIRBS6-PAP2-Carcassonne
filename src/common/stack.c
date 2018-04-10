@@ -25,9 +25,7 @@ struct stack
 ///     STACK FUNCTIONS IMPLEMENTATION
 ////////////////////////////////////////////////////////////////////
 
-struct stack *stack__empty(void* (*copy) (void*),
-                           void (*my_delete) (void*),
-                           void (*debug) (void*))
+struct stack *stack__empty(void* copy_op, void* delete_op, void* debug_op)
 {
     struct stack *s = malloc(sizeof(struct stack));
     if (s == NULL) {
@@ -36,9 +34,9 @@ struct stack *stack__empty(void* (*copy) (void*),
         s->capacity = DEFAULT_STACK_CAPACITY;
         s->head = 0;
         s->array = malloc(sizeof(void*) * (s->capacity));
-        s->operator_copy = copy;
-        s->operator_delete = my_delete;
-        s->operator_debug = debug;
+        s->operator_copy = copy_op;
+        s->operator_delete = delete_op;
+        s->operator_debug = debug_op;
     }
     return s;
 }
@@ -98,10 +96,11 @@ void* stack__pop(struct stack *s)
 }
 
 
-unsigned int stack__length(struct stack *s)
+size_t stack__length(struct stack *s)
 {
     if (s == NULL)
-        return -1;
+        return 0;
+
     return s->head;
 }
 

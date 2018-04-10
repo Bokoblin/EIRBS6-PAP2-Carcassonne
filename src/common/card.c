@@ -67,6 +67,7 @@ int card__place(struct card *new_card, struct card **neighbor_list)
         exit_on_error("NULL value on card*");
 
     //TODO : card__place impl
+    (void) neighbor_list;
 
     return -1;
 }

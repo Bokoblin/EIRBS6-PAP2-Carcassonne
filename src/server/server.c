@@ -1,8 +1,8 @@
 #include <dlfcn.h>
 #include <string.h>
 #include <assert.h>
-#include "player_container.h"
-#include "../common/common_interface.h"
+#include "../server/function_pointers.h"
+#include "../common/utils.h"
 #include "../common/queue.h"
 #include "../common/stack.h"
 #include "../common/card.h"
@@ -14,68 +14,14 @@
 ///     FUNCTIONS DECLARATION
 ////////////////////////////////////////////////////////////////////
 
-void register_players(int argc, const char **argv, const struct player_container *players, unsigned int nb_players);
-struct player* compute_next_player(struct player_container *players);
+void register_players(int argc, const char **argv, struct queue *players, unsigned int nb_players);
+int is_valid_play(struct player *p, struct move *m);
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves);
-void free_resources(const struct player_container *players);
-void game_main(struct player_container *players);
-
-
-////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR CARD STACK
-////////////////////////////////////////////////////////////////////
-
-void* card_stack_copy_operator(void *given_card)
-{
-    enum card_id *_given_card = given_card;
-    enum card_id *new_card = malloc(sizeof(enum card_id));
-    *new_card = *_given_card;
-    return new_card;
-}
-
-void card_stack_delete_operator(void* given_card)
-{
-    free(given_card);
-}
-
-void card_stack_debug_operator(void* given_card)
-{
-    enum card_id *_given_card = given_card;
-    printf("%d", *_given_card);
-}
-
-
-////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR MOVES QUEUE
-////////////////////////////////////////////////////////////////////
-
-void* move_queue_copy_operator(struct move* m)
-{
-    struct move *new_move = malloc(sizeof(struct move));
-    new_move->card = m->card;
-    new_move->check = m->check;
-    new_move->dir = m->dir;
-    new_move->onto = m->onto;
-    new_move->place = m->place;
-    new_move->player = m->player;
-
-    return new_move;
-}
-
-void move_queue_delete_operator(struct move* m)
-{
-    free(m);
-}
-
-void move_queue_debug_operator(struct move* m)
-{
-    printf("=== Display move ===\n");
-    printf("\tplayer id: %d\n", m->player);
-    printf("\tcard id: %d\n", m->card);
-    printf("\tposition: {%d, %d}\n", m->onto.x, m->onto.y);
-    printf("\tdirection: %d\n", m->dir);
-    printf("\tplace: %d\n", m->place);
-}
+void free_resources(struct queue *players_queue);
+void game_main(struct queue *players, unsigned int nb_player);
+void init_next_player(struct queue *players_queue, unsigned int nb_player);
+void finalize_next_player(struct queue *players_queue);
+void fill_card_stack(struct stack *drawing_stack);
 
 
 ////////////////////////////////////////////////////////////////////
@@ -89,7 +35,7 @@ void move_queue_debug_operator(struct move* m)
  * @param players the players container
  * @param nb_players the number of players to register
  */
-void register_players(int argc, const char **argv, const struct player_container *players, unsigned int nb_players)
+void register_players(int argc, const char **argv, struct queue *players, unsigned int nb_players)
 {
     unsigned int nb_players_registered = 0;
     int args_index = 0;
@@ -97,42 +43,38 @@ void register_players(int argc, const char **argv, const struct player_container
     while (nb_players_registered < nb_players && args_index < argc) {
         const char* current_arg = argv[args_index];
         if (strstr(current_arg, ".so") != NULL) {
-            printf("Registering: %s\n", current_arg);
-            players->player_array[nb_players_registered]->lib_ptr = dlopen(current_arg, RTLD_NOW);
-            assert_no_dlerror();
-            players->player_array[nb_players_registered]->get_player_name
-                    = dlsym(players->player_array[nb_players_registered]->lib_ptr, "get_player_name");
-            assert_no_dlerror();
-            players->player_array[nb_players_registered]->initialize
-                    = dlsym(players->player_array[nb_players_registered]->lib_ptr, "initialize");
-            assert_no_dlerror();
-            players->player_array[nb_players_registered]->play
-                    = dlsym(players->player_array[nb_players_registered]->lib_ptr, "play");
-            assert_no_dlerror();
-            players->player_array[nb_players_registered]->finalize
-                    = dlsym(players->player_array[nb_players_registered]->lib_ptr, "finalize");
+            printf("Registering: %s ...", current_arg);
+
+            void* player_lib_ptr = dlopen(current_arg, RTLD_NOW);
             assert_no_dlerror();
 
+            void* player_get_name_ptr = safe_dlsym(player_lib_ptr, "get_player_name");
+            void* player_init_ptr = safe_dlsym(player_lib_ptr, "initialize");
+            void* player_play_ptr = safe_dlsym(player_lib_ptr, "play");
+            void* player_finalize_ptr = safe_dlsym(player_lib_ptr, "finalize");
+
+            struct player* p = player__init(nb_players_registered, player_lib_ptr, player_get_name_ptr,
+                                            player_init_ptr, player_play_ptr, player_finalize_ptr);
+            queue__enqueue(players, p);
             nb_players_registered++;
+            printf("\tPLAYER#%d: %s was registered\n", p->id, p->get_player_name());
+            player__free(p);
         }
         args_index++;
     }
 }
 
-struct player* compute_next_player(struct player_container *players)
+int is_valid_play(struct player *p, struct move *m)
 {
-    assert(players->player_array != NULL);
-    players->current_player = (players->current_player + 1) % players->current_size;
-    return players->player_array[players->current_player];
+    //TODO : verify that player hasn't cheated
+    (void) p;
+    (void) m;
+
+    return 1;
 }
 
-void game_main(struct player_container *players)
+void fill_card_stack(struct stack *drawing_stack)
 {
-    //=== Card stack initialization
-
-    struct stack* drawing_stack =
-            stack__empty(card_stack_copy_operator, card_stack_delete_operator, card_stack_debug_operator);
-
     for (unsigned int i = 0; i < CARD_NUMBER; i++) {
         //FIXME: Init with accurate card repartition following rules
         //+ shuffle
@@ -142,37 +84,6 @@ void game_main(struct player_container *players)
         stack__push(drawing_stack, c);
         card__free(c);
     }
-
-    //=== Moves queue initialization
-
-    struct queue* moves = queue__empty(move_queue_copy_operator, move_queue_delete_operator, move_queue_debug_operator);
-
-    //=== Player initialization
-
-    for (unsigned int i = 0; i < players->current_size; i++) {
-        players->player_array[i]->initialize(i, players->current_size);
-    }
-
-    //=== Game loop
-
-    while (!stack__is_empty(drawing_stack) && players->current_size > 0) {
-        enum card_id c = card__draw(drawing_stack);
-        struct player *p = compute_next_player(players);
-        struct move *moves_array = build_previous_moves_array(moves, players->current_size);
-        queue__dequeue(moves);
-        struct move m = p->play(c, moves_array, players->current_size);
-        queue__enqueue(moves, &m);
-        free(moves_array);
-    }
-
-    //=== Players finalization
-
-    for (size_t i = 0; i < players->current_size; i++) {
-        players->player_array[i]->finalize();
-    }
-
-    stack__free(drawing_stack);
-    queue__free(moves);
 }
 
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves)
@@ -197,14 +108,84 @@ struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_mov
     return moves_array;
 }
 
-void free_resources(const struct player_container *players)
+void init_next_player(struct queue *players_queue, unsigned int nb_player)
 {
-    for (size_t i = 0; i < players->current_size; i++) {
-        if (players->player_array[i]->lib_ptr != NULL) {
-            dlclose(players->player_array[i]->lib_ptr);
-            assert_no_dlerror();
+    struct player *p = queue__front(players_queue);
+    queue__dequeue(players_queue);
+    p->initialize(p->id, nb_player);
+    queue__enqueue(players_queue, p);
+    player__free(p);
+}
+
+void finalize_next_player(struct queue *players_queue)
+{
+    struct player *p = queue__front(players_queue);
+    queue__dequeue(players_queue);
+    p->finalize();
+    queue__enqueue(players_queue, p);
+    player__free(p);
+}
+
+void game_main(struct queue *players, unsigned int nb_player)
+{
+    //=== Card stack initialization
+
+    struct stack* drawing_stack = stack__empty(card_stack_copy_op, card_stack_delete_op, card_stack_debug_op);
+    fill_card_stack(drawing_stack);
+
+    //=== Moves queue initialization
+
+    struct queue* moves = queue__empty(move_queue_copy_op, move_queue_delete_op, move_queue_debug_op);
+
+    //=== Player initialization
+
+    for (unsigned int i = 0; i < nb_player; i++)
+        init_next_player(players, nb_player);
+
+    //=== Game loop
+
+    while (!stack__is_empty(drawing_stack) && nb_player > 0) {
+        struct move *moves_array = build_previous_moves_array(moves, nb_player);
+        enum card_id c = card__draw(drawing_stack); //TODO: verify card (pop again until valid)
+        struct player *p = queue__front(players);
+        struct move m = p->play(c, moves_array, nb_player);
+
+        queue__dequeue(players);
+        queue__dequeue(moves);
+
+        if (is_valid_play(p, &m)) {
+            queue__enqueue(players, p);
+            queue__enqueue(moves, &m);
+        } else {
+            nb_player--;
         }
+
+        player__free(p);
+        free(moves_array);
     }
+
+    //=== Players finalization
+
+    for (size_t i = 0; i < nb_player; i++)
+        finalize_next_player(players);
+
+    //=== Stack && Queue memory release
+
+    stack__free(drawing_stack);
+    queue__free(moves);
+}
+
+void free_resources(struct queue *players_queue)
+{
+    while(!queue__is_empty(players_queue)) {
+        struct player *p = queue__front(players_queue);
+        queue__dequeue(players_queue);
+        dlclose(p->lib_ptr);
+        assert_no_dlerror();
+        player__free(p);
+    }
+
+    queue__free(players_queue);
 }
 
 int main(int argc, char** argv)
@@ -213,37 +194,18 @@ int main(int argc, char** argv)
     unsigned int clients_count = DEFAULT_CLIENT_COUNT;
     parse_opts(argc, argv, &is_graphic, &clients_count);
 
-
     //=== Register players
 
-    struct player_container *players = init_player_container(clients_count);
-    register_players(argc, (const char **) argv, players, clients_count);
-
-    //=== Check players initialization
-
-    for (size_t i = 0; i < players->current_size; i++) {
-        assert(players->player_array[i]->initialize != NULL);
-        assert(players->player_array[i]->play != NULL);
-        assert(players->player_array[i]->get_player_name != NULL);
-        assert(players->player_array[i]->finalize != NULL);
-    }
-
-    //=== Display players name
-
-    if (players->current_size > 0)
-        printf("Display all players:\n");
-    for (size_t i = 0; i < players->current_size; i++) {
-        printf("\t- PLAYER#%d: %s\n", (int) (i+1), players->player_array[i]->get_player_name());
-    }
+    struct queue *players_queue = queue__empty(player_queue_copy_op, player_queue_delete_op, player_queue_debug_op);
+    register_players(argc, (const char **) argv, players_queue, clients_count);
 
     //=== Start the game
 
-    game_main(players);
+    game_main(players_queue, clients_count);
 
     //=== Free used resources & memory
 
-    free_resources(players);
-    free_player_container(players);
+    free_resources(players_queue);
 
     return EXIT_SUCCESS;
 }

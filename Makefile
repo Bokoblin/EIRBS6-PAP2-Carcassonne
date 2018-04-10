@@ -195,13 +195,10 @@ card.o: $(SRC_DIR)/common/card.c $(SRC_DIR)/common/card.h
 player.o: $(SRC_DIR)/server/player.c $(SRC_DIR)/server/player.h
 	${CC} ${CFLAGS} $(SRC_DIR)/server/player.c -c
 
-player_container.o: $(SRC_DIR)/server/player_container.c $(SRC_DIR)/server/player_container.h
-	${CC} ${CFLAGS} $(SRC_DIR)/server/player_container.c -c
-
 moves.o: $(SRC_DIR)/client/moves.c $(SRC_DIR)/client/moves.h
 	${CC} ${CFLAGS} $(SRC_DIR)/client/moves.c -c
 
-server.o: $(SRC_DIR)/server/server.c
+server.o: $(SRC_DIR)/server/server.c $(SRC_DIR)/server/function_pointer.h
 	${CC} ${CFLAGS} $(SRC_DIR)/server/server.c -c
 
 stack.o: $(SRC_DIR)/common/stack.c $(SRC_DIR)/common/stack.h

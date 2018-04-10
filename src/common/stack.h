@@ -1,6 +1,23 @@
 #ifndef STACK_H
 #define STACK_H
 
+#include <stddef.h>
+
+/**
+ * Implementation of a FILO structure
+ *
+ * Notes :
+ * 1) You have to correctly implement copy, delete and debug operators
+ * by handling NULL value, otherwise you can end up with an undefined behaviour.
+ * The prototypes of these functions are :
+ * void* (*copy_op)(void*)
+ * void* (*delete_op)(void*)
+ * void* (*debug_op)(void*)
+ *
+ * 2) stack_peek() and stack_pop() return a dynamically allocated pointer to the head element of
+ * the stack in order to make it survive independently of the stack life cycle.
+ * The user has to manually free the return pointer after usage.
+ */
 struct stack;
 
 /**
@@ -8,9 +25,7 @@ struct stack;
  * @note Complexity: O(1)
  * @return a newly created stack
  */
-struct stack *stack__empty(void* (*operator_copy) (void*),
-        void (*operator_delete) (void*),
-        void (*operator_debug) (void*));
+struct stack *stack__empty(void* copy_op, void* delete_op, void* debug_op);
 
 
 /**
@@ -58,7 +73,7 @@ void* stack__pop(struct stack *s);
  * @param s the stack
  * @return an integer corresponding to the number of elements in the stack
  */
-unsigned int stack__length(struct stack *s);
+size_t stack__length(struct stack *s);
 
 
 /**

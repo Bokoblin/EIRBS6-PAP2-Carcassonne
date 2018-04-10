@@ -114,7 +114,6 @@ int queue__dequeue(struct queue *q)
             q->capacity /= 2;
     }
 
-
     return 0;
 }
 

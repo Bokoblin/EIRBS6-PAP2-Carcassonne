@@ -4,15 +4,19 @@
 #include <stddef.h>
 
 /**
- * Implementation of a FIFO queue
+ * Implementation of a FIFO
  *
  * Notes :
  * 1) You have to correctly implement copy, delete and debug operators
  * by handling NULL value, otherwise you can end up with an undefined behaviour.
+ * The prototypes of these functions are :
+ * void* (*copy_op)(void*)
+ * void* (*delete_op)(void*)
+ * void* (*debug_op)(void*)
  *
  * 2) queue__front() and queue_back() return a dynamically allocated pointer to an element of
  * the queue in order to make it survive independently of the queue life cycle.
- * The user has to manually free the return value pointer after usage.
+ * The user has to manually free the return pointer after usage.
  */
 struct queue;
 

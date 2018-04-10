@@ -8,7 +8,7 @@
 ///     USER FUNCTIONS IMPLEMENTATION
 ////////////////////////////////////////////////////////////////////
 
-void* operator_copy(const enum card_id* p_card_id)
+void* operator_copy(const enum card_id *p_card_id)
 {
     if (p_card_id == NULL)
         return NULL;
@@ -18,7 +18,7 @@ void* operator_copy(const enum card_id* p_card_id)
     return new_card;
 }
 
-void operator_delete(enum card_id* p_card_id)
+void operator_delete(enum card_id *p_card_id)
 {
     free(p_card_id);
 }
@@ -31,7 +31,6 @@ void operator_debug(const enum card_id* p_card_id)
     } else {
         printf("%d ", *p_card_id);
     }
-
 }
 
 
