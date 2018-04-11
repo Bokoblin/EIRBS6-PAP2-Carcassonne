@@ -77,6 +77,14 @@ size_t stack__length(struct stack *s);
 
 
 /**
+ * @brief Randomly mixes the stack's content
+ * @note Complexity: O(n)
+ * @param s the stack
+ * */
+void stack__mix(struct stack *s);
+
+
+/**
  * @brief Free all allocated memory used by the stack
  * @note Complexity: O(n)
  * @param s the stack to free

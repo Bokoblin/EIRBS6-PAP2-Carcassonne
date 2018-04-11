@@ -6,6 +6,11 @@
 
 #define DEFAULT_STACK_CAPACITY 2
 
+
+int my_random(int min, int max){ //min included, max exlcuded
+  return min + (rand() % (max -  min));
+}
+
 ////////////////////////////////////////////////////////////////////
 ///     STACK STRUCTURE
 ////////////////////////////////////////////////////////////////////
@@ -95,7 +100,6 @@ void* stack__pop(struct stack *s)
     return returned;
 }
 
-
 size_t stack__length(struct stack *s)
 {
     if (s == NULL)
@@ -104,6 +108,22 @@ size_t stack__length(struct stack *s)
     return s->head;
 }
 
+void stack__mix(struct stack *s)
+{
+    if (s == NULL || s->array == NULL)
+        return;
+
+    size_t a;
+    size_t b;
+    void* tmp;  
+    for (unsigned int i = 0; i < s->head; i++){
+        a = my_random(0, s->head);
+        b = my_random(0, s->head);
+        tmp = s->array[a];
+        s->array[a] = s->array[b];
+        s->array[b] = tmp;
+    }
+}
 
 void stack__free(struct stack *s)
 {
@@ -117,7 +137,6 @@ void stack__free(struct stack *s)
     free(s->array);
     free(s);
 }
-
 
 void stack__debug(struct stack *s)
 {
