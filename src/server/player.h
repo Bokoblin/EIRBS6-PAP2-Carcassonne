@@ -6,6 +6,8 @@
 
 struct player
 {
+    int score;
+    int nb_meeples;
     unsigned int id;
     void* lib_ptr;
     const char * (*get_player_name)(void);
@@ -18,7 +20,7 @@ struct player
  * @brief Inits the player
  * @return a newly allocated struct player pointer
  */
-struct player *player__init(unsigned int id, void *lib_ptr, void *get_name_ptr, void *init_ptr,
+struct player *player__init(unsigned int id, int score, int nb_meeples,void *lib_ptr, void *get_name_ptr, void *init_ptr,
                             void *play_ptr, void *final_ptr);
 
 /**

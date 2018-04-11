@@ -53,7 +53,7 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
             void* player_play_ptr = safe_dlsym(player_lib_ptr, "play");
             void* player_finalize_ptr = safe_dlsym(player_lib_ptr, "finalize");
 
-            struct player* p = player__init(nb_players_registered, player_lib_ptr, player_get_name_ptr,
+            struct player* p = player__init(nb_players_registered, 0, 8, player_lib_ptr, player_get_name_ptr,
                                             player_init_ptr, player_play_ptr, player_finalize_ptr);
             queue__enqueue(players, p);
             nb_players_registered++;

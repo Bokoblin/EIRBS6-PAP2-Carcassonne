@@ -76,6 +76,8 @@ void* player_queue_copy_op(struct player* p)
 {
     struct player *new_p = malloc(sizeof(struct player));
     new_p->id = p->id;
+    new_p->score = p->score;
+    new_p->nb_meeples = p->nb_meeples;
     new_p->lib_ptr = p->lib_ptr;
     new_p->get_player_name = p->get_player_name;
     new_p->initialize = p->initialize;
