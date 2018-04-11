@@ -1,8 +1,8 @@
 #include <assert.h>
 #include "player.h"
 
-struct player *player__init(unsigned int id, int score, int nb_meeples, void *lib_ptr, void *get_name_ptr,
-                           void *init_ptr, void *play_ptr, void *final_ptr)
+struct player *player__init(unsigned int id, void *lib_ptr, void *get_name_ptr,
+                            void *init_ptr, void *play_ptr, void *final_ptr)
 {
     struct player * p = malloc(sizeof(struct player));
 
@@ -10,8 +10,8 @@ struct player *player__init(unsigned int id, int score, int nb_meeples, void *li
         exit_on_error("Malloc failure on: struct client *");
     } else {
         p->id = id;
-        p->score = score;
-        p->nb_meeples = nb_meeples;
+        p->score = 0;
+        p->nb_meeples = DEFAULT_MEEPLE_NUMBER;
         p->lib_ptr = lib_ptr;
         p->get_player_name = get_name_ptr;
         p->initialize = init_ptr;

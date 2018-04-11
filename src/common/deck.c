@@ -2,29 +2,33 @@
 #include "common_interface.h"
 #include "deck.h"
 
-#define CARDS_NUMBER 72
-
 ////////////////////////////////////////////////////////////////////
 ///     USER FUNCTIONS IMPLEMENTATION FOR ENUM CARD_ID
 ////////////////////////////////////////////////////////////////////
 
-void* operator_copy(void *given_card)
+static void* operator_copy(const enum card_id *p_card_id)
 {
-    enum card_id *_given_card = given_card;
+    if (p_card_id == NULL)
+        return NULL;
+
     enum card_id *new_card = malloc(sizeof(enum card_id));
-    *new_card = *_given_card;
+    *new_card = *p_card_id;
     return new_card;
 }
 
-void operator_delete(void* given_card)
+static void operator_delete(enum card_id *p_card_id)
 {
-    free(given_card);
+    free(p_card_id);
 }
 
-void operator_debug(void* given_card)
+static void operator_debug(const enum card_id *p_card_id)
 {
-    enum card_id *_given_card = given_card;
-    printf("%d ", *_given_card);
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (p_card_id == NULL) {
+        printf("NULL ");
+    } else {
+        printf("%d ", *p_card_id);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -35,6 +39,8 @@ struct stack* init_deck()
 {
     struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
 
+
+    enum card_id card_CARD_ROAD_STRAIGHT_CITY = CARD_ROAD_STRAIGHT_CITY;
     enum card_id card_CARD_CITY_ALL_SIDES = CARD_CITY_ALL_SIDES;
     enum card_id card_CARD_CITY_TUNNEL = CARD_CITY_TUNNEL;
     enum card_id card_CARD_CITY_THREE_SHLD = CARD_CITY_THREE_SHLD;
@@ -65,7 +71,7 @@ struct stack* init_deck()
     stack__push(s, &card_CARD_CITY_THREE_ROAD);
     stack__push(s, &card_CARD_JUNCTION_FOUR);
 
-    for(size_t i = 0; i < 2; i++){
+    for (size_t i = 0; i < 2; i++) {
         stack__push(s, &card_CARD_MONASTERY_ROAD);
         stack__push(s, &card_CARD_CITY_TUNNEL_SHLD);
         stack__push(s, &card_CARD_PLAIN_TWO_CITIES);
@@ -74,7 +80,7 @@ struct stack* init_deck()
         stack__push(s, &card_CARD_CITY_THREE_ROAD_SHLD);
     }
 
-    for(size_t i = 0; i < 3; i++){
+    for (size_t i = 0; i < 3; i++) {
         stack__push(s, &card_CARD_PLAIN_TUNNEL);
         stack__push(s, &card_CARD_ROAD_TURN_RIGHT_CITY);
         stack__push(s, &card_CARD_ROAD_TURN_LEFT_CITY);
@@ -84,21 +90,25 @@ struct stack* init_deck()
         stack__push(s, &card_CARD_CITY_THREE);
     }
 
-    for(size_t i = 0; i < 4; i++){
+    for (size_t i = 0; i < 4; i++) {
         stack__push(s, &card_CARD_MONASTERY_ALONE);
         stack__push(s, &card_CARD_JUNCTION_THREE);
     }
 
-    for(size_t i = 0; i < 5; i++){
+    for (size_t i = 0; i < 5; i++) {
         stack__push(s, &card_CARD_CITY_ONE_SIDE);
     }
 
-    for(size_t i = 0; i < 8; i++){
+    for (size_t i = 0; i < 8; i++) {
         stack__push(s, &card_CARD_ROAD_STRAIGHT);
     }
 
-    for(size_t i = 0; i < 9; i++){
+    for (size_t i = 0; i < 9; i++) {
         stack__push(s, &card_CARD_ROAD_TURN);
+    }
+
+    for (size_t i = 0; i < 4; i++) {
+        stack__push(s, &card_CARD_ROAD_STRAIGHT_CITY);
     }
 
     stack__mix(s);

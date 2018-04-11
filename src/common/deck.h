@@ -3,6 +3,8 @@
 
 #include "stack.h"
 
+#define CARDS_NUMBER 72
+
 /**
  * @brief Creates a stack of enum card_id,
  *  according to the game's rules

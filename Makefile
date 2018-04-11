@@ -17,7 +17,7 @@ CLIENT_OBJECTS 	= $(CLIENT_SOURCES:%.c=%.o)
 TESTS_OBJECTS 	= $(TESTS_SOURCES:%.c=%.o)
 
 SERVER_EXECUTABLE 	= server
-TESTS_EXECUTABLE 	= test_board test_card test_stack test_queue
+TESTS_EXECUTABLE 	= test_board test_card test_deck test_stack test_queue
 
 
 #######################################################
@@ -88,6 +88,9 @@ test_board: test_board.o board.o utils.o card.o stack.o
 
 test_card: test_card.o card.o utils.o stack.o
 	${CC} $(CPPFLAGS) test_card.o card.o utils.o stack.o -o $@ -lm -ldl
+
+test_deck: test_deck.o deck.o utils.o stack.o
+	${CC} $(CPPFLAGS) test_deck.o deck.o utils.o stack.o -o $@ -lm -ldl
 
 test_stack: test_stack.o stack.o utils.o
 	${CC} $(CPPFLAGS) test_stack.o stack.o utils.o -o $@ -lm -ldl
@@ -192,6 +195,9 @@ board.o: $(SRC_DIR)/common/board.c $(SRC_DIR)/common/board.h
 card.o: $(SRC_DIR)/common/card.c $(SRC_DIR)/common/card.h
 	${CC} ${CFLAGS} $(SRC_DIR)/common/card.c -c
 
+deck.o: $(SRC_DIR)/common/deck.c $(SRC_DIR)/common/deck.h
+	${CC} ${CFLAGS} $(SRC_DIR)/common/deck.c -c
+
 player.o: $(SRC_DIR)/server/player.c $(SRC_DIR)/server/player.h
 	${CC} ${CFLAGS} $(SRC_DIR)/server/player.c -c
 
@@ -216,8 +222,11 @@ test_board.o: $(TST_DIR)/test_board.c
 test_card.o: $(TST_DIR)/test_card.c
 	${CC} ${CFLAGS} $(TST_DIR)/test_card.c -c
 
-test_stack.o: $(TST_DIR)/test_stack.c
-	${CC} ${CFLAGS} $(TST_DIR)/test_stack.c -c
+test_deck.o: $(TST_DIR)/test_deck.c
+	${CC} ${CFLAGS} $(TST_DIR)/test_deck.c -c
 
 test_queue.o: $(TST_DIR)/test_queue.c
 	${CC} ${CFLAGS} $(TST_DIR)/test_queue.c -c
+
+test_stack.o: $(TST_DIR)/test_stack.c
+	${CC} ${CFLAGS} $(TST_DIR)/test_stack.c -c

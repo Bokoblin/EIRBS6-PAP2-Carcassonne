@@ -60,6 +60,7 @@ Two shell files automatically build and clean project:
 - Put functions/structures start bracket on the line after the prototype
     (small structures, getters, setters can be inline though)
 - Put statements/loops start bracket on the same line separated by a space
+- Add a space between statement/loop name and initialize
 - Don't add spaces between function name and the argument list in parenthesis
 - You don't have to put brackets for one-line statements
 - Put two lines between each function in headers

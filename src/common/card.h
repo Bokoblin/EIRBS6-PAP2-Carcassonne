@@ -5,7 +5,6 @@
 #include "stack.h"
 #include "area_type.h"
 
-#define CARD_NUMBER 72
 #define DIRECTION_NUMBER 4
 #define MAX_ZONES (LAST_POS-1)
 #define DEFAULT_ORIENTATION NORTH_TO_NORTH

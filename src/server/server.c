@@ -1,11 +1,13 @@
 #include <dlfcn.h>
 #include <string.h>
 #include <assert.h>
+#include <time.h>
 #include "../server/function_pointers.h"
 #include "../common/utils.h"
 #include "../common/queue.h"
 #include "../common/stack.h"
 #include "../common/card.h"
+#include "../common/deck.h"
 
 #define DEFAULT_GRAPHIC_MODE_FLAG 0
 #define DEFAULT_CLIENT_COUNT 0
@@ -21,7 +23,6 @@ void free_resources(struct queue *players_queue);
 void game_main(struct queue *players, unsigned int nb_player);
 void init_next_player(struct queue *players_queue, unsigned int nb_player);
 void finalize_next_player(struct queue *players_queue);
-void fill_card_stack(struct stack *drawing_stack);
 
 
 ////////////////////////////////////////////////////////////////////
@@ -53,7 +54,7 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
             void* player_play_ptr = safe_dlsym(player_lib_ptr, "play");
             void* player_finalize_ptr = safe_dlsym(player_lib_ptr, "finalize");
 
-            struct player* p = player__init(nb_players_registered, 0, 8, player_lib_ptr, player_get_name_ptr,
+            struct player* p = player__init(nb_players_registered, player_lib_ptr, player_get_name_ptr,
                                             player_init_ptr, player_play_ptr, player_finalize_ptr);
             queue__enqueue(players, p);
             nb_players_registered++;
@@ -71,19 +72,6 @@ int is_valid_play(struct player *p, struct move *m)
     (void) m;
 
     return 1;
-}
-
-void fill_card_stack(struct stack *drawing_stack)
-{
-    for (unsigned int i = 0; i < CARD_NUMBER; i++) {
-        //FIXME: Init with accurate card repartition following rules
-        //+ shuffle
-        struct card_type ct1 = {CARD_MONASTERY_ALONE,
-                {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
-        struct card *c = card__empty(ct1);
-        stack__push(drawing_stack, c);
-        card__free(c);
-    }
 }
 
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves)
@@ -130,8 +118,7 @@ void game_main(struct queue *players, unsigned int nb_player)
 {
     //=== Card stack initialization
 
-    struct stack* drawing_stack = stack__empty(card_stack_copy_op, card_stack_delete_op, card_stack_debug_op);
-    fill_card_stack(drawing_stack);
+    struct stack* drawing_stack = init_deck();
 
     //=== Moves queue initialization
 
@@ -193,6 +180,7 @@ int main(int argc, char** argv)
     unsigned int is_graphic = DEFAULT_GRAPHIC_MODE_FLAG;
     unsigned int clients_count = DEFAULT_CLIENT_COUNT;
     parse_opts(argc, argv, &is_graphic, &clients_count);
+    srand((unsigned int) time(NULL));
 
     //=== Register players
 

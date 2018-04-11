@@ -6,36 +6,6 @@
 #include "../server/player.h"
 
 ////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR CARD STACK
-////////////////////////////////////////////////////////////////////
-
-void* card_stack_copy_op(const enum card_id *p_card_id)
-{
-    if (p_card_id == NULL)
-        return NULL;
-
-    enum card_id *new_card = malloc(sizeof(enum card_id));
-    *new_card = *p_card_id;
-    return new_card;
-}
-
-void card_stack_delete_op(enum card_id *p_card_id)
-{
-    free(p_card_id);
-}
-
-void card_stack_debug_op(enum card_id *p_card_id)
-{
-    setvbuf (stdout, NULL, _IONBF, 0);
-    if (p_card_id == NULL) {
-        printf("NULL ");
-    } else {
-        printf("%d ", *p_card_id);
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////
 ///     OPERATORS FOR MOVES QUEUE
 ////////////////////////////////////////////////////////////////////
 
