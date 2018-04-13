@@ -17,7 +17,7 @@ CLIENT_OBJECTS 	= $(CLIENT_SOURCES:%.c=%.o)
 TESTS_OBJECTS 	= $(TESTS_SOURCES:%.c=%.o)
 
 SERVER_EXECUTABLE 	= server
-TESTS_EXECUTABLE 	= test_board test_card test_deck test_stack test_queue
+TESTS_EXECUTABLE 	= test_board test_card test_deck test_set test_stack test_queue
 
 
 #######################################################
@@ -91,6 +91,9 @@ test_card: test_card.o card.o utils.o stack.o
 
 test_deck: test_deck.o deck.o utils.o stack.o
 	${CC} $(CPPFLAGS) test_deck.o deck.o utils.o stack.o -o $@ -lm -ldl
+
+test_set: test_set.o set.o utils.o
+	${CC} $(CPPFLAGS) test_set.o set.o utils.o -o $@ -lm -ldl
 
 test_stack: test_stack.o stack.o utils.o
 	${CC} $(CPPFLAGS) test_stack.o stack.o utils.o -o $@ -lm -ldl
@@ -210,6 +213,9 @@ server.o: $(SRC_DIR)/server/server.c $(SRC_DIR)/server/function_pointer.h
 stack.o: $(SRC_DIR)/common/stack.c $(SRC_DIR)/common/stack.h
 	${CC} ${CFLAGS} $(SRC_DIR)/common/stack.c -c
 
+set.o: $(SRC_DIR)/common/set.c $(SRC_DIR)/common/set.h
+	${CC} ${CFLAGS} $(SRC_DIR)/common/set.c -c
+
 queue.o: $(SRC_DIR)/common/queue.c $(SRC_DIR)/common/queue.h
 	${CC} ${CFLAGS} $(SRC_DIR)/common/queue.c -c
 
@@ -227,6 +233,9 @@ test_deck.o: $(TST_DIR)/test_deck.c
 
 test_queue.o: $(TST_DIR)/test_queue.c
 	${CC} ${CFLAGS} $(TST_DIR)/test_queue.c -c
+
+test_set.o: $(TST_DIR)/test_set.c
+	${CC} ${CFLAGS} $(TST_DIR)/test_set.c -c
 
 test_stack.o: $(TST_DIR)/test_stack.c
 	${CC} ${CFLAGS} $(TST_DIR)/test_stack.c -c
