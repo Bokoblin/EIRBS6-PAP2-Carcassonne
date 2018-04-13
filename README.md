@@ -15,6 +15,9 @@ Jalon 1: until commit #22
 * OSTERTAG Marie [mostertag@enseirb-matmeca.fr](mailto:mostertag@enseirb-matmeca.fr)
 * ROSEAU Baptiste [broseau@enseirb-matmeca.fr](mailto:broseau@enseirb-matmeca.fr)
 
+### Report
+
+The report is located in the "report" repository in PDF format.
 
 ### How to build
 
