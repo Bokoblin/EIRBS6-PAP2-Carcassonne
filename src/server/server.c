@@ -8,6 +8,7 @@
 #include "../common/stack.h"
 #include "../common/card.h"
 #include "../common/deck.h"
+#include "../server/board.h"
 
 #define DEFAULT_GRAPHIC_MODE_FLAG 0
 #define DEFAULT_CLIENT_COUNT 0
@@ -17,7 +18,9 @@
 ////////////////////////////////////////////////////////////////////
 
 void register_players(int argc, const char **argv, struct queue *players, unsigned int nb_players);
+int is_valid_card(struct board *b, enum card_id ci);
 int is_valid_play(struct player *p, struct move *m);
+enum card_id draw_until_valid(struct board* b, struct stack *s);
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves);
 void free_resources(struct queue *players_queue);
 void game_main(struct queue *players, unsigned int nb_player);
@@ -65,13 +68,39 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
     }
 }
 
+int is_valid_card(struct board *b, enum card_id ci)
+{
+    //TODO : verify that card can be played
+    (void) b;
+    (void) ci;
+
+    return 1;
+}
+
 int is_valid_play(struct player *p, struct move *m)
 {
     //TODO : verify that player hasn't cheated
     (void) p;
-    (void) m;
+    //if (?) {
+    //    ...
+    //    m->check = FAILED;
+    //    return 0;
+    //}
+
+
+    m->check = VALID;
 
     return 1;
+}
+
+enum card_id draw_until_valid(struct board* b, struct stack *s)
+{
+    enum card_id ci;
+    do {
+        ci = card__draw(s);
+    } while (!is_valid_card(b, ci));
+
+    return ci;
 }
 
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves)
@@ -116,13 +145,11 @@ void finalize_next_player(struct queue *players_queue)
 
 void game_main(struct queue *players, unsigned int nb_player)
 {
-    //=== Card stack initialization
+    //=== Game initialization
 
     struct stack* drawing_stack = init_deck();
-
-    //=== Moves queue initialization
-
     struct queue* moves = queue__empty(move_queue_copy_op, move_queue_delete_op, move_queue_debug_op);
+    struct board* board = board__init(drawing_stack);
 
     //=== Player initialization
 
@@ -133,7 +160,7 @@ void game_main(struct queue *players, unsigned int nb_player)
 
     while (!stack__is_empty(drawing_stack) && nb_player > 0) {
         struct move *moves_array = build_previous_moves_array(moves, nb_player);
-        enum card_id c = card__draw(drawing_stack); //TODO: verify card (pop again until valid)
+        enum card_id c = draw_until_valid(board, drawing_stack);
         struct player *p = queue__front(players);
         struct move m = p->play(c, moves_array, nb_player);
 
@@ -146,6 +173,8 @@ void game_main(struct queue *players, unsigned int nb_player)
         } else {
             nb_player--;
         }
+
+        //TODO: add move to server full move list (to be created too)
 
         player__free(p);
         free(moves_array);
@@ -160,6 +189,7 @@ void game_main(struct queue *players, unsigned int nb_player)
 
     stack__free(drawing_stack);
     queue__free(moves);
+    board__free(board);
 }
 
 void free_resources(struct queue *players_queue)

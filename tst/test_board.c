@@ -1,26 +1,25 @@
 #include <stdlib.h>
 #include "test_utils.h"
-#include "../src/common/board.h"
+#include "../src/server/board.h"
 
 int test_board__empty()
 {
     printf("%s... ", __func__);
 
-    struct board* b1 = board__empty();
+    struct board* b1 = board__init(NULL);
 
-    if (board__first_card(b1)->type.id != CARD_JUNCTION_CITY) {  //FIXME: check if it's that
-        board__free(b1);
-        return !SUCCESS;
-    }
+    //if (b1->first_card->type.id != CARD_JUNCTION_CITY) {
+    //    board__free(b1);
+    //    return !SUCCESS;
+    //}
 
-    if (b1->free_positions_array == NULL) {
-        board__free(b1);
-        return !SUCCESS;
-    }
+    //TODO : test_board__empty (unfinished)
 
     board__free(b1);
 
-    return SUCCESS;
+    printf("- Not finished yet - ");
+
+    return !SUCCESS;
 }
 
 int test_board__add_card()

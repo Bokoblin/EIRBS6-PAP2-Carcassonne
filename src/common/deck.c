@@ -77,13 +77,13 @@ struct stack* init_deck()
         stack__push(s, &card_CARD_PLAIN_CITY_SHLD);
         stack__push(s, &card_CARD_PLAIN_CITY_ROAD_SHLD);
         stack__push(s, &card_CARD_CITY_THREE_ROAD_SHLD);
+        stack__push(s, &card_CARD_JUNCTION_CITY);
     }
 
     for (size_t i = 0; i < 3; i++) {
         stack__push(s, &card_CARD_PLAIN_TUNNEL);
         stack__push(s, &card_CARD_ROAD_TURN_RIGHT_CITY);
         stack__push(s, &card_CARD_ROAD_TURN_LEFT_CITY);
-        stack__push(s, &card_CARD_JUNCTION_CITY);
         stack__push(s, &card_CARD_PLAIN_CITY);
         stack__push(s, &card_CARD_PLAIN_CITY_ROAD);
         stack__push(s, &card_CARD_CITY_THREE);
@@ -108,5 +108,7 @@ struct stack* init_deck()
     }
 
     stack__mix(s);
+    stack__push(s, &card_CARD_JUNCTION_CITY); //First card to always place in first
+
     return s;
 }

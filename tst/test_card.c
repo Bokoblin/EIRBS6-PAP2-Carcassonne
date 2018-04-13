@@ -23,12 +23,11 @@ void operator_debug(void* given_card)
     printf("%d ", *_given_card);
 }
 
-int test_card__empty()
+int test_card__init()
 {
     printf("%s... ", __func__);
 
-    struct card* c = card__empty(CARD_JUNCTION_CITY);
-
+    struct card* c = card__init(CARD_JUNCTION_CITY);
     if (c->type.id != CARD_JUNCTION_CITY) {
         card__free(c);
         return !SUCCESS;
@@ -59,25 +58,25 @@ int test_card__place()
 
 int test_card__get_area()
 {
-   printf("%s... ", __func__);
+    printf("%s... ", __func__);
 
-   struct card *c = card__empty(CARD_MONASTERY_ALONE);
+    struct card *c = card__init(CARD_MONASTERY_ALONE);
 
-   for (int i = 0 ; i < (MAX_ZONES-1) ; i++) {
+    for (int i = 0 ; i < (MAX_ZONES-1) ; i++) {
         if (card__get_area(c, (enum place) i) != FIELD) {
             card__free(c);
             return !SUCCESS;
         }
-   }
+    }
 
-   if (card__get_area(c, POS_CENTER) != ABBEY) {
-       card__free(c);
-       return !SUCCESS;
-   }
+    if (card__get_area(c, POS_CENTER) != ABBEY) {
+        card__free(c);
+        return !SUCCESS;
+    }
 
-   card__free(c);
+    card__free(c);
 
-   return SUCCESS;
+    return SUCCESS;
 
 }
 
@@ -86,8 +85,8 @@ int test_card__are_matching_direction_success_case()
 {
     printf("%s... ", __func__);
 
-    struct card *c1 = card__empty(CARD_MONASTERY_ALONE);
-    struct card *c2 = card__empty(CARD_MONASTERY_ROAD);
+    struct card *c1 = card__init(CARD_MONASTERY_ALONE);
+    struct card *c2 = card__init(CARD_MONASTERY_ROAD);
 
     if (card__are_matching_direction(c1, c2, EAST)) {
         card__free(c1);
@@ -105,8 +104,8 @@ int test_card__are_matching_direction_failure_case()
 {
     printf("%s... ", __func__);
 
-    struct card *c1 = card__empty(CARD_MONASTERY_ALONE);
-    struct card *c2 = card__empty(CARD_PLAIN_CITY_ROAD);
+    struct card *c1 = card__init(CARD_MONASTERY_ALONE);
+    struct card *c2 = card__init(CARD_PLAIN_CITY_ROAD);
 
     if (!card__are_matching_direction(c1, c2, EAST)) {
         card__free(c1);
@@ -124,8 +123,8 @@ int test_card__link_at_direction()
 {
     printf("%s... ", __func__);
 
-    struct card *c1 = card__empty(CARD_MONASTERY_ALONE);
-    struct card *c2 = card__empty(CARD_MONASTERY_ROAD);
+    struct card *c1 = card__init(CARD_MONASTERY_ALONE);
+    struct card *c2 = card__init(CARD_MONASTERY_ROAD);
 
     card__link_at_direction(c1, c2, EAST);
 
@@ -169,8 +168,7 @@ int test_card__set_orientation()
 {
     printf("%s... ", __func__);
 
-    struct card *c = card__empty(CARD_JUNCTION_CITY);
-
+    struct card *c = card__init(CARD_JUNCTION_CITY);
     card__set_orientation(c, NORTH_TO_WEST);
 
     if (c->orientation == NORTH_TO_WEST) {
@@ -189,7 +187,7 @@ int main()
 {
     printf("----------- TEST CARD -----------\n");
 
-    print_success(test_card__empty());
+    print_success(test_card__init());
     print_success(test_card__place());
     print_success(test_card__get_area());
     print_success(test_card__are_matching_direction_success_case());

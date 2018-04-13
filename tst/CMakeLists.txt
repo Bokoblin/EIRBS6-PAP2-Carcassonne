@@ -16,8 +16,8 @@ set(TEST_SET test_set)
 file(GLOB TEST_BOARD_SOURCE_FILES
         "test_utils.h"
         "test_board.c"
-        "../src/common/board.h"
-        "../src/common/board.c"
+        "../src/server/board.h"
+        "../src/server/board.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
         "../src/common/card.h"

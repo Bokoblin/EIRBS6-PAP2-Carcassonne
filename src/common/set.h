@@ -7,9 +7,7 @@
 
 struct set;
 
-struct set *set__empty(void* (*copy) ( void* x),
-		       void (*my_delete) (void*),
-		       int (*compare) (void* x,  void* y));
+struct set *set__empty(void* copy_op, void* delete_op, void* compare_op);
 
 int set__is_empty( const struct set *s);
 

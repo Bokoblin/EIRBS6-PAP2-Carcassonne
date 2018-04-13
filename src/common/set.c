@@ -37,7 +37,7 @@ void shift_right(struct set const *set, size_t begin, size_t end)
 {
     if ((end >= set->capacity - 1) || (end > set->size))
         return;
-    //Decalage de [begin, end] � [begin + 1, end + 1] par un parcours droite->gauche
+    //Shift from [begin, end] to [begin + 1, end + 1] by a right to left path
     size_t k = end + 1;
     while (k > begin) {
         set->s[k]=set->s[k-1];
@@ -51,7 +51,7 @@ void shift_left(struct set const *set, size_t begin, size_t end)
     if ((begin == 0) || (end != set->size - 1))
         return;
 
-    //Decalage de [begin, end] to [begin - 1, end - 1] par un parcours gauche->droite
+    //Shift from [begin, end] to [begin - 1, end - 1] by a left to right path
     size_t k = begin - 1;
     while (k < end) {
         set->s[k]=set->s[k+1];
@@ -61,17 +61,15 @@ void shift_left(struct set const *set, size_t begin, size_t end)
 
 
 
-struct set *set__empty(void* (*copy) ( void* x),
-                       void (*delete) (void*),
-                       int (*compare) ( void* x,  void* y))
+struct set *set__empty(void* copy_op, void* delete_op, void* compare_op)
 {
     struct set *set = malloc(sizeof(struct set));
     set->capacity = BASIC_SET_SIZE;
     set->s = malloc(sizeof(void*)*set->capacity);
     set->size = 0;
-    set->copy =copy;
-    set->delete = delete;
-    set->cmp = compare;
+    set->copy =copy_op;
+    set->delete = delete_op;
+    set->cmp = compare_op;
 
     return set;
 }
@@ -92,7 +90,7 @@ int set__add(struct set *set, void* x)
     if  ((pos < set->size) && (set->cmp(set->s[pos], x) == 0))
         return 1;
 
-    //Augment memory if  needed
+    //Augment memory if needed
     if (set->size == set->capacity) {
         set->capacity = set->capacity * 2;
         set->s = realloc(set->s, sizeof(void*)*set->capacity);
@@ -117,7 +115,6 @@ int set__remove(struct set *set, void* x)
     size_t pos = find(set, 0, set->size, x);
     if  ((set->size == 0)
             || (pos >= set->size)
-            || (x == NULL)
             || ((pos < set->size) && (set->cmp(set->s[pos], x) != 0)))
         return 1;
 

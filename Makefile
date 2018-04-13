@@ -83,11 +83,11 @@ else
 	@echo No test available
 endif
 
-test_board: test_board.o board.o utils.o card.o stack.o
-	${CC} $(CPPFLAGS) test_board.o board.o utils.o card.o stack.o -o $@ -lm -ldl
+test_board: test_board.o board.o utils.o card.o stack.o function_pointers.o set.o card_type.o player.o
+	${CC} $(CPPFLAGS) test_board.o board.o utils.o card.o stack.o function_pointers.o set.o card_type.o player.o -o $@ -lm -ldl
 
-test_card: test_card.o card.o utils.o stack.o
-	${CC} $(CPPFLAGS) test_card.o card.o utils.o stack.o -o $@ -lm -ldl
+test_card: test_card.o card.o utils.o stack.o card_type.o
+	${CC} $(CPPFLAGS) test_card.o card.o utils.o stack.o card_type.o -o $@ -lm -ldl
 
 test_deck: test_deck.o deck.o utils.o stack.o
 	${CC} $(CPPFLAGS) test_deck.o deck.o utils.o stack.o -o $@ -lm -ldl
@@ -192,8 +192,8 @@ docs:
 ###				OBJECTS FILES
 #######################################################
 
-board.o: $(SRC_DIR)/common/board.c $(SRC_DIR)/common/board.h
-	${CC} ${CFLAGS} $(SRC_DIR)/common/board.c -c
+board.o: $(SRC_DIR)/server/board.c $(SRC_DIR)/server/board.h $(SRC_DIR)/common/card_type.h
+	${CC} ${CFLAGS} $(SRC_DIR)/server/board.c -c
 
 card.o: $(SRC_DIR)/common/card.c $(SRC_DIR)/common/card.h
 	${CC} ${CFLAGS} $(SRC_DIR)/common/card.c -c
@@ -207,7 +207,13 @@ player.o: $(SRC_DIR)/server/player.c $(SRC_DIR)/server/player.h
 moves.o: $(SRC_DIR)/client/moves.c $(SRC_DIR)/client/moves.h
 	${CC} ${CFLAGS} $(SRC_DIR)/client/moves.c -c
 
-server.o: $(SRC_DIR)/server/server.c $(SRC_DIR)/server/function_pointer.h
+card_type.o: $(SRC_DIR)/common/card_type.c $(SRC_DIR)/common/card_type.h
+	${CC} ${CFLAGS} $(SRC_DIR)/common/card_type.c -c
+
+function_pointers.o: $(SRC_DIR)/server/function_pointers.c $(SRC_DIR)/server/function_pointers.h
+	${CC} ${CFLAGS} $(SRC_DIR)/server/function_pointers.c -c
+
+server.o: $(SRC_DIR)/server/server.c
 	${CC} ${CFLAGS} $(SRC_DIR)/server/server.c -c
 
 stack.o: $(SRC_DIR)/common/stack.c $(SRC_DIR)/common/stack.h

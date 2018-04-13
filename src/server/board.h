@@ -1,8 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "common_interface.h"
-#include "card.h"
+#include "../common/common_interface.h"
+#include "../common/card.h"
 
 
 ////////////////////////////////////////////////////////////////////
@@ -16,9 +16,9 @@
  */
 struct board
 {
-    struct card** free_positions_array;
-    unsigned int fp_capacity;
-    unsigned int fp_size;
+    struct card* first_card;
+    struct set *cards_set;
+    struct set *meeples_set;
 };
 
 
@@ -31,15 +31,7 @@ struct board
  * @brief Initialize a gameboard
  * @return a pointer towards a newly created board
  */
-struct board* board__empty();
-
-
-/**
- * @brief Indicate first card of the board
- * @param b the gameboard
- * @return a card pointer
- */
-struct card* board__first_card(struct board *b);
+struct board *board__init(struct stack *pStack);
 
 
 /**

@@ -4,7 +4,7 @@
 #include "../common/common_interface.h"
 #include "../common/utils.h"
 
-#define DEFAULT_MEEPLE_NUMBER 8
+#define DEFAULT_MEEPLE_NUMBER 8 //With one for score counting
 
 struct player
 {

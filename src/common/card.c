@@ -2,87 +2,8 @@
 #include "card.h"
 #include "utils.h"
 
-struct card_type card__id_to_type(enum card_id id)
-{
-    struct card_type ct;
-    switch (id) {
-    case CARD_MONASTERY_ROAD:
-        ct = ct_CARD_MONASTERY_ROAD;
-        break;
-    case CARD_MONASTERY_ALONE :
-        ct = ct_CARD_MONASTERY_ALONE;
-        break;
-    case CARD_CITY_ALL_SIDES :
-        ct = ct_CARD_CITY_ALL_SIDES;
-        break;
-    case CARD_ROAD_STRAIGHT_CITY :
-        ct = ct_CARD_ROAD_STRAIGHT_CITY;
-        break;
-    case CARD_CITY_ONE_SIDE :
-        ct = ct_CARD_CITY_ONE_SIDE;
-        break;
-    case CARD_CITY_TUNNEL_SHLD :
-        ct = ct_CARD_CITY_TUNNEL_SHLD;
-        break;
-    case CARD_PLAIN_TUNNEL:
-        ct = ct_CARD_PLAIN_TUNNEL;
-        break;
-    case CARD_PLAIN_TWO_CITIES:
-        ct = ct_CARD_PLAIN_TWO_CITIES;
-        break;
-    case CARD_ROAD_TURN_RIGHT_CITY :
-        ct = ct_CARD_ROAD_TURN_RIGHT_CITY;
-        break;
-    case CARD_ROAD_TURN_LEFT_CITY :
-        ct = ct_CARD_ROAD_TURN_LEFT_CITY;
-        break;
-    case CARD_JUNCTION_CITY :
-        ct = ct_CARD_JUNCTION_CITY;
-        break;
-    case CARD_PLAIN_CITY_SHLD :
-        ct = ct_CARD_PLAIN_CITY_SHLD;
-        break;
-    case CARD_PLAIN_CITY :
-        ct = ct_CARD_PLAIN_CITY;
-        break;
-    case CARD_PLAIN_CITY_ROAD_SHLD :
-        ct = ct_CARD_PLAIN_CITY_ROAD_SHLD;
-        break;
-    case CARD_PLAIN_CITY_ROAD :
-        ct = ct_CARD_PLAIN_CITY_ROAD;
-        break;
-    case CARD_CITY_THREE_SHLD:
-        ct = ct_CARD_CITY_THREE_SHLD;
-        break;
-    case CARD_CITY_THREE :
-        ct = ct_CARD_CITY_THREE;
-        break;
-    case CARD_CITY_THREE_ROAD_SHLD :
-        ct = ct_CARD_CITY_THREE_ROAD_SHLD;
-        break;
-    case CARD_CITY_THREE_ROAD:
-        ct = ct_CARD_CITY_THREE_ROAD;
-        break;
-    case CARD_ROAD_STRAIGHT :
-        ct = ct_CARD_ROAD_STRAIGHT;
-        break;
-    case CARD_ROAD_TURN :
-        ct = ct_CARD_ROAD_TURN;
-        break;
-    case CARD_JUNCTION_THREE :
-        ct = ct_CARD_JUNCTION_THREE;
-        break;
-    case CARD_JUNCTION_FOUR :
-        ct = ct_CARD_JUNCTION_FOUR;
-        break;
-    default:
-        exit_on_error("Unknown card type");
-        break;
-    }
-    return ct;
-}
 
-struct card* card__empty(enum card_id card_id)
+struct card* card__init(enum card_id card_id)
 {
     struct card * c = malloc(sizeof(struct card));
     if (c == NULL) {
@@ -90,6 +11,8 @@ struct card* card__empty(enum card_id card_id)
     } else {
         c->type = card__id_to_type(card_id);
         c->orientation = DEFAULT_ORIENTATION;
+        c->pos.x = 999; //meaning invalid
+        c->pos.y = 999;
     }
 
     return c;
@@ -103,7 +26,7 @@ void card__free(struct card *card)
 enum area_type card__get_area(struct card *card, enum place place)
 {
     if (card == NULL)
-        exit_on_error("NULL value on card*");
+        exit_on_error("NULL value on card*"); //TODO : replace by assertNotNull(ptr, message)
 
     if (place == POS_CENTER)
         return card->type.areas[place-1];
@@ -141,13 +64,18 @@ void card__link_at_direction(struct card *card_1, struct card *card_2, enum dire
     card_2->neighbors[(direction+2)%4] = card_1;
 }
 
-int card__place(struct card *new_card, struct card **neighbor_list)
+int card__place(struct card *new_card, struct position pos)
 {
     if (new_card == NULL)
         exit_on_error("NULL value on card*");
 
     //TODO : card__place impl
-    (void) neighbor_list;
+    //For each of the four positions, search card in card_set
+    //with search_dicho(set, x, y) -> card
+    //update neighbour_list of each card with accurate card position
+    //update new card
+    //add card to set
+    (void) pos;
 
     return -1;
 }
