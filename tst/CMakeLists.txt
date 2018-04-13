@@ -7,6 +7,7 @@ set(TEST_CARD test_card)
 set(TEST_DECK test_deck)
 set(TEST_STACK test_stack)
 set(TEST_QUEUE test_queue)
+set(TEST_SET test_set)
 
 
 #----------------------------
@@ -67,7 +68,16 @@ file(GLOB TEST_QUEUE_SOURCE_FILES
         "../src/common/queue.h"
         "../src/common/queue.c"
         )
-      
+
+file(GLOB TEST_SET_SOURCE_FILES
+        "test_utils.h"
+        "test_set.c"
+        "../src/common/utils.h"
+        "../src/common/utils.c"
+        "../src/common/set.h"
+        "../src/common/set.c"
+        )
+        
 #----------------------------
 #       CONFIGURE BUILDING
 #----------------------------
@@ -82,6 +92,8 @@ add_executable(${TEST_STACK} ${TEST_STACK_SOURCE_FILES})
 target_link_libraries(${TEST_STACK} ${CMAKE_DL_LIBS})
 add_executable(${TEST_QUEUE} ${TEST_QUEUE_SOURCE_FILES})
 target_link_libraries(${TEST_QUEUE} ${CMAKE_DL_LIBS})
+add_executable(${TEST_SET} ${TEST_SET_SOURCE_FILES})
+target_link_libraries(${TEST_SET} ${CMAKE_DL_LIBS})
 
 #----------------------------
 #       CONFIGURE TESTS
@@ -92,3 +104,4 @@ add_test(NAME ${TEST_CARD} COMMAND ./${TEST_CARD})
 add_test(NAME ${TEST_DECK} COMMAND ./${TEST_DECK})
 add_test(NAME ${TEST_STACK} COMMAND ./${TEST_STACK})
 add_test(NAME ${TEST_QUEUE} COMMAND ./${TEST_QUEUE})
+add_test(NAME ${TEST_SET} COMMAND ./${TEST_SET})
