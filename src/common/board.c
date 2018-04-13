@@ -15,8 +15,7 @@ struct board* board__empty()
             exit_on_error("Malloc failure on: struct card**");
 
         b->fp_capacity = DEFAULT_FREE_POSITIONS_SIZE;
-        struct card_type ct = { CARD_JUNCTION_CITY, { ROAD, CITY, ROAD, ROAD}}; //FIXME: check if it's that
-        b->free_positions_array[0] = card__empty(ct);
+        b->free_positions_array[0] = card__empty(CARD_JUNCTION_CITY);
         b->fp_size = 1;
     }
 

@@ -27,9 +27,7 @@ int test_card__empty()
 {
     printf("%s... ", __func__);
 
-    struct card_type ct = {CARD_JUNCTION_CITY, { ROAD, CITY, ROAD, ROAD}}; //FIXME: check if it's that
-
-    struct card* c = card__empty(ct);
+    struct card* c = card__empty(CARD_JUNCTION_CITY);
 
     if (c->type.id != CARD_JUNCTION_CITY) {
         card__free(c);
@@ -63,13 +61,9 @@ int test_card__get_area()
 {
    printf("%s... ", __func__);
 
+   struct card *c = card__empty(CARD_MONASTERY_ALONE);
 
-   struct card_type ct = {CARD_MONASTERY_ALONE,
-           {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
-
-   struct card *c = card__empty(ct);
-
-   for (int i = 1 ; i < (MAX_ZONES-1) ; i++) {
+   for (int i = 0 ; i < (MAX_ZONES-1) ; i++) {
         if (card__get_area(c, (enum place) i) != FIELD) {
             card__free(c);
             return !SUCCESS;
@@ -92,14 +86,8 @@ int test_card__are_matching_direction_success_case()
 {
     printf("%s... ", __func__);
 
-    struct card_type ct1 = {CARD_MONASTERY_ALONE,
-            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
-
-    struct card_type ct2 = {CARD_MONASTERY_ROAD,
-            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
-
-    struct card *c1 = card__empty(ct1);
-    struct card *c2 = card__empty(ct2);
+    struct card *c1 = card__empty(CARD_MONASTERY_ALONE);
+    struct card *c2 = card__empty(CARD_MONASTERY_ROAD);
 
     if (card__are_matching_direction(c1, c2, EAST)) {
         card__free(c1);
@@ -117,14 +105,8 @@ int test_card__are_matching_direction_failure_case()
 {
     printf("%s... ", __func__);
 
-    struct card_type ct1 = {CARD_MONASTERY_ALONE,
-            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
-
-    struct card_type ct2 = {CARD_PLAIN_CITY_ROAD,
-            {FIELD, FIELD, ROAD, FIELD, ROAD, FIELD, CITY, CITY, CITY, CITY, CITY, CITY, FIELD}};
-
-    struct card *c1 = card__empty(ct1);
-    struct card *c2 = card__empty(ct2);
+    struct card *c1 = card__empty(CARD_MONASTERY_ALONE);
+    struct card *c2 = card__empty(CARD_PLAIN_CITY_ROAD);
 
     if (!card__are_matching_direction(c1, c2, EAST)) {
         card__free(c1);
@@ -142,14 +124,8 @@ int test_card__link_at_direction()
 {
     printf("%s... ", __func__);
 
-    struct card_type ct1 = {CARD_MONASTERY_ALONE,
-            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
-
-    struct card_type ct2 = {CARD_MONASTERY_ROAD,
-            {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
-
-    struct card *c1 = card__empty(ct1);
-    struct card *c2 = card__empty(ct2);
+    struct card *c1 = card__empty(CARD_MONASTERY_ALONE);
+    struct card *c2 = card__empty(CARD_MONASTERY_ROAD);
 
     card__link_at_direction(c1, c2, EAST);
 
@@ -193,9 +169,7 @@ int test_card__set_orientation()
 {
     printf("%s... ", __func__);
 
-    struct card_type ct = { CARD_JUNCTION_CITY, { ROAD, CITY, ROAD, ROAD}};
-
-    struct card *c = card__empty(ct);
+    struct card *c = card__empty(CARD_JUNCTION_CITY);
 
     card__set_orientation(c, NORTH_TO_WEST);
 

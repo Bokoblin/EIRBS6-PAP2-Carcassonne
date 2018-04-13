@@ -24,31 +24,6 @@ struct card_type
   enum area_type areas[MAX_ZONES]; // indexed by enum place 
 };
 
-/**
- * @brief orientation
- * Lists all the possible orientations of the card comparing to its card_type
- */
-enum orientation 
-{
-  NORTH_TO_NORTH, // the north of card_type coincide with the north of the card
-  NORTH_TO_WEST,  // the north of card_type coincide with the west of the card
-  NORTH_TO_SOUTH, // the north of card_type coincide with the south of the card
-  NORTH_TO_EAST   // the north of card_type coincide with the east of the card
-};
-
-/**
- * @brief card
- * Gives the type of the card et its orientation
- */
-struct card
-{
-  struct card_type type;
-  struct card * neighbors[DIRECTION_NUMBER]; // Indexed by enum direction
-  enum orientation orientation; 
-};
-
-// card types
-
 static struct card_type ct_CARD_MONASTERY_ROAD = {CARD_MONASTERY_ROAD, {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, ABBEY}};
 static struct card_type ct_CARD_MONASTERY_ALONE = {CARD_MONASTERY_ALONE, {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, ABBEY}};
 static struct card_type ct_CARD_CITY_ALL_SIDES = {CARD_CITY_ALL_SIDES, {FIELD, ROAD, FIELD, FIELD, ROAD, FIELD, FIELD, ROAD, FIELD, FIELD, ROAD, FIELD, CITY}};
@@ -73,19 +48,47 @@ static struct card_type ct_CARD_ROAD_TURN = {CARD_ROAD_TURN, {FIELD, FIELD, FIEL
 static struct card_type ct_CARD_JUNCTION_THREE = {CARD_JUNCTION_THREE, {FIELD, ROAD, FIELD, FIELD, ROAD, FIELD, FIELD, ROAD, FIELD, FIELD, FIELD, FIELD, INTERSECTION}};
 static struct card_type ct_CARD_JUNCTION_FOUR = {CARD_JUNCTION_FOUR, {FIELD, ROAD, FIELD, FIELD, ROAD, FIELD, FIELD, ROAD, FIELD, FIELD, ROAD, FIELD, INTERSECTION}};
 
+/**
+ * @brief orientation
+ * Lists all the possible orientations of the card comparing to its card_type
+ */
+enum orientation 
+{
+  NORTH_TO_NORTH, // the north of card_type coincide with the north of the card
+  NORTH_TO_WEST,  // the north of card_type coincide with the west of the card
+  NORTH_TO_SOUTH, // the north of card_type coincide with the south of the card
+  NORTH_TO_EAST   // the north of card_type coincide with the east of the card
+};
 
+/**
+ * @brief card
+ * Gives the type of the card et its orientation
+ */
+struct card
+{
+  struct card_type type;
+  struct card * neighbors[DIRECTION_NUMBER]; // Indexed by enum direction
+  enum orientation orientation; 
+};
 
 
 ////////////////////////////////////////////////////////////////////
 ///     COMMON FUNCTIONS
 ////////////////////////////////////////////////////////////////////
+/**
+ * @brief enum card_id to struct card_type
+ * @param card_id the id of the card
+ * @return struct card_type
+ */
+struct card_type card__id_to_type(enum card_id id);
+
 
 /**
  * @brief Initializes a card with the type card_type
  * @param card_type pointer towards the type of card wanted 
  * @return a pointer towards a newly created card
  */
-struct card* card__empty(struct card_type card_type);
+struct card* card__empty(enum card_id card_id);
 
 
 /**

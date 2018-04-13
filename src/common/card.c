@@ -2,13 +2,93 @@
 #include "card.h"
 #include "utils.h"
 
-struct card* card__empty(struct card_type card_type)
+struct card_type card__id_to_type(enum card_id id)
+{
+    struct card_type ct;
+    switch (id) {
+    case CARD_MONASTERY_ROAD:
+        ct = ct_CARD_MONASTERY_ROAD;
+        break;
+    case CARD_MONASTERY_ALONE :
+        ct = ct_CARD_MONASTERY_ALONE;
+        break;
+    case CARD_CITY_ALL_SIDES :
+        ct = ct_CARD_CITY_ALL_SIDES;
+        break;
+    case CARD_ROAD_STRAIGHT_CITY :
+        ct = ct_CARD_ROAD_STRAIGHT_CITY;
+        break;
+    case CARD_CITY_ONE_SIDE :
+        ct = ct_CARD_CITY_ONE_SIDE;
+        break;
+    case CARD_CITY_TUNNEL_SHLD :
+        ct = ct_CARD_CITY_TUNNEL_SHLD;
+        break;
+    case CARD_PLAIN_TUNNEL:
+        ct = ct_CARD_PLAIN_TUNNEL;
+        break;
+    case CARD_PLAIN_TWO_CITIES:
+        ct = ct_CARD_PLAIN_TWO_CITIES;
+        break;
+    case CARD_ROAD_TURN_RIGHT_CITY :
+        ct = ct_CARD_ROAD_TURN_RIGHT_CITY;
+        break;
+    case CARD_ROAD_TURN_LEFT_CITY :
+        ct = ct_CARD_ROAD_TURN_LEFT_CITY;
+        break;
+    case CARD_JUNCTION_CITY :
+        ct = ct_CARD_JUNCTION_CITY;
+        break;
+    case CARD_PLAIN_CITY_SHLD :
+        ct = ct_CARD_PLAIN_CITY_SHLD;
+        break;
+    case CARD_PLAIN_CITY :
+        ct = ct_CARD_PLAIN_CITY;
+        break;
+    case CARD_PLAIN_CITY_ROAD_SHLD :
+        ct = ct_CARD_PLAIN_CITY_ROAD_SHLD;
+        break;
+    case CARD_PLAIN_CITY_ROAD :
+        ct = ct_CARD_PLAIN_CITY_ROAD;
+        break;
+    case CARD_CITY_THREE_SHLD:
+        ct = ct_CARD_CITY_THREE_SHLD;
+        break;
+    case CARD_CITY_THREE :
+        ct = ct_CARD_CITY_THREE;
+        break;
+    case CARD_CITY_THREE_ROAD_SHLD :
+        ct = ct_CARD_CITY_THREE_ROAD_SHLD;
+        break;
+    case CARD_CITY_THREE_ROAD:
+        ct = ct_CARD_CITY_THREE_ROAD;
+        break;
+    case CARD_ROAD_STRAIGHT :
+        ct = ct_CARD_ROAD_STRAIGHT;
+        break;
+    case CARD_ROAD_TURN :
+        ct = ct_CARD_ROAD_TURN;
+        break;
+    case CARD_JUNCTION_THREE :
+        ct = ct_CARD_JUNCTION_THREE;
+        break;
+    case CARD_JUNCTION_FOUR :
+        ct = ct_CARD_JUNCTION_FOUR;
+        break;
+    default:
+        exit_on_error("Unknown card type");
+        break;
+    }
+    return ct;
+}
+
+struct card* card__empty(enum card_id card_id)
 {
     struct card * c = malloc(sizeof(struct card));
     if (c == NULL) {
         exit_on_error("Malloc failure on: struct card*");
     } else {
-        c->type = card_type;
+        c->type = card__id_to_type(card_id);
         c->orientation = DEFAULT_ORIENTATION;
     }
 
