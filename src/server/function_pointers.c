@@ -81,7 +81,7 @@ void* cards_set_copy_op(struct card* c)
 
 void cards_set_delete_op(struct card* c)
 {
-    free(c);
+    card__free(c);
 }
 
 int cards_set_compare_op(struct card* c1, struct card* c2)

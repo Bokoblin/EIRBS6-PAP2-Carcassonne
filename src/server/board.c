@@ -16,8 +16,14 @@ struct board *board__init(struct stack *drawing_stack)
     } else {
         b->cards_set = set__empty(cards_set_copy_op, cards_set_delete_op, cards_set_compare_op);
         b->meeples_set = set__empty(meeples_set_copy_op, meeples_set_delete_op, meeples_set_compare_op);
-        b->first_card = stack__pop(drawing_stack);
-        set__add(b->cards_set, b->first_card);
+        enum card_id *ci = stack__pop(drawing_stack);
+        if (ci == NULL) {
+            b->first_card = NULL;
+        } else {
+            b->first_card = card__init(*ci);
+            free(ci);
+            set__add(b->cards_set, b->first_card);
+        }
     }
 
     return b;
@@ -35,6 +41,8 @@ int board__add_card(struct board *b, struct card *c)
 
 void board__free(struct board *b)
 {
+    if (b->first_card != NULL)
+        card__free(b->first_card);
     set__free(b->cards_set);
     set__free(b->meeples_set);
     free(b);

@@ -31,7 +31,7 @@ struct board
  * @brief Initialize a gameboard
  * @return a pointer towards a newly created board
  */
-struct board *board__init(struct stack *pStack);
+struct board *board__init(struct stack *drawing_stack);
 
 
 /**
