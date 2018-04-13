@@ -39,7 +39,6 @@ struct stack* init_deck()
 {
     struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
 
-
     enum card_id card_CARD_ROAD_STRAIGHT_CITY = CARD_ROAD_STRAIGHT_CITY;
     enum card_id card_CARD_CITY_ALL_SIDES = CARD_CITY_ALL_SIDES;
     enum card_id card_CARD_CITY_TUNNEL = CARD_CITY_TUNNEL;
@@ -93,6 +92,7 @@ struct stack* init_deck()
     for (size_t i = 0; i < 4; i++) {
         stack__push(s, &card_CARD_MONASTERY_ALONE);
         stack__push(s, &card_CARD_JUNCTION_THREE);
+        stack__push(s, &card_CARD_ROAD_STRAIGHT_CITY);
     }
 
     for (size_t i = 0; i < 5; i++) {
@@ -105,10 +105,6 @@ struct stack* init_deck()
 
     for (size_t i = 0; i < 9; i++) {
         stack__push(s, &card_CARD_ROAD_TURN);
-    }
-
-    for (size_t i = 0; i < 4; i++) {
-        stack__push(s, &card_CARD_ROAD_STRAIGHT_CITY);
     }
 
     stack__mix(s);
