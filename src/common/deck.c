@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "common_interface.h"
 #include "deck.h"
+#include "utils.h"
 
 ////////////////////////////////////////////////////////////////////
 ///     USER FUNCTIONS IMPLEMENTATION FOR ENUM CARD_ID
@@ -11,7 +12,7 @@ static void* operator_copy(const enum card_id *p_card_id)
     if (p_card_id == NULL)
         return NULL;
 
-    enum card_id *new_card = malloc(sizeof(enum card_id));
+    enum card_id *new_card = safe_malloc(sizeof(enum card_id));
     *new_card = *p_card_id;
     return new_card;
 }

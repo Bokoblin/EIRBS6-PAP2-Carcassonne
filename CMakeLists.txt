@@ -36,16 +36,12 @@ file(GLOB SERVER_SOURCE_FILES
 file(GLOB CLIENT1_SOURCE_FILES
         "src/common/*.h"
         "src/common/*.c"
-        "src/client/moves.h"
-        "src/client/moves.c"
         "src/client/client_4410_1.c"
         )
 
 file(GLOB CLIENT2_SOURCE_FILES
         "src/common/*.h"
         "src/common/*.c"
-        "src/client/moves.h"
-        "src/client/moves.c"
         "src/client/client_4410_2.c"
         )
 

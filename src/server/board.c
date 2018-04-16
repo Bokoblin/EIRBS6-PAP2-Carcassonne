@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "board.h"
 #include "../common/utils.h"
-#include "../common/set.h"
+#include "../common/ADT/set.h"
 #include "../server/meeple.h"
 #include "../common/deck.h"
 #include "player.h"
@@ -9,21 +9,18 @@
 
 struct board *board__init(struct stack *drawing_stack)
 {
-    struct board *b = malloc(sizeof(struct board));
-    if (b == NULL) {
-        exit_on_error("Malloc failure on: struct board*");
-        //TODO: replace the above lines (and in other files) by safe_malloc(size_t) : void* / NULL which include the NULL check
+    struct board *b = safe_malloc(sizeof(struct board));
+
+    b->cards_set = set__empty(cards_set_copy_op, cards_set_delete_op, cards_set_compare_op);
+    b->meeples_set = set__empty(meeples_set_copy_op, meeples_set_delete_op, meeples_set_compare_op);
+
+    enum card_id *ci = stack__pop(drawing_stack);
+    if (ci == NULL) {
+        b->first_card = NULL;
     } else {
-        b->cards_set = set__empty(cards_set_copy_op, cards_set_delete_op, cards_set_compare_op);
-        b->meeples_set = set__empty(meeples_set_copy_op, meeples_set_delete_op, meeples_set_compare_op);
-        enum card_id *ci = stack__pop(drawing_stack);
-        if (ci == NULL) {
-            b->first_card = NULL;
-        } else {
-            b->first_card = card__init(*ci);
-            free(ci);
-            set__add(b->cards_set, b->first_card);
-        }
+        b->first_card = card__init(*ci);
+        free(ci);
+        set__add(b->cards_set, b->first_card);
     }
 
     return b;

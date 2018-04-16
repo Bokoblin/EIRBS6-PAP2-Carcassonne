@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "queue.h"
-#include "utils.h"
+#include "../utils.h"
 
 #define DEFAULT_QUEUE_CAPACITY 2 //Must be a power of 2
 
@@ -28,24 +28,18 @@ struct queue
 
 struct queue *queue__empty(void* copy_op, void* delete_op, void* debug_op)
 {
-    struct queue *q = malloc(sizeof(struct queue));
-    if (q == NULL) {
-        exit_on_error("Malloc failure on: struct queue*");
-    } else {
-        q->array = malloc(sizeof(void *) * DEFAULT_QUEUE_CAPACITY);
-        if (q->array == NULL)
-            exit_on_error("Malloc failure on: void**");
-        else
-            for (size_t i = 0; i < DEFAULT_QUEUE_CAPACITY; i++)
-                q->array[i] = NULL;
+    struct queue *q = safe_malloc(sizeof(struct queue));
 
-        q->capacity = DEFAULT_QUEUE_CAPACITY;
-        q->front = 0;
-        q->back = 0;
-        q->operator_copy = copy_op;
-        q->operator_delete = delete_op;
-        q->operator_debug = debug_op;
-    }
+    q->array = safe_malloc(sizeof(void *) * DEFAULT_QUEUE_CAPACITY);
+    for (size_t i = 0; i < DEFAULT_QUEUE_CAPACITY; i++)
+        q->array[i] = NULL;
+
+    q->capacity = DEFAULT_QUEUE_CAPACITY;
+    q->front = 0;
+    q->back = 0;
+    q->operator_copy = copy_op;
+    q->operator_delete = delete_op;
+    q->operator_debug = debug_op;
 
     return q;
 }
@@ -69,7 +63,7 @@ int queue__enqueue(struct queue *q, void* element)
         q->capacity *= 2;
         q->array = realloc(q->array, sizeof(void *) * q->capacity);
         if (q->array == NULL)
-            exit_on_error("Realloc failure on: void**");
+            return -1;
         else
             for (size_t i = prev_capacity; i < q->capacity; i++)
                 q->array[i] = NULL;
@@ -109,7 +103,7 @@ int queue__dequeue(struct queue *q)
 
         q->array = realloc(q->array, sizeof(void *) * q->capacity / 2);
         if (q->array == NULL)
-            exit_on_error("Realloc failure on: void**");
+            return -1;
         else
             q->capacity /= 2;
     }

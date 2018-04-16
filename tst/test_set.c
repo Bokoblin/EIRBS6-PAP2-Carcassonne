@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "test_utils.h"
-#include "../src/common/set.h"
+#include "../src/common/ADT/set.h"
+#include "../src/common/utils.h"
 
 ////////////////////////////////////////////////////////////////////
 ///     USER FUNCTIONS IMPLEMENTATION
@@ -10,7 +11,7 @@
 
 void * int__copy(void * i) {
     int * _i = (int *)i;
-    int * copy = malloc(sizeof(*copy));
+    int * copy = safe_malloc(sizeof(*copy));
     *copy = *_i;
     return copy;
 }
@@ -50,7 +51,7 @@ int test_set__empty(void)
 
     set__free(st);
 
-    return 0;
+    return TEST_SUCCESS;
 }
 
 int test_set__is_empty(void)
@@ -69,7 +70,7 @@ int test_set__is_empty(void)
 
     set__free(st);
 
-    return 0;
+    return TEST_SUCCESS;
 }
 
 int test_set__size(void) {
@@ -89,7 +90,7 @@ int test_set__size(void) {
 
     set__free(st);
 
-    return 0;
+    return TEST_SUCCESS;
 }
 
 int test_set__add(void)
@@ -137,7 +138,7 @@ int test_set__add(void)
 
     set__free(st);
 
-    return 0;
+    return TEST_SUCCESS;
 }
 
 int test_set__remove(void)
@@ -170,7 +171,7 @@ int test_set__remove(void)
 
     set__free(st);
 
-    return 0;
+    return TEST_SUCCESS;
 }
 
 int test_set__find(void) {
@@ -197,7 +198,7 @@ int test_set__find(void) {
 
     set__free(st);
 
-    return 0;
+    return TEST_SUCCESS;
 }
 
 int test_big_set(void)
@@ -206,7 +207,7 @@ int test_big_set(void)
     fflush(stdout);
 
     const size_t set_size = 00;
-    int * t = malloc(set_size * sizeof(*t));
+    int * t = safe_malloc(set_size * sizeof(*t));
     for (size_t i = 0; i < set_size; ++i)
         t[i] = (int) i;
 
@@ -231,10 +232,10 @@ int test_big_set(void)
     set__free(st);
     free(t);
 
-    return 0;
+    return TEST_SUCCESS;
 }
 
-int main ()
+int main()
 {
     print_success(test_set__empty());
     print_success(test_set__is_empty());
@@ -244,5 +245,5 @@ int main ()
     print_success(test_set__find());
     print_success(test_big_set());
 
-    return 1;
+    return TEST_SUCCESS;
 }

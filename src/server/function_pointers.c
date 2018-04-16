@@ -6,7 +6,7 @@
 
 void* move_queue_copy_op(struct move* m)
 {
-    struct move *new_move = malloc(sizeof(struct move));
+    struct move *new_move = safe_malloc(sizeof(struct move));
     new_move->card = m->card;
     new_move->check = m->check;
     new_move->dir = m->dir;
@@ -39,7 +39,7 @@ void move_queue_debug_op(struct move* m)
 
 void* player_queue_copy_op(struct player* p)
 {
-    struct player *new_p = malloc(sizeof(struct player));
+    struct player *new_p = safe_malloc(sizeof(struct player));
     new_p->id = p->id;
     new_p->score = p->score;
     new_p->nb_meeples = p->nb_meeples;
@@ -69,7 +69,7 @@ void player_queue_debug_op(struct player* p)
 
 void* cards_set_copy_op(struct card* c)
 {
-    struct card *new_card = malloc(sizeof(struct card));
+    struct card *new_card = safe_malloc(sizeof(struct card));
     new_card->type = c->type;
     new_card->orientation = c->orientation;
 
@@ -103,7 +103,7 @@ int cards_set_compare_op(struct card* c1, struct card* c2)
 
 void* meeples_set_copy_op(struct meeple* m)
 {
-    struct meeple *new_meeple = malloc(sizeof(struct meeple));
+    struct meeple *new_meeple = safe_malloc(sizeof(struct meeple));
     new_meeple->player_id = m->player_id;
     new_meeple->belonging_area = m->belonging_area;
     new_meeple->position = m->position;

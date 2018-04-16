@@ -25,9 +25,18 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
 
 void assert_no_dlerror()
 {
-    char *error;
-    if ((error = dlerror()) != NULL)
+    char *error = dlerror();
+    if (error != NULL)
         exit_on_error(error);
+}
+
+void assert_not_null(void *ptr, const char *caller_fct, char *object)
+{
+    if (ptr == NULL) {
+        char *message = NULL;
+        sprintf(message, "%s: NULL value on %s", caller_fct, object);
+        exit_on_error(message);
+    }
 }
 
 void exit_on_error(char *message)
@@ -45,6 +54,14 @@ size_t positive_modulo(int a, int b)
     if (a >= 0)
         return (size_t) (a%b);
     return (size_t) ((-a)%b);
+}
+
+void *safe_malloc(size_t size)
+{
+    void *ptr = malloc(size);
+    if (ptr == NULL)
+        exit_on_error("Memory allocation failure");
+    return ptr;
 }
 
 void* safe_dlsym(void* library_ptr, char* function_name)

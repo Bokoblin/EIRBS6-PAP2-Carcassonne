@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define SUCCESS 0
+#define true 1
+#define false 0
+
 /**
  * Function for parsing the options of the program
  * Available options are :
@@ -19,9 +23,15 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
 
 
 /**
- * @brief Checks that no dlerror has occurred
+ * @brief Checks that no dlerror has occurred, quit otherwise
  */
 void assert_no_dlerror();
+
+
+/**
+ * @brief Checks that a pointer isn't null, quit otherwise
+ */
+void assert_not_null(void *ptr, const char *caller_fct, char *object);
 
 
 /**
@@ -38,6 +48,14 @@ void exit_on_error(char* message);
  * @return a modulo
  */
 size_t positive_modulo(int a, int b);
+
+
+/**
+ * @brief Perform a safe malloc interrupting program on memory allocation failure
+ * @param size the size to allocate
+ * @return a general pointer
+ */
+void* safe_malloc(size_t size);
 
 
 /**

@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 /**
- * Implementation of a FILO structure
+ * Implementation of a FILO Abstract Data Type
  *
  * Notes :
  * 1) You have to correctly implement copy, delete and debug operators

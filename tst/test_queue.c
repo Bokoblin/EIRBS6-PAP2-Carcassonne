@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include "test_utils.h"
 #include "../src/common/common_interface.h"
-#include "../src/common/queue.h"
+#include "../src/common/ADT/queue.h"
+#include "../src/common/utils.h"
 
 ////////////////////////////////////////////////////////////////////
 ///     USER FUNCTIONS IMPLEMENTATION
@@ -13,7 +14,7 @@ void* operator_copy(const enum card_id *p_card_id)
     if (p_card_id == NULL)
         return NULL;
 
-    enum card_id *new_card = malloc(sizeof(enum card_id));
+    enum card_id *new_card = safe_malloc(sizeof(enum card_id));
     *new_card = *p_card_id;
     return new_card;
 }
@@ -46,12 +47,12 @@ int test_queue__empty()
 
     if (q == NULL) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__free(q);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__is_empty_on_empty_queue()
@@ -62,12 +63,12 @@ int test_queue__is_empty_on_empty_queue()
 
     if (!queue__is_empty(q)) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__free(q);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__is_empty_on_non_empty_queue()
@@ -77,19 +78,19 @@ int test_queue__is_empty_on_non_empty_queue()
     struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card = CARD_MONASTERY_ALONE;
     
-    if (queue__enqueue(q, &card) != SUCCESS) {
+    if (queue__enqueue(q, &card) != TEST_SUCCESS) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     if (queue__is_empty(q)) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__free(q);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__enqueue_on_non_empty_queue()
@@ -109,10 +110,10 @@ int test_queue__enqueue_on_non_empty_queue()
 
     if (queue__length(q) != 5) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
     queue__free(q);
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue_NULL()
@@ -124,11 +125,11 @@ int test_queue_NULL()
 
     if (!queue__is_empty(q)) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__free(q);
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__enqueue_on_multiple_elements()
@@ -144,12 +145,12 @@ int test_queue__enqueue_on_multiple_elements()
 
     if (queue__length(q) < 500) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__free(q);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__front()
@@ -163,7 +164,7 @@ int test_queue__front()
     if (!queue__is_empty(q) || front != NULL) {
         free(front);
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     free(front);
@@ -176,13 +177,13 @@ int test_queue__front()
     if (queue__is_empty(q) || *front != CARD_CITY_THREE) {
         free(front);
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     free(front);
     queue__free(q);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__back()
@@ -196,7 +197,7 @@ int test_queue__back()
     if (!queue__is_empty(q) || back != NULL) {
         free(back);
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     free(back);
@@ -211,13 +212,13 @@ int test_queue__back()
     if (queue__is_empty(q) || *back != CARD_PLAIN_CITY_ROAD_SHLD) {
         free(back);
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     free(back);
     queue__free(q);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__dequeue_on_empty_queue()
@@ -231,12 +232,12 @@ int test_queue__dequeue_on_empty_queue()
     if (front != NULL) {
         free(front);
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     free(front);
     queue__free(q);
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__dequeue_on_non_empty_queue()
@@ -261,14 +262,14 @@ int test_queue__dequeue_on_non_empty_queue()
         free(front_c1);
         free(front_c2);
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     free(front_c1);
     free(front_c2);
     queue__free(q);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue_length()
@@ -282,19 +283,19 @@ int test_queue_length()
 
     if (queue__length(q) != 1) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__enqueue(q, &card2);
 
     if (queue__length(q) != 2) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__free(q);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue_debug()
@@ -325,7 +326,7 @@ int test_queue_debug()
     queue__free(q);
 
     printf("%s... ", __func__);
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
@@ -343,7 +344,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
 
     if (queue__length(q) < 60) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__debug(q);
@@ -356,7 +357,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
 
     if (queue__length(q) < 20) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__debug(q);
@@ -369,7 +370,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
 
     if (queue__length(q) < 40) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__debug(q);
@@ -382,7 +383,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
 
     if (queue__length(q) < 10) {
         queue__free(q);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     queue__debug(q);
@@ -390,7 +391,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
     queue__free(q);
 
     printf("%s... ", __func__);
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 
@@ -412,5 +413,5 @@ int main()
     print_success(test_queue_debug());
     print_success(test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug());
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }

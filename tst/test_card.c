@@ -2,12 +2,13 @@
 #include "test_utils.h"
 #include "../src/common/common_interface.h"
 #include "../src/common/card.h"
-#include "../src/common/stack.h"
+#include "../src/common/ADT/stack.h"
+#include "../src/common/utils.h"
 
 void* operator_copy(void* given_card)
 {
     enum card_id *_given_card = given_card;
-    enum card_id *new_card = malloc(sizeof(enum card_id));
+    enum card_id *new_card = safe_malloc(sizeof(enum card_id));
     *new_card = *_given_card;
     return new_card;
 }
@@ -30,17 +31,17 @@ int test_card__init()
     struct card* c = card__init(CARD_JUNCTION_CITY);
     if (c->type.id != CARD_JUNCTION_CITY) {
         card__free(c);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     if (c->orientation != DEFAULT_ORIENTATION) {
         card__free(c);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     card__free(c);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 
@@ -52,7 +53,7 @@ int test_card__place()
 
     printf("- Not tested yet - ");
 
-    return !SUCCESS;
+    return !TEST_SUCCESS;
 }
 
 
@@ -65,18 +66,18 @@ int test_card__get_area()
     for (int i = 0 ; i < (MAX_ZONES-1) ; i++) {
         if (card__get_area(c, (enum place) i) != FIELD) {
             card__free(c);
-            return !SUCCESS;
+            return !TEST_SUCCESS;
         }
     }
 
     if (card__get_area(c, POS_CENTER) != ABBEY) {
         card__free(c);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     card__free(c);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 
 }
 
@@ -91,13 +92,13 @@ int test_card__are_matching_direction_success_case()
     if (card__are_matching_direction(c1, c2, EAST)) {
         card__free(c1);
         card__free(c2);
-        return SUCCESS;
+        return TEST_SUCCESS;
     }
 
     card__free(c1);
     card__free(c2);
 
-    return !SUCCESS;
+    return !TEST_SUCCESS;
 }
 
 int test_card__are_matching_direction_failure_case()
@@ -110,13 +111,13 @@ int test_card__are_matching_direction_failure_case()
     if (!card__are_matching_direction(c1, c2, EAST)) {
         card__free(c1);
         card__free(c2);
-        return SUCCESS;
+        return TEST_SUCCESS;
     }
 
     card__free(c1);
     card__free(c2);
 
-    return !SUCCESS;
+    return !TEST_SUCCESS;
 }
 
 int test_card__link_at_direction()
@@ -131,13 +132,13 @@ int test_card__link_at_direction()
     if ((c1->neighbors[EAST] == c2) && (c2->neighbors[WEST] == c1)) {
         card__free(c1);
         card__free(c2);
-        return SUCCESS;
+        return TEST_SUCCESS;
     }
 
     card__free(c1);
     card__free(c2);
 
-    return !SUCCESS;
+    return !TEST_SUCCESS;
 }
 
 
@@ -155,12 +156,12 @@ int test_card__draw()
 
     if (cid != CARD_JUNCTION_CITY) {
         stack__free(s);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(s);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 
@@ -173,12 +174,12 @@ int test_card__set_orientation()
 
     if (c->orientation == NORTH_TO_WEST) {
         card__free(c);
-        return SUCCESS;
+        return TEST_SUCCESS;
     }
 
     card__free(c);
 
-    return !SUCCESS;
+    return !TEST_SUCCESS;
 }
 
 
@@ -196,5 +197,5 @@ int main()
     print_success(test_card__draw());
     print_success(test_card__set_orientation());
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }

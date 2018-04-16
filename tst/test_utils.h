@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#define SUCCESS 0
+#define TEST_SUCCESS 0
 
 /**
  * @brief Print if a test succeeded or not, in color

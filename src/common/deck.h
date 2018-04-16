@@ -1,7 +1,7 @@
 #ifndef DECK_H
 #define DECK_H
 
-#include "stack.h"
+#include "ADT/stack.h"
 
 #define CARDS_NUMBER 72
 

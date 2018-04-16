@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 /**
- * Implementation of a FIFO
+ * Implementation of a FIFO Abstract Data Type
  *
  * Notes :
  * 1) You have to correctly implement copy, delete and debug operators

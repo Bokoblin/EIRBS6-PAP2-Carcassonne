@@ -5,15 +5,12 @@
 
 struct card* card__init(enum card_id card_id)
 {
-    struct card * c = malloc(sizeof(struct card));
-    if (c == NULL) {
-        exit_on_error("Malloc failure on: struct card*");
-    } else {
-        c->type = card__id_to_type(card_id);
-        c->orientation = DEFAULT_ORIENTATION;
-        c->pos.x = 999; //meaning invalid
-        c->pos.y = 999;
-    }
+    struct card *c = safe_malloc(sizeof(struct card));
+
+    c->type = card__id_to_type(card_id);
+    c->orientation = DEFAULT_ORIENTATION;
+    c->pos.x = 999; //meaning invalid
+    c->pos.y = 999;
 
     return c;
 }
@@ -25,8 +22,7 @@ void card__free(struct card *card)
 
 enum area_type card__get_area(struct card *card, enum place place)
 {
-    if (card == NULL)
-        exit_on_error("NULL value on card*"); //TODO : replace by assertNotNull(ptr, message)
+    assert_not_null(card, __func__, "card parameter");
 
     if (place == POS_CENTER)
         return card->type.areas[place-1];
@@ -34,40 +30,50 @@ enum area_type card__get_area(struct card *card, enum place place)
     return card->type.areas[(place-1+3*card->orientation)%12];
 }
 
-int card__are_matching_direction(struct card *card_1, struct card *card_2, enum direction direction)
+int card__are_matching(struct card *c1, struct card *c2)
 {
-    if (card_1 == NULL || card_2 == NULL)
-        exit_on_error("NULL value on card*");
+    assert_not_null(c1, __func__, "c1 parameter");
+    assert_not_null(c2, __func__, "c2 parameter");
 
-    for(int i = 0 ; i < 3 ; i++) {
+    return card__are_matching_direction(c1, c2, NORTH)
+            || card__are_matching_direction(c1, c2, SOUTH)
+            || card__are_matching_direction(c1, c2, WEST)
+            || card__are_matching_direction(c1, c2, EAST);
+}
+
+int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction)
+{
+    assert_not_null(c1, __func__, "c1 parameter");
+    assert_not_null(c2, __func__, "c2 parameter");
+
+    for (int i = 0; i < 3; i++) {
         unsigned int place_index = (direction * 3 + 1 + i);
         if (place_index > LAST_POS)
             exit_on_error("Out of range place");
 
         enum place p = (enum place) place_index;
-        if(card__get_area(card_1, p) != card__get_area(card_2, p))
-            return 0; //matching failure
+        if (card__get_area(c1, p) != card__get_area(c2, p))
+            return false; //on matching failure
     }
 
-    return 1;
+    return true;
 }
 
-void card__link_at_direction(struct card *card_1, struct card *card_2, enum direction direction)
+void card__link_at_direction(struct card *c1, struct card *c2, enum direction direction)
 {
-    if (card_1 == NULL || card_2 == NULL)
-        exit_on_error("NULL value on card*");
+    assert_not_null(c1, __func__, "c1 parameter");
+    assert_not_null(c2, __func__, "c2 parameter");
 
     if (direction > DIRECTION_NUMBER)
         exit_on_error("Out of range direction");
 
-    card_1->neighbors[direction] = card_2;
-    card_2->neighbors[(direction+2)%4] = card_1;
+    c1->neighbors[direction] = c2;
+    c2->neighbors[(direction+2)%4] = c1;
 }
 
 int card__place(struct card *new_card, struct position pos)
 {
-    if (new_card == NULL)
-        exit_on_error("NULL value on card*");
+    assert_not_null(new_card, __func__, "new_card parameter");
 
     //TODO : card__place impl
     //For each of the four positions, search card in card_set
@@ -90,8 +96,6 @@ enum card_id card__draw(struct stack *s)
 
 void card__set_orientation(struct card *card, enum orientation orientation)
 {
-    if (card == NULL)
-        exit_on_error("NULL value on card*");
-    else
-        card->orientation = orientation;
+    assert_not_null(card, __func__, "card parameter");
+    card->orientation = orientation;
 }

@@ -27,10 +27,10 @@ file(GLOB TEST_BOARD_SOURCE_FILES
         "../src/common/card_type.h"
         "../src/common/card_type.c"
         "../src/common/common_interface.h"
-        "../src/common/set.h"
-        "../src/common/set.c"
-        "../src/common/stack.h"
-        "../src/common/stack.c"
+        "../src/common/ADT/set.h"
+        "../src/common/ADT/set.c"
+        "../src/common/ADT/stack.h"
+        "../src/common/ADT/stack.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
         )
@@ -43,8 +43,8 @@ file(GLOB TEST_CARD_SOURCE_FILES
         "../src/common/card_type.h"
         "../src/common/card_type.c"
         "../src/common/card.c"
-        "../src/common/stack.h"
-        "../src/common/stack.c"
+        "../src/common/ADT/stack.h"
+        "../src/common/ADT/stack.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
         "../src/common/common_interface.h"
@@ -57,8 +57,8 @@ file(GLOB TEST_DECK_SOURCE_FILES
         "../src/common/deck.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
-        "../src/common/stack.h"
-        "../src/common/stack.c"
+        "../src/common/ADT/stack.h"
+        "../src/common/ADT/stack.c"
         "../src/common/common_interface.h"
         )
 
@@ -67,8 +67,8 @@ file(GLOB TEST_STACK_SOURCE_FILES
         "test_stack.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
-        "../src/common/stack.h"
-        "../src/common/stack.c"
+        "../src/common/ADT/stack.h"
+        "../src/common/ADT/stack.c"
         )
 
 file(GLOB TEST_QUEUE_SOURCE_FILES
@@ -76,8 +76,8 @@ file(GLOB TEST_QUEUE_SOURCE_FILES
         "test_queue.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
-        "../src/common/queue.h"
-        "../src/common/queue.c"
+        "../src/common/ADT/queue.h"
+        "../src/common/ADT/queue.c"
         )
 
 file(GLOB TEST_SET_SOURCE_FILES
@@ -85,8 +85,8 @@ file(GLOB TEST_SET_SOURCE_FILES
         "test_set.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
-        "../src/common/set.h"
-        "../src/common/set.c"
+        "../src/common/ADT/set.h"
+        "../src/common/ADT/set.c"
         )
         
 #----------------------------

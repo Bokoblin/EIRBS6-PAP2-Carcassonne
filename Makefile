@@ -1,14 +1,23 @@
 #PROJECT : EIRBS6-PAP2-ProjetCarcassonne
 
+#######################################################
+###				CONFIGURATION
+#######################################################
+
 SRC_DIR = src
 TST_DIR = tst
 INS_DIR = install
+
+CLI_DIR = $(SRC_DIR)/client
+COM_DIR = $(SRC_DIR)/common
+ADT_DIR = $(COM_DIR)/ADT
+SRV_DIR = $(SRC_DIR)/server
 
 CC 		= gcc
 CFLAGS	= -Wall -Wextra -std=c99 -g -O0
 CPPFLAGS= -I ${SRC_DIR} -I ${TST_DIR} -I ${INS_DIR}
 
-SERVER_SOURCES 	= $(wildcard $(SRC_DIR)/server/*.c $(SRC_DIR)/common/*.c)
+SERVER_SOURCES 	= $(wildcard $(SRC_DIR)/server/*.c $(SRC_DIR)/common/*.c $(SRC_DIR)/common/ADT/*.c)
 CLIENT_SOURCES 	= $(wildcard $(SRC_DIR)/client/*.c)
 TESTS_SOURCES 	= $(wildcard $(TST_DIR)/*.c $(SRC_DIR)/common/*.c)
 
@@ -24,6 +33,7 @@ TESTS_EXECUTABLE 	= test_board test_card test_deck test_set test_stack test_queu
 ###				MAKE DEFAULT COMMAND
 #######################################################
 
+.PHONY: all help prebuild build test vtest install clean run vrun docs
 all: help
 
 
@@ -31,28 +41,28 @@ all: help
 ###				MAKE INSTRUCTIONS / HELP
 #######################################################
 
-.PHONY: help
 help:
 	@echo -e Available commands:'\n' \
 		'\t' make help			'\n' \
 		'\t' make build			'\n' \
 		'\t' make test			'\n' \
-		'\t' make memory		'\n' \
+		'\t' make vtest			'\n' \
 		'\t' make install		'\n' \
 		'\t' make clean			'\n' \
 		'\t' make run			'\n' \
-		'\t' make docs
+		'\t' make vrun			'\n' \
+		'\t' make docs			'\n' \
+								'\n' \
+		Commands details can be found in the README
 
 
 #######################################################
 ###				MAKE BUILD
 #######################################################
 
-.PHONY: prebuild
 prebuild:
 	@echo Starting building...
 
-.PHONY: build
 build: prebuild $(SERVER_EXECUTABLE)
 	@echo building clients...
 	@for client in `find src/client -name "client*.c" | sed -e "s/\.c$$//" `; do \
@@ -71,7 +81,6 @@ $(SERVER_EXECUTABLE): $(SERVER_OBJECTS)
 ###				MAKE TEST
 #######################################################
 
-.PHONY: test
 test: $(TESTS_EXECUTABLE)
 ifneq ($(TESTS_EXECUTABLE),)
 	@echo Starting tests...
@@ -83,54 +92,19 @@ else
 	@echo No test available
 endif
 
-test_board: test_board.o board.o utils.o card.o stack.o function_pointers.o set.o card_type.o player.o
-	${CC} $(CPPFLAGS) test_board.o board.o utils.o card.o stack.o function_pointers.o set.o card_type.o player.o -o $@ -lm -ldl
-
-test_card: test_card.o card.o utils.o stack.o card_type.o
-	${CC} $(CPPFLAGS) test_card.o card.o utils.o stack.o card_type.o -o $@ -lm -ldl
-
-test_deck: test_deck.o deck.o utils.o stack.o
-	${CC} $(CPPFLAGS) test_deck.o deck.o utils.o stack.o -o $@ -lm -ldl
-
-test_set: test_set.o set.o utils.o
-	${CC} $(CPPFLAGS) test_set.o set.o utils.o -o $@ -lm -ldl
-
-test_stack: test_stack.o stack.o utils.o
-	${CC} $(CPPFLAGS) test_stack.o stack.o utils.o -o $@ -lm -ldl
-
-test_queue: test_queue.o queue.o utils.o
-	${CC} $(CPPFLAGS) test_queue.o queue.o utils.o -o $@ -lm -ldl
-
 
 #######################################################
-###				MAKE TEST MEMORY CHECK
+###				MAKE TEST WITH VALGRIND
 #######################################################
 
-.PHONY: memory
-memory: $(TESTS_EXECUTABLE)
+vtest: $(TESTS_EXECUTABLE)
 ifneq ($(TESTS_EXECUTABLE),)
 	@echo Starting tests...
 	@for e in $(TESTS_EXECUTABLE); do \
 		echo =====  $${e} =====; \
 		valgrind --log-fd=1 ./$${e} \
 		| grep "ERROR SUMMARY:\|total heap usage:" \
-		| awk '{	\
-				for(i=2;i<=NF;i++) { \
-					if (match($$((i+1)), /allocs/) && $$i > $$((i+2))) \
-                        printf "\x1B[31m%s \x1b[0m", $$i; \
-					else if (match($$i, /[1-9]+$$/) && match($$((i+1)), /errors/)) \
-                        printf "\x1B[31m%s \x1b[0m", $$i; \
-					else if (match($$i, /[1-9]+$$/) && match($$((i+1)), /contexts/)) \
-                        printf "\x1B[31m%s \x1b[0m", $$i; \
-					else if (match($$i, /[0-9]+$$/)) \
-                    	printf "\x1B[32m%s \x1b[0m", $$i; \
-                    else if (match($$i, /ERROR/)) \
-                    	printf "\n%s ", $$i; \
-                    else \
-                    	printf "%s ", $$i; \
-				} \
-				}'; \
-		echo; echo; \
+		| $(VALGRIND_AWK) \
 	done
 	@echo Tests complete.
 else
@@ -142,7 +116,6 @@ endif
 ###				MAKE INSTALL
 #######################################################
 
-.PHONY: install
 install: build
 	@echo
 	@echo Starting installation...
@@ -158,7 +131,6 @@ install: build
 ###				MAKE CLEAN
 #######################################################
 
-.PHONY: clean
 clean:
 	@echo Starting cleanup...
 	@find . -type f -name '*.o' -delete
@@ -173,75 +145,79 @@ clean:
 ###				MAKE RUN
 #######################################################
 
-.PHONY: run
 run:
 	@echo Running program...
-	./install/server ./install/*.so
+	@./install/server ./install/*.so
+
+
+#######################################################
+###				MAKE RUN WITH VALGRING
+#######################################################
+
+vrun:
+	@echo Running program...
+	@valgrind ./install/server ./install/*.so
 
 
 #######################################################
 ###				MAKE DOCUMENTATION
 #######################################################
 
-.PHONY: docs
 docs:
 	doxygen Doxyfile
+
+
+#######################################################
+###				TEST EXECUTABLES
+#######################################################
+
+test_board: $(SRV_DIR)/board.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
+			$(SRV_DIR)/player.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_board.o
+	${CC} $(CPPFLAGS) $? -o $@ -lm -ldl
+
+test_card: $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_card.o
+	${CC} $(CPPFLAGS) $? -o $@ -lm -ldl
+
+test_deck: $(COM_DIR)/deck.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_deck.o
+	${CC} $(CPPFLAGS) $? -o $@ -lm -ldl
+
+test_queue: $(ADT_DIR)/queue.o $(COM_DIR)/utils.o $(TST_DIR)/test_queue.o
+	${CC} $(CPPFLAGS) $? -o $@ -lm -ldl
+
+test_set: $(ADT_DIR)/set.o $(COM_DIR)/utils.o $(TST_DIR)/test_set.o
+	${CC} $(CPPFLAGS) $? -o $@ -lm -ldl
+
+test_stack: $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_stack.o
+	${CC} $(CPPFLAGS) $? -o $@ -lm -ldl
 
 
 #######################################################
 ###				OBJECTS FILES
 #######################################################
 
-board.o: $(SRC_DIR)/server/board.c $(SRC_DIR)/server/board.h $(SRC_DIR)/common/card_type.h
-	${CC} ${CFLAGS} $(SRC_DIR)/server/board.c -c
+%.o : %.c
+	$(CC) -c $(CFLAGS) $< -o $@
 
-card.o: $(SRC_DIR)/common/card.c $(SRC_DIR)/common/card.h
-	${CC} ${CFLAGS} $(SRC_DIR)/common/card.c -c
 
-deck.o: $(SRC_DIR)/common/deck.c $(SRC_DIR)/common/deck.h
-	${CC} ${CFLAGS} $(SRC_DIR)/common/deck.c -c
+#######################################################
+###				EXTRAS
+#######################################################
 
-player.o: $(SRC_DIR)/server/player.c $(SRC_DIR)/server/player.h
-	${CC} ${CFLAGS} $(SRC_DIR)/server/player.c -c
-
-moves.o: $(SRC_DIR)/client/moves.c $(SRC_DIR)/client/moves.h
-	${CC} ${CFLAGS} $(SRC_DIR)/client/moves.c -c
-
-card_type.o: $(SRC_DIR)/common/card_type.c $(SRC_DIR)/common/card_type.h
-	${CC} ${CFLAGS} $(SRC_DIR)/common/card_type.c -c
-
-function_pointers.o: $(SRC_DIR)/server/function_pointers.c $(SRC_DIR)/server/function_pointers.h
-	${CC} ${CFLAGS} $(SRC_DIR)/server/function_pointers.c -c
-
-server.o: $(SRC_DIR)/server/server.c
-	${CC} ${CFLAGS} $(SRC_DIR)/server/server.c -c
-
-stack.o: $(SRC_DIR)/common/stack.c $(SRC_DIR)/common/stack.h
-	${CC} ${CFLAGS} $(SRC_DIR)/common/stack.c -c
-
-set.o: $(SRC_DIR)/common/set.c $(SRC_DIR)/common/set.h
-	${CC} ${CFLAGS} $(SRC_DIR)/common/set.c -c
-
-queue.o: $(SRC_DIR)/common/queue.c $(SRC_DIR)/common/queue.h
-	${CC} ${CFLAGS} $(SRC_DIR)/common/queue.c -c
-
-utils.o: $(SRC_DIR)/common/utils.c $(SRC_DIR)/common/utils.h
-	${CC} ${CFLAGS} $(SRC_DIR)/common/utils.c -c
-
-test_board.o: $(TST_DIR)/test_board.c
-	${CC} ${CFLAGS} $(TST_DIR)/test_board.c -c
-
-test_card.o: $(TST_DIR)/test_card.c
-	${CC} ${CFLAGS} $(TST_DIR)/test_card.c -c
-
-test_deck.o: $(TST_DIR)/test_deck.c
-	${CC} ${CFLAGS} $(TST_DIR)/test_deck.c -c
-
-test_queue.o: $(TST_DIR)/test_queue.c
-	${CC} ${CFLAGS} $(TST_DIR)/test_queue.c -c
-
-test_set.o: $(TST_DIR)/test_set.c
-	${CC} ${CFLAGS} $(TST_DIR)/test_set.c -c
-
-test_stack.o: $(TST_DIR)/test_stack.c
-	${CC} ${CFLAGS} $(TST_DIR)/test_stack.c -c
+VALGRIND_AWK = \
+awk '{	\
+	for(i=2;i<=NF;i++) { \
+		if (match($$((i+1)), /allocs/) && $$i > $$((i+2))) \
+			   printf "\x1B[31m%s \x1b[0m", $$i; \
+		else if (match($$i, /[1-9]+$$/) && match($$((i+1)), /errors/)) \
+			   printf "\x1B[31m%s \x1b[0m", $$i; \
+		else if (match($$i, /[1-9]+$$/) && match($$((i+1)), /contexts/)) \
+			   printf "\x1B[31m%s \x1b[0m", $$i; \
+		else if (match($$i, /[0-9]+$$/)) \
+			printf "\x1B[32m%s \x1b[0m", $$i; \
+		   else if (match($$i, /ERROR/)) \
+			printf "\n%s ", $$i; \
+		   else \
+			printf "%s ", $$i; \
+		} \
+	}'; \
+echo; echo;

@@ -10,11 +10,11 @@ int test_init_deck()
     struct stack *d = init_deck();
 
     if (d == NULL)
-        return !SUCCESS;
+        return !TEST_SUCCESS;
 
     if (stack__length(d) != CARDS_NUMBER) {
         stack__free(d);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     int card_occurrence[24];
@@ -53,12 +53,12 @@ int test_init_deck()
             || card_occurrence[CARD_PLAIN_TUNNEL] != 3
             ) {
         stack__free(d);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(d);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int main()
@@ -67,5 +67,5 @@ int main()
 
     print_success(test_init_deck());
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }

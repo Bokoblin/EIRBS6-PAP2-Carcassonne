@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include "set.h"
+#include "../utils.h"
 
 #define BASIC_SET_SIZE 8 //must be a power of two
 
@@ -63,9 +64,9 @@ void shift_left(struct set const *set, size_t begin, size_t end)
 
 struct set *set__empty(void* copy_op, void* delete_op, void* compare_op)
 {
-    struct set *set = malloc(sizeof(struct set));
+    struct set *set = safe_malloc(sizeof(struct set));
     set->capacity = BASIC_SET_SIZE;
-    set->s = malloc(sizeof(void*)*set->capacity);
+    set->s = safe_malloc(sizeof(void*)*set->capacity);
     set->size = 0;
     set->copy =copy_op;
     set->delete = delete_op;
@@ -94,7 +95,8 @@ int set__add(struct set *set, void* x)
     if (set->size == set->capacity) {
         set->capacity = set->capacity * 2;
         set->s = realloc(set->s, sizeof(void*)*set->capacity);
-        assert(set->s != NULL);
+        if (set->s == NULL)
+            return -1;
     }
 
     //Add x into the set
@@ -127,7 +129,8 @@ int set__remove(struct set *set, void* x)
     if (set->size < set->capacity / 4) {
         set->capacity = set->capacity / 4;
         set->s = realloc(set->s, sizeof(void*)*set->capacity);
-        assert(set->s != NULL);
+        if (set->s == NULL)
+            return -1;
     }
 
     return 0;
@@ -165,7 +168,8 @@ struct set *set__filter(const struct set *set, int (*filter) (const void*))
         if (filtered_set->size == filtered_set->capacity) {
             filtered_set->capacity = filtered_set->capacity * 2;
             filtered_set->s = realloc(filtered_set->s, sizeof(void*)*filtered_set->capacity);
-            assert(filtered_set->s != NULL);
+            if (filtered_set->s == NULL)
+                return NULL;
         }
         if (filter(set->s[i])) {
             filtered_set->s[filtered_set->size -1] = set->copy(set->s[i]);

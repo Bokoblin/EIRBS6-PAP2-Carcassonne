@@ -1,8 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "test_utils.h"
-#include "../src/common/stack.h"
+#include "../src/common/ADT/stack.h"
 #include "../src/common/common_interface.h"
+#include "../src/common/utils.h"
 
 ////////////////////////////////////////////////////////////////////
 ///     USER FUNCTIONS IMPLEMENTATION
@@ -11,7 +12,7 @@
 void* operator_copy(void *given_card)
 {
     enum card_id *_given_card = given_card;
-    enum card_id *new_card = malloc(sizeof(enum card_id));
+    enum card_id *new_card = safe_malloc(sizeof(enum card_id));
     *new_card = *_given_card;
     return new_card;
 }
@@ -40,12 +41,12 @@ int test_stack__empty()
 
     if (p == NULL) {
         stack__free(p);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(p);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack__is_empty_on_empty_stack()
@@ -56,12 +57,12 @@ int test_stack__is_empty_on_empty_stack()
 
     if (!stack__is_empty(p)) {
         stack__free(p);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(p);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack__is_empty_on_non_empty_stack()
@@ -74,12 +75,12 @@ int test_stack__is_empty_on_non_empty_stack()
 
     if (stack__is_empty(p)) {
         stack__free(p);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(p);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack__push_on_non_empty_stack()
@@ -99,10 +100,10 @@ int test_stack__push_on_non_empty_stack()
 
     if (stack__length(p) != 5) {
         stack__free(p);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
     stack__free(p);
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack_NULL()
@@ -114,11 +115,11 @@ int test_stack_NULL()
 
     if (!stack__is_empty(p)) {
         stack__free(p);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(p);
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack__push_on_multiple_elements()
@@ -134,12 +135,12 @@ int test_stack__push_on_multiple_elements()
 
     if (stack__length(s) < 500) {
         stack__free(s);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(s);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack__peek()
@@ -150,7 +151,7 @@ int test_stack__peek()
 
     if (!stack__is_empty(s) || stack__peek(s) != NULL) {
         stack__free(s);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     enum card_id card = CARD_CITY_THREE;
@@ -160,12 +161,12 @@ int test_stack__peek()
     if (stack__is_empty(s) ||  *peek != CARD_CITY_THREE) {
         free(peek);
         stack__free(s);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
     free(peek);
     stack__free(s);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack__pop_on_empty_stack()
@@ -177,11 +178,11 @@ int test_stack__pop_on_empty_stack()
 
     if (NULL != unstacked) {
         stack__free(s);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(s);
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack__pop_on_non_empty_stack()
@@ -203,14 +204,14 @@ int test_stack__pop_on_non_empty_stack()
         stack__free(s);
         free(unstacked1);
         free(unstacked2);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     free(unstacked1);
     free(unstacked2);
     stack__free(s);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack_length()
@@ -224,19 +225,19 @@ int test_stack_length()
 
     if (stack__length(s) != 1) {
         stack__free(s);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__push(s, &card2);
 
     if (stack__length(s) != 2) {
         stack__free(s);
-        return !SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     stack__free(s);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_stack_debug()
@@ -259,7 +260,7 @@ int test_stack_debug()
 
     stack__free(s);
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int main()
@@ -278,5 +279,5 @@ int main()
     print_success(test_stack_length());
     print_success(test_stack_debug());
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }

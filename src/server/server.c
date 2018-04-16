@@ -4,8 +4,8 @@
 #include <time.h>
 #include "../server/function_pointers.h"
 #include "../common/utils.h"
-#include "../common/queue.h"
-#include "../common/stack.h"
+#include "../common/ADT/queue.h"
+#include "../common/ADT/stack.h"
 #include "../common/card.h"
 #include "../common/deck.h"
 #include "../server/board.h"
@@ -105,14 +105,11 @@ enum card_id draw_until_valid(struct board* b, struct stack *s)
 
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves)
 {
-    if (moves == NULL)
-        exit_on_error("NULL moves queue");
+    assert_not_null(moves, __func__, "moves parameter");
 
-    struct move *moves_array = malloc(sizeof(struct move) * nb_moves);
-    if (moves_array == NULL)
-        exit_on_error("Malloc failure on struct move*");
+    struct move *moves_array = safe_malloc(sizeof(struct move) * nb_moves);
 
-    else if (!queue__is_empty(moves)) {
+    if (!queue__is_empty(moves)) {
         for (unsigned int i = 0; i < nb_moves; i++) {
             struct move *m = queue__front(moves);
             queue__dequeue(moves);

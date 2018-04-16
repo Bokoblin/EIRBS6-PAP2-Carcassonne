@@ -2,7 +2,7 @@
 #define CARDS_H
 
 #include "common_interface.h"
-#include "stack.h"
+#include "ADT/stack.h"
 #include "area_type.h"
 #include "card_type.h"
 
@@ -67,22 +67,31 @@ enum area_type card__get_area(struct card *card, enum place place);
 
 
 /**
+ * @brief Decide if two cards are matching in at least one direction
+ * @param c1 a card
+ * @param c2 a card
+ * @return 1 if matching, 0 otherwise
+ */
+int card__are_matching(struct card *c1, struct card *c2);
+
+
+/**
  * @brief decide if two cards match in a certain direction
- * @param card_1
- * @param card_2
+ * @param c1 a card
+ * @param c2 a card
  * @param direction the direction in which the cards are compared
  * @return 1 if the cards match, 0 otherwise
  */
-int card__are_matching_direction(struct card *card_1, struct card *card_2, enum direction direction);
+int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction);
 
 
 /**
  * @brief link two cards to each other in a certain direction
- * @param card_1
- * @param card_2
+ * @param c1 a card
+ * @param c2 a card
  * @param direction the direction in which the cards match (relative to card_1)
  */
-void card__link_at_direction(struct card *card_1, struct card *card_2, enum direction direction);
+void card__link_at_direction(struct card *c1, struct card *c2, enum direction direction);
  
 
 /**

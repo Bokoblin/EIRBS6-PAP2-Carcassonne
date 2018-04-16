@@ -19,7 +19,7 @@ int test_board__empty()
 
     printf("- Not finished yet - ");
 
-    return !SUCCESS;
+    return !TEST_SUCCESS;
 }
 
 int test_board__add_card()
@@ -30,7 +30,7 @@ int test_board__add_card()
 
     printf("- Not tested yet - ");
 
-    return !SUCCESS;
+    return !TEST_SUCCESS;
 }
 
 int main()
@@ -40,5 +40,5 @@ int main()
     print_success(test_board__empty());
     print_success(test_board__add_card());
 
-    return SUCCESS;
+    return TEST_SUCCESS;
 }

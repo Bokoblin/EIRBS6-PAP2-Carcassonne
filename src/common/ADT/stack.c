@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "stack.h"
-#include "utils.h"
+#include "../utils.h"
 
 #define DEFAULT_STACK_CAPACITY 2
 
@@ -32,17 +32,15 @@ struct stack
 
 struct stack *stack__empty(void* copy_op, void* delete_op, void* debug_op)
 {
-    struct stack *s = malloc(sizeof(struct stack));
-    if (s == NULL) {
-        exit_on_error("Malloc failure on: struct stack*");
-    } else {
-        s->capacity = DEFAULT_STACK_CAPACITY;
-        s->head = 0;
-        s->array = malloc(sizeof(void*) * (s->capacity));
-        s->operator_copy = copy_op;
-        s->operator_delete = delete_op;
-        s->operator_debug = debug_op;
-    }
+    struct stack *s = safe_malloc(sizeof(struct stack));
+
+    s->capacity = DEFAULT_STACK_CAPACITY;
+    s->head = 0;
+    s->array = safe_malloc(sizeof(void*) * (s->capacity));
+    s->operator_copy = copy_op;
+    s->operator_delete = delete_op;
+    s->operator_debug = debug_op;
+
     return s;
 }
 
