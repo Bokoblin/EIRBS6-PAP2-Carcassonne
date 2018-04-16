@@ -6,7 +6,7 @@
 #include "../src/common/utils.h"
 
 ////////////////////////////////////////////////////////////////////
-///     USER FUNCTIONS IMPLEMENTATION
+///     OPERATORS FUNCTIONS IMPLEMENTATION
 ////////////////////////////////////////////////////////////////////
 
 void* operator_copy(void *given_card)
@@ -27,6 +27,7 @@ void operator_debug(void* given_card)
     enum card_id *_given_card = given_card;
     printf("%d", *_given_card);
 }
+
 
 ////////////////////////////////////////////////////////////////////
 ///     STACK FUNCTIONS TESTS
