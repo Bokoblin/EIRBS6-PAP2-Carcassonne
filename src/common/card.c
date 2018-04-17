@@ -12,6 +12,9 @@ struct card* card__init(enum card_id card_id)
     c->pos.x = 999; //meaning invalid
     c->pos.y = 999;
 
+    for (int i = 0; i < 4; i++)
+        c->neighbors[i] = NULL;
+
     return c;
 }
 
@@ -28,6 +31,19 @@ enum area_type card__get_area(struct card *card, enum place place)
         return card->type.areas[place-1];
 
     return card->type.areas[(place-1+3*card->orientation)%12];
+}
+
+unsigned int card__get_neighbour_number(struct card *card)
+{
+    assert_not_null(card, __func__, "card parameter");
+
+    unsigned int cpt = 0;
+
+    for (int i = 0; i < 4; i++)
+        if (card->neighbors[i] != NULL)
+            cpt++;
+
+    return cpt;
 }
 
 int card__are_matching(struct card *c1, struct card *c2)
@@ -69,21 +85,6 @@ void card__link_at_direction(struct card *c1, struct card *c2, enum direction di
 
     c1->neighbors[direction] = c2;
     c2->neighbors[(direction+2)%4] = c1;
-}
-
-int card__place(struct card *new_card, struct position pos)
-{
-    assert_not_null(new_card, __func__, "new_card parameter");
-
-    //TODO : card__place impl
-    //For each of the four positions, search card in card_set
-    //with search_dicho(set, x, y) -> card
-    //update neighbour_list of each card with accurate card position
-    //update new card
-    //add card to set
-    (void) pos;
-
-    return -1;
 }
 
 enum card_id card__draw(struct stack *s)

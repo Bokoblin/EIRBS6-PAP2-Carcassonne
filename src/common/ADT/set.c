@@ -67,8 +67,10 @@ struct set *set__empty(void* copy_op, void* delete_op, void* compare_op)
     struct set *set = safe_malloc(sizeof(struct set));
     set->capacity = BASIC_SET_SIZE;
     set->s = safe_malloc(sizeof(void*)*set->capacity);
+    for (size_t i = 0; i < set->capacity; i++)
+        set->s[i] = NULL;
     set->size = 0;
-    set->copy =copy_op;
+    set->copy = copy_op;
     set->delete = delete_op;
     set->cmp = compare_op;
 
@@ -97,6 +99,9 @@ int set__add(struct set *set, void* x)
         set->s = realloc(set->s, sizeof(void*)*set->capacity);
         if (set->s == NULL)
             return -1;
+        else
+            for (size_t i = set->capacity / 2; i < set->capacity; i++)
+                set->s[i] = NULL;
     }
 
     //Add x into the set
@@ -134,6 +139,18 @@ int set__remove(struct set *set, void* x)
     }
 
     return 0;
+}
+
+void* set__retrieve(struct set *set, void* x)
+{
+    if  (set->s == NULL || x == NULL || set->size == 0)
+        return NULL;
+
+    size_t pos = find(set, 0, set->size, x);
+    if  (pos >= set->size || (pos < set->size && set->cmp(set->s[pos], x) != 0))
+        return NULL;
+
+    return set->s[pos];
 }
 
 

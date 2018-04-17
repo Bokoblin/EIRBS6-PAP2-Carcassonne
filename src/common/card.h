@@ -43,7 +43,7 @@ struct card
 ////////////////////////////////////////////////////////////////////
 
 /**
- * @brief Initializes a card with the type card_type
+ * @brief Initialize a card with the type card_type
  * @param card_type pointer towards the type of card wanted
  * @return a pointer towards a newly created card
  */
@@ -58,12 +58,20 @@ void card__free(struct card *card);
 
 
 /**
- * @brief get the area type 
- * @param card 
+ * @brief Get the area type
+ * @param card a card
  * @param place the zone that we want to get
  * @return the area_type of the area place
  */
 enum area_type card__get_area(struct card *card, enum place place);
+
+
+/**
+ * @brief Get the number of neighbours a card has
+ * @param card a card
+ * @return
+ */
+unsigned int card__get_neighbour_number(struct card *card);
 
 
 /**
@@ -76,7 +84,7 @@ int card__are_matching(struct card *c1, struct card *c2);
 
 
 /**
- * @brief decide if two cards match in a certain direction
+ * @brief Decide if two cards match in a certain direction
  * @param c1 a card
  * @param c2 a card
  * @param direction the direction in which the cards are compared
@@ -92,15 +100,6 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
  * @param direction the direction in which the cards match (relative to card_1)
  */
 void card__link_at_direction(struct card *c1, struct card *c2, enum direction direction);
- 
-
-/**
- * @brief Place the new card relatively to its neighbors and update their structure
- * @param new_card the card to place
- * @param pos the future position
- * @return 0 on success, -1 otherwise
- */
-int card__place(struct card *new_card, struct position pos);
 
 
 /**

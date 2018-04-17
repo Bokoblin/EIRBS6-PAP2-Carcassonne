@@ -59,6 +59,7 @@ enum place
  * There are 24 types of cards, listed here line by line, left to right.
  * All cards are described here by their directions, one per side (NWSE).
  * When a direction is not described, it is by default a plain.
+ * NOTE: STARTING TILE: CARD_ROAD_STRAIGHT_CITY
  */
 enum card_id
 {

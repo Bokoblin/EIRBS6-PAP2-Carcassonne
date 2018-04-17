@@ -54,18 +54,6 @@ int test_card__init()
 }
 
 
-int test_card__place()
-{
-    printf("%s... ", __func__);
-
-    //TODO : test_card__place
-
-    printf("- Not tested yet - ");
-
-    return !TEST_SUCCESS;
-}
-
-
 int test_card__get_area()
 {
     printf("%s... ", __func__);
@@ -88,6 +76,29 @@ int test_card__get_area()
 
     return TEST_SUCCESS;
 
+}
+
+int test_card__get_neighbour_number()
+{
+    printf("%s... ", __func__);
+
+    struct card *c = card__init(CARD_MONASTERY_ALONE);
+
+    if (card__get_neighbour_number(c) != 0) {
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+
+    c->neighbors[0] = c; //stupid but enough for the test
+
+    if (card__get_neighbour_number(c) != 1) {
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+
+    card__free(c);
+
+    return TEST_SUCCESS;
 }
 
 
@@ -198,8 +209,8 @@ int main()
     printf("----------- TEST CARD -----------\n");
 
     print_success(test_card__init());
-    print_success(test_card__place());
     print_success(test_card__get_area());
+    print_success(test_card__get_neighbour_number());
     print_success(test_card__are_matching_direction_success_case());
     print_success(test_card__are_matching_direction_failure_case());
     print_success(test_card__link_at_direction());

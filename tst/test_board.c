@@ -41,18 +41,22 @@ int test_board__empty()
     }
 
     struct stack* s = stack__empty(cards_set_copy_op, cards_set_delete_op, cards_set_debug_op);
-    struct card* c = card__init(CARD_PLAIN_CITY);
-    stack__push(s, c);
+    struct card* starting_card = card__init(CARD_ROAD_STRAIGHT_CITY);
+    stack__push(s, starting_card);
 
     board__free(b1);
     b1 = board__init(s);
 
     if (b1->first_card == NULL || set__is_empty(b1->cards_set) || !set__is_empty(b1->meeples_set)) {
         board__free(b1);
+        stack__free(s);
+        card__free(starting_card);
         return !TEST_SUCCESS;
     }
 
     board__free(b1);
+    stack__free(s);
+    card__free(starting_card);
 
     return TEST_SUCCESS;
 }
@@ -61,11 +65,59 @@ int test_board__add_card()
 {
     printf("%s... ", __func__);
 
-    //TODO : test_board__add_card
+    struct board *b = board__init(NULL);
+    struct card *c = card__init(CARD_PLAIN_CITY);
+    c->pos.x = 0;
+    c->pos.y = -1;
 
-    printf("- Not tested yet - ");
+    //First test: adding in empty set
 
-    return !TEST_SUCCESS;
+    if (board__add_card(b, c) == SUCCESS || card__get_neighbour_number(c) != 0) {
+        board__free(b);
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+
+    board__free(b);
+
+    //Second test: adding in non empty set (1) with no match
+
+    struct stack* s = stack__empty(cards_set_copy_op, cards_set_delete_op, cards_set_debug_op);
+    struct card* starting_card = card__init(CARD_ROAD_STRAIGHT_CITY);
+    stack__push(s, starting_card);
+
+    b = board__init(s);
+    c->type = card__id_to_type(CARD_CITY_ALL_SIDES);
+
+    if (board__add_card(b, c) == SUCCESS || card__get_neighbour_number(c) != 0) {
+        board__free(b);
+        stack__free(s);
+        card__free(c);
+        card__free(starting_card);
+        return !TEST_SUCCESS;
+    }
+
+    //Third test: adding in non empty set with a match
+
+    c->type = card__id_to_type(CARD_ROAD_TURN);
+
+    if (board__add_card(b, c) != SUCCESS || card__get_neighbour_number(c) != 1) {
+        board__free(b);
+        stack__free(s);
+        card__free(c);
+        card__free(starting_card);
+        return !TEST_SUCCESS;
+    }
+
+    //Fourth test: adding in center of 4 tiles for full match
+    //TODO: fourth test
+
+    board__free(b);
+    stack__free(s);
+    card__free(c);
+    card__free(starting_card);
+
+    return TEST_SUCCESS;
 }
 
 int main()

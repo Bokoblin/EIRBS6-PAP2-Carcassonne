@@ -3,6 +3,10 @@
 
 #include <stddef.h>
 
+//TODO: FOLLOW OTHERS ADT RULES
+//TODO: DOCUMENTATION
+//TODO: TRANSLATE BELOW
+
 /**
  * Implementation of an ordered LIST Abstract Data Type
  *
@@ -29,8 +33,6 @@
  */
 struct set;
 
-//TODO: DOCUMENTATION
-
 struct set *set__empty(void* copy_op, void* delete_op, void* compare_op);
 
 int set__is_empty( const struct set *s);
@@ -42,6 +44,9 @@ size_t set__size( const struct set *s);
 int set__add( struct set *s, void* e);
 
 int set__remove( struct set *s, void* e);
+
+//No delete, no copy !
+void* set__retrieve(struct set *s, void* e);
 
 void set__free(struct set *s);
 
