@@ -6,6 +6,10 @@
 
 #define BASIC_SET_SIZE 8 //must be a power of two
 
+////////////////////////////////////////////////////////////////////
+///     STACK STRUCTURE
+////////////////////////////////////////////////////////////////////
+
 struct set
 {
     void **s;
@@ -15,6 +19,10 @@ struct set
     void* (*copy) (void* x);
     void (*delete) (void*);
 };
+
+////////////////////////////////////////////////////////////////////
+///     USEFULL FUNCTIONS
+////////////////////////////////////////////////////////////////////
 
 
 //dichotomic search
@@ -33,7 +41,6 @@ size_t find(struct set const *set, size_t beg, size_t end, void* x)
         return find(set, beg, m, x);
 }
 
-
 void shift_right(struct set const *set, size_t begin, size_t end)
 {
     if ((end >= set->capacity - 1) || (end > set->size))
@@ -45,7 +52,6 @@ void shift_right(struct set const *set, size_t begin, size_t end)
         k--;
     }
 }
-
 
 void shift_left(struct set const *set, size_t begin, size_t end)
 {
@@ -60,7 +66,9 @@ void shift_left(struct set const *set, size_t begin, size_t end)
     }
 }
 
-
+////////////////////////////////////////////////////////////////////
+///     SET FUNCTIONS IMPLEMENTATION
+////////////////////////////////////////////////////////////////////
 
 struct set *set__empty(void* copy_op, void* delete_op, void* compare_op)
 {
@@ -77,12 +85,10 @@ struct set *set__empty(void* copy_op, void* delete_op, void* compare_op)
     return set;
 }
 
-
 int set__is_empty(struct set const *set)
 {
     return (set->size == 0);
 }
-
 
 int set__add(struct set *set, void* x)
 {
@@ -111,7 +117,6 @@ int set__add(struct set *set, void* x)
 
     return 0;
 }
-
 
 int set__remove(struct set *set, void* x)
 {
@@ -153,19 +158,23 @@ void* set__retrieve(struct set *set, void* x)
     return set->s[pos];
 }
 
-
 int set__find(struct set const *set, void* x)
 {
     size_t pos = find(set, 0, set->size, x);
     return  ((pos < set->size) && (set->cmp(set->s[pos], x) == 0));
 }
 
-
 size_t set__size(struct set const * set)
 {
     return set->size;
 }
 
+void* set__get_i_th(struct set const *set, size_t i)
+{
+    if (i >= set__size(set))
+        return NULL;
+    return set->copy(set->s[i]);
+}
 
 void set__free(struct set *set)
 {
@@ -174,7 +183,6 @@ void set__free(struct set *set)
     free(set->s);
     free(set);
 }
-
 
 struct set *set__filter(const struct set *set, int (*filter) (const void*))
 {
@@ -196,7 +204,6 @@ struct set *set__filter(const struct set *set, int (*filter) (const void*))
     }
     return filtered_set;
 }
-
 
 void set__debug_data(const struct set *set, void (*print_data) (const void*))
 {

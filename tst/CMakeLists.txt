@@ -42,7 +42,6 @@ file(GLOB TEST_CARD_SOURCE_FILES
         "../src/common/card.h"
         "../src/common/card_type.h"
         "../src/common/card_type.c"
-        "../src/common/card.c"
         "../src/common/ADT/stack.h"
         "../src/common/ADT/stack.c"
         "../src/common/utils.h"

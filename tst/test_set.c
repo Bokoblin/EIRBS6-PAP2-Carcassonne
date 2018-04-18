@@ -5,6 +5,11 @@
 #include "../src/common/ADT/set.h"
 #include "../src/common/utils.h"
 
+/*
+This test is based on Bordeaux INP's Moodle -> pg 116 -> bigtests.tar.gz
+It has been modified to fit with our tests conventions.
+*/
+
 ////////////////////////////////////////////////////////////////////
 ///     OPERATORS FUNCTIONS IMPLEMENTATION
 ////////////////////////////////////////////////////////////////////
@@ -32,7 +37,7 @@ int int__cmp(void * i1, void * i2) {
 
 void int__display(const void * i) {
     int * _i = (int *)i;
-    printf("%d", *_i);
+    printf("%d ", *_i);
 }
 
 
@@ -46,9 +51,9 @@ int test_set__empty(void)
     fflush(stdout);
 
     struct set * st = set__empty(int__copy, int__free, int__cmp);
-    assert( st != NULL );
+    if (!( st != NULL)) return 1;
 
-    assert( set__is_empty(st) );
+    if (!( set__is_empty(st))) return 1;
 
     set__free(st);
 
@@ -61,13 +66,13 @@ int test_set__is_empty(void)
     fflush(stdout);
 
     struct set * st = set__empty(int__copy, int__free, int__cmp);
-    assert( st != NULL );
+    if (!( st != NULL)) return 1;
 
-    assert( set__is_empty(st) );
+    if (!( set__is_empty(st))) return 1;
 
     int v1 = 1;
-    assert( !set__add(st, &v1) );
-    assert( !set__is_empty(st) );
+    if (set__add(st, &v1)) return 1;
+    if (set__is_empty(st)) return 1;
 
     set__free(st);
 
@@ -79,15 +84,15 @@ int test_set__size(void) {
     fflush(stdout);
 
     struct set * st = set__empty(int__copy, int__free, int__cmp);
-    assert( st != NULL );
+    if (!( st != NULL)) return 1;
 
-    assert( set__size(st) == 0 );
+    if (!( set__size(st) == 0)) return 1;
 
     int v1 = 1, v2 = 5, v3 = 8;
-    assert( !set__add(st, &v1) );
-    assert( !set__add(st, &v2) );
-    assert( !set__add(st, &v3) );
-    assert( set__size(st) == 3 );
+    if (set__add(st, &v1)) return 1;
+    if (set__add(st, &v2)) return 1;
+    if (set__add(st, &v3)) return 1;
+    if (!( set__size(st) == 3)) return 1;
 
     set__free(st);
 
@@ -100,42 +105,42 @@ int test_set__add(void)
     fflush(stdout);
 
     struct set * st = set__empty(int__copy, int__free, int__cmp);
-    assert( st != NULL );
+    if (!( st != NULL)) return 1;
 
     int v1 = 3;
-    assert( !set__add(st, &v1) );
-    assert( set__size(st) == 1 );
-    assert( set__find(st, &v1) );
+    if (set__add(st, &v1)) return 1;
+    if (!( set__size(st) == 1)) return 1;
+    if (!( set__find(st, &v1))) return 1;
 
-    assert( set__add(st, &v1) );
-    assert( set__size(st) == 1 );
-    assert( set__find(st, &v1) );
+    if (!( set__add(st, &v1))) return 1;
+    if (!( set__size(st) == 1)) return 1;
+    if (!( set__find(st, &v1))) return 1;
 
     int v2 = 3;
-    assert( set__add(st, &v2) );
-    assert( set__size(st) == 1 );
-    assert( set__find(st, &v2) );
+    if (!( set__add(st, &v2))) return 1;
+    if (!( set__size(st) == 1)) return 1;
+    if (!( set__find(st, &v2))) return 1;
 
     int v3 = 9;
-    assert( !set__add(st, &v3) );
-    assert( set__size(st) == 2 );
-    assert( set__find(st, &v1) );
-    assert( set__find(st, &v3) );
+    if (set__add(st, &v3)) return 1;
+    if (!( set__size(st) == 2)) return 1;
+    if (!( set__find(st, &v1))) return 1;
+    if (!( set__find(st, &v3))) return 1;
 
     int v4 = 5;
-    assert( !set__add(st, &v4) );
-    assert( set__size(st) == 3 );
-    assert( set__find(st, &v1) );
-    assert( set__find(st, &v3) );
-    assert( set__find(st, &v4) );
+    if (set__add(st, &v4)) return 1;
+    if (!( set__size(st) == 3)) return 1;
+    if (!( set__find(st, &v1))) return 1;
+    if (!( set__find(st, &v3))) return 1;
+    if (!( set__find(st, &v4))) return 1;
 
     int v5 = 1;
-    assert( !set__add(st, &v5) );
-    assert( set__size(st) == 4 );
-    assert( set__find(st, &v1) );
-    assert( set__find(st, &v3) );
-    assert( set__find(st, &v4) );
-    assert( set__find(st, &v5) );
+    if (set__add(st, &v5)) return 1;
+    if (!( set__size(st) == 4)) return 1;
+    if (!( set__find(st, &v1))) return 1;
+    if (!( set__find(st, &v3))) return 1;
+    if (!( set__find(st, &v4))) return 1;
+    if (!( set__find(st, &v5))) return 1;
 
     set__free(st);
 
@@ -148,27 +153,27 @@ int test_set__remove(void)
     fflush(stdout);
 
     struct set * st = set__empty(int__copy, int__free, int__cmp);
-    assert( st != NULL );
+    if (!( st != NULL)) return 1;
 
     int v1 = 1, v2 = 2;
-    assert( !set__add(st, &v1) );
-    assert( !set__add(st, &v2) );
+    if (set__add(st, &v1)) return 1;
+    if (set__add(st, &v2)) return 1;
 
-    assert( !set__remove(st, &v1) );
-    assert( set__size(st) == 1 );
-    assert( !set__find(st, &v1) );
+    if (set__remove(st, &v1)) return 1;
+    if (!( set__size(st) == 1)) return 1;
+    if (set__find(st, &v1)) return 1;
 
-    assert( !set__remove(st, &v2) );
-    assert( !set__find(st, &v2) );
-    assert( set__is_empty(st) );
+    if (set__remove(st, &v2)) return 1;
+    if (set__find(st, &v2)) return 1;
+    if (!( set__is_empty(st))) return 1;
 
     int v3 = 1, v4 = 6, v5 = 4;
-    assert( !set__add(st, &v3) );
-    assert( !set__add(st, &v4) );
-    assert( set__remove(st, &v5) );
-    assert( set__find(st, &v3) );
-    assert( set__find(st, &v4) );
-    assert( set__size(st) == 2 );
+    if (set__add(st, &v3)) return 1;
+    if (set__add(st, &v4)) return 1;
+    if (!( set__remove(st, &v5))) return 1;
+    if (!( set__find(st, &v3))) return 1;
+    if (!( set__find(st, &v4))) return 1;
+    if (!( set__size(st) == 2)) return 1;
 
     set__free(st);
 
@@ -180,22 +185,22 @@ int test_set__find(void) {
     fflush(stdout);
 
     struct set * st = set__empty(int__copy, int__free, int__cmp);
-    assert( st != NULL );
+    if (!( st != NULL)) return 1;
 
     int v1 = 1;
-    assert( !set__find(st, &v1) );
+    if (set__find(st, &v1)) return 1;
 
     int v2 = 2;
-    assert( !set__add(st, &v2) );
-    assert( !set__find(st, &v1) );
-    assert( set__find(st, &v2) );
+    if (set__add(st, &v2)) return 1;
+    if (set__find(st, &v1)) return 1;
+    if (!( set__find(st, &v2))) return 1;
 
-    assert( !set__add(st, &v1) );
-    assert( set__find(st, &v1) );
+    if (set__add(st, &v1)) return 1;
+    if (!( set__find(st, &v1))) return 1;
 
     int v3 = 7;
-    assert( !set__add(st, &v3) );
-    assert( set__find(st, &v3) );
+    if (set__add(st, &v3)) return 1;
+    if (!( set__find(st, &v3))) return 1;
 
     set__free(st);
 
@@ -213,21 +218,21 @@ int test_big_set(void)
         t[i] = (int) i;
 
     struct set * st = set__empty(int__copy, int__free, int__cmp);
-    assert( st != NULL );
+    if (!( st != NULL)) return 1;
 
     for (size_t j = 0; j < 3; ++j)
         for (size_t i = 0; i < set_size; ++i)
             if (i%3 == j)
-                assert( !set__add(st, t+i) );
+                if (set__add(st, t+i)) return 1;
 
-    assert( set__size(st) == set_size );
+    if (!( set__size(st) == set_size)) return 1;
 
     for (size_t j = 0; j < 3; ++j)
         for (size_t i = 0; i < set_size; ++i)
             if (i%3 == j)
-                assert( !set__remove(st, t+i) );
+                if (set__remove(st, t+i)) return 1;
 
-    assert( set__is_empty(st) );
+    if (!( set__is_empty(st))) return 1;
 
 
     set__free(st);
@@ -236,8 +241,44 @@ int test_big_set(void)
     return TEST_SUCCESS;
 }
 
+//TODO : Write some tests for the following functions
+
+int test_set__retrieve(){
+
+    printf("%s... ", __func__);
+    fflush(stdout);
+
+    return TEST_SUCCESS;
+}
+
+int test_set__get_i_th(void){
+
+    printf("%s... ", __func__);
+    fflush(stdout);
+
+    return TEST_SUCCESS;
+}
+
+int test_set__filter(void){
+
+    printf("%s... ", __func__);
+    fflush(stdout);
+
+    return TEST_SUCCESS;
+}
+
+int test_set__debug_data(void){
+
+    printf("%s... ", __func__);
+    fflush(stdout);
+
+    return TEST_SUCCESS;
+}
+
 int main()
 {
+    printf("----------- TEST SET -----------\n");
+
     print_success(test_set__empty());
     print_success(test_set__is_empty());
     print_success(test_set__size());
@@ -245,6 +286,10 @@ int main()
     print_success(test_set__remove());
     print_success(test_set__find());
     print_success(test_big_set());
+    print_success(test_set__retrieve());
+    print_success(test_set__get_i_th());
+    print_success(test_set__filter());
+    print_success(test_set__debug_data());
 
     return TEST_SUCCESS;
 }

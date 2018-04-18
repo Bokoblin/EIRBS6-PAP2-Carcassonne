@@ -1,4 +1,5 @@
 #!/bin/bash
+make docs
 mkdir -p build
 cd build
 cmake ..
@@ -10,6 +11,5 @@ mkdir -p bin/clients
 cp build/*.so bin/clients
 cp build/server bin/
 cp build/tst/test_* bin/tst
-make docs
-clear
-echo Successfully generated binaries.\
+echo './server clients/*.so' > bin/run.sh
+echo built run.sh

@@ -20,6 +20,7 @@
  */
 struct stack;
 
+
 /**
  * @brief Create an empty stack
  * @note Complexity: O(1)
