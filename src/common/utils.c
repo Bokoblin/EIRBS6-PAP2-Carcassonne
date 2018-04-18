@@ -41,9 +41,7 @@ void assert_not_null(void *ptr, const char *caller_fct, char *object)
 
 void exit_on_error(char *message)
 {
-    fputs("[ERROR] ", stderr);
-    fputs(message, stderr);
-    fputs(". Now exiting...\n", stderr);
+    printf("[ERROR] %s. Now exiting...\n", message);
     exit(EXIT_FAILURE);
 }
 
@@ -67,10 +65,6 @@ void *safe_malloc(size_t size)
 void* safe_dlsym(void* library_ptr, char* function_name)
 {
     void *function_ptr = dlsym(library_ptr, function_name);
-    char *error;
-    if ((error = dlerror()) != NULL) {
-        dlclose(library_ptr);
-        exit_on_error(error);
-    }
+    assert_no_dlerror();
     return function_ptr;
 }
