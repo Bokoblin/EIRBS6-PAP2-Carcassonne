@@ -39,15 +39,15 @@ int board__add_card(struct board *b, struct card *c)
             { c->pos.x, c->pos.y + 1 }, //North
             { c->pos.x - 1, c->pos.y }, //West
             { c->pos.x, c->pos.y - 1 }, //South
-            { c->pos.x, c->pos.y + 1 }  //East
+            { c->pos.x + 1, c->pos.y }  //East
     };
 
     for (unsigned int i = 0; i < 4; i++) {
-        enum direction d = (enum direction) ((i + 2) % DIRECTION_NUMBER);
-        search_helper_card.pos = p_array[i];
+        enum direction d = (enum direction) ((i + 2) % DIRECTION_NUMBER); //c position in comparison to searched card
+        search_helper_card.pos = p_array[i]; //Supposed position of searched card
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, &search_helper_card);
         if (neighbour != NULL && card__are_matching_direction(c, neighbour, d))
-                card__link_at_direction(c, neighbour, d);
+                card__link_at_direction(c, neighbour, (enum direction) i);
     }
 
     if (card__get_neighbour_number(c) == 0)

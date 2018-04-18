@@ -59,6 +59,7 @@ int card__are_matching(struct card *c1, struct card *c2)
 
 int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction)
 {
+    //FIXME: ONLY WORKING FOR SAME SIDES CARDS
     assert_not_null(c1, __func__, "c1 parameter");
     assert_not_null(c2, __func__, "c2 parameter");
 
@@ -84,7 +85,7 @@ void card__link_at_direction(struct card *c1, struct card *c2, enum direction di
         exit_on_error("Out of range direction");
 
     c1->neighbors[direction] = c2;
-    c2->neighbors[(direction+2)%4] = c1;
+    c2->neighbors[(direction + 2) % DIRECTION_NUMBER] = c1;
 }
 
 enum card_id card__draw(struct stack *s)

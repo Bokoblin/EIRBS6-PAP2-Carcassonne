@@ -20,6 +20,9 @@ static struct card_type ct_CARD_ROAD_STRAIGHT_CITY = {CARD_ROAD_STRAIGHT_CITY,
 static struct card_type ct_CARD_CITY_ONE_SIDE = {CARD_CITY_ONE_SIDE,
         {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD}};
 
+static struct card_type ct_CARD_CITY_TUNNEL = {CARD_CITY_TUNNEL,
+        {CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY}};
+
 static struct card_type ct_CARD_CITY_TUNNEL_SHLD = {CARD_CITY_TUNNEL_SHLD,
         {CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY}};
 
@@ -102,6 +105,9 @@ struct card_type card__id_to_type(enum card_id id)
             break;
         case CARD_CITY_ONE_SIDE :
             ct = ct_CARD_CITY_ONE_SIDE;
+            break;
+        case CARD_CITY_TUNNEL :
+            ct = ct_CARD_CITY_TUNNEL;
             break;
         case CARD_CITY_TUNNEL_SHLD :
             ct = ct_CARD_CITY_TUNNEL_SHLD;

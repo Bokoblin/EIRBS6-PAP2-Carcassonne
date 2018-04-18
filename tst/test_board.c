@@ -65,16 +65,16 @@ int test_board__add_card()
 {
     printf("%s... ", __func__);
 
-    struct board *b = board__init(NULL);
-    struct card *c = card__init(CARD_PLAIN_CITY);
-    c->pos.x = 0;
-    c->pos.y = -1;
-
     //First test: adding in empty set
 
-    if (board__add_card(b, c) == SUCCESS || card__get_neighbour_number(c) != 0) {
+    struct board *b = board__init(NULL);
+    struct card *c1 = card__init(CARD_MONASTERY_ROAD);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
+
+    if (board__add_card(b, c1) == SUCCESS || card__get_neighbour_number(c1) != 0) {
         board__free(b);
-        card__free(c);
+        card__free(c1);
         return !TEST_SUCCESS;
     }
 
@@ -87,37 +87,88 @@ int test_board__add_card()
     stack__push(s, starting_card);
 
     b = board__init(s);
-    c->type = card__id_to_type(CARD_CITY_ALL_SIDES);
+    free(starting_card);
+    starting_card = set__get_i_th(b->cards_set, 0);
+    //c is still CARD_MONASTERY_ROAD
 
-    if (board__add_card(b, c) == SUCCESS || card__get_neighbour_number(c) != 0) {
+    if (board__add_card(b, c1) == SUCCESS || card__get_neighbour_number(c1) != 0) {
         board__free(b);
         stack__free(s);
-        card__free(c);
-        card__free(starting_card);
+        card__free(c1);
         return !TEST_SUCCESS;
     }
 
     //Third test: adding in non empty set with a match
 
-    c->type = card__id_to_type(CARD_ROAD_TURN);
+    c1->type = card__id_to_type(CARD_CITY_TUNNEL);
 
-    if (board__add_card(b, c) != SUCCESS || card__get_neighbour_number(c) != 1) {
+    if (board__add_card(b, c1) != SUCCESS || card__get_neighbour_number(c1) != 1
+            || c1->neighbors[SOUTH] != set__retrieve(b->cards_set, starting_card)) {
         board__free(b);
         stack__free(s);
-        card__free(c);
-        card__free(starting_card);
+        card__free(c1);
         return !TEST_SUCCESS;
     }
 
-    //Fourth test: adding in center of 4 tiles for full match
-    //TODO: fourth test
+    //Fourth test: adding until having a full surrounding for CARD_CITY_TUNNEL
+
+    struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
+    c2->pos.x = -1;
+    c2->pos.y = 0;
+
+    if (board__add_card(b, c2) != SUCCESS) {
+        c2->pos.x = 0;
+        c2->pos.y = 2;
+        if (board__add_card(b, c2) == SUCCESS) {
+            struct card *c3 = card__init(CARD_CITY_THREE_ROAD_SHLD);
+            c3->pos.x = -1;
+            c3->pos.y = 2;
+            if (board__add_card(b, c3) == SUCCESS) { //FIXME
+                struct card *c4 = card__init(CARD_ROAD_STRAIGHT);
+                c4->pos.x = -1;
+                c4->pos.y = 1;
+                if (board__add_card(b, c4) == SUCCESS) {
+                    struct card *c5 = card__init(CARD_JUNCTION_FOUR);
+                    c5->pos.x = -1;
+                    c5->pos.y = 0;
+                    if (board__add_card(b, c5) == SUCCESS) {
+                        struct card *c6 = card__init(CARD_PLAIN_CITY_ROAD);
+                        c6->pos.x = 1;
+                        c6->pos.y = 2;
+                        if (board__add_card(b, c6) == SUCCESS) {
+                            struct card *c7 = card__init(CARD_MONASTERY_ALONE);
+                            c7->pos.x = 1;
+                            c7->pos.y = 1;
+                            if (board__add_card(b, c7) == SUCCESS) {
+                                struct card *c8 = card__init(CARD_JUNCTION_THREE);
+                                c8->pos.x = 1;
+                                c8->pos.y = 0;
+                                if (board__add_card(b, c8) == SUCCESS) {
+                                    if (card__get_neighbour_number(c1) == 4
+                                            && c1->neighbors[NORTH] == set__retrieve(b->cards_set, c2)
+                                            && c1->neighbors[WEST] == set__retrieve(b->cards_set, c4)
+                                            && c1->neighbors[SOUTH] == set__retrieve(b->cards_set, starting_card)
+                                            && c1->neighbors[EAST] == set__retrieve(b->cards_set, c7)) {
+                                        //TODO free
+                                        board__free(b);
+                                        stack__free(s);
+                                        card__free(c1);
+                                        return TEST_SUCCESS;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     board__free(b);
     stack__free(s);
-    card__free(c);
-    card__free(starting_card);
+    card__free(c1);
 
-    return TEST_SUCCESS;
+    return !TEST_SUCCESS;
 }
 
 int main()
