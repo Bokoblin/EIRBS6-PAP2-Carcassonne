@@ -59,8 +59,8 @@ int test_card__get_area()
     printf("%s... ", __func__);
 
     struct card *c = card__init(CARD_MONASTERY_ALONE);
-
-    for (int i = 0 ; i < (MAX_ZONES-1) ; i++) {
+  
+    for (int i = 0 ; i <= POS_NORTH_EAST ; i++) {
         if (card__get_area(c, (enum place) i) != FIELD) {
             card__free(c);
             return !TEST_SUCCESS;
@@ -106,10 +106,10 @@ int test_card__are_matching_direction_success_case()
 {
     printf("%s... ", __func__);
 
-    struct card *c1 = card__init(CARD_MONASTERY_ALONE);
-    struct card *c2 = card__init(CARD_MONASTERY_ROAD);
+    struct card *c1 = card__init(CARD_CITY_THREE_SHLD);
+    struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
 
-    if (card__are_matching_direction(c1, c2, EAST)) {
+    if (card__are_matching_direction(c1, c2, WEST)) {
         card__free(c1);
         card__free(c2);
         return TEST_SUCCESS;
