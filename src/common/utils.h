@@ -59,11 +59,11 @@ void* safe_malloc(size_t size);
 
 
 /**
- * Execute dlsym and check success state
- * @param library_ptr the target pointer
+ * Execute safely dlsym by quitting on error
+ * @param library_ptr the library pointer
+ * @param target_ptr the target pointer
  * @param function_name the function name
- * @return a pointer on the loaded lib
  */
-void* safe_dlsym(void* library_ptr, char* function_name);
+void safe_dlsym(void *library_ptr, void *target_ptr, char* function_name);
 
 #endif

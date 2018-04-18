@@ -62,9 +62,9 @@ void *safe_malloc(size_t size)
     return ptr;
 }
 
-void* safe_dlsym(void* library_ptr, char* function_name)
+void safe_dlsym(void *library_ptr, void *target_ptr, char* function_name)
 {
-    void *function_ptr = dlsym(library_ptr, function_name);
+    target_ptr = dlsym(library_ptr, function_name);
     assert_no_dlerror();
-    return function_ptr;
+    (void) target_ptr; //-Wunused-but-set-parameter false positive (because used in server)
 }

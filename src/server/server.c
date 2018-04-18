@@ -51,14 +51,13 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 
             void* player_lib_ptr = dlopen(current_arg, RTLD_NOW);
             assert_no_dlerror();
+            struct player* p = player__init(nb_players_registered, player_lib_ptr);
 
-            void* player_get_name_ptr = safe_dlsym(player_lib_ptr, "get_player_name");
-            void* player_init_ptr = safe_dlsym(player_lib_ptr, "initialize");
-            void* player_play_ptr = safe_dlsym(player_lib_ptr, "play");
-            void* player_finalize_ptr = safe_dlsym(player_lib_ptr, "finalize");
+            safe_dlsym(player_lib_ptr, p->get_player_name, "get_player_name");
+            safe_dlsym(player_lib_ptr, p->initialize, "initialize");
+            safe_dlsym(player_lib_ptr, p->play, "play");
+            safe_dlsym(player_lib_ptr, p->finalize, "finalize");
 
-            struct player* p = player__init(nb_players_registered, player_lib_ptr, player_get_name_ptr,
-                                            player_init_ptr, player_play_ptr, player_finalize_ptr);
             queue__enqueue(players, p);
             nb_players_registered++;
             printf("\tPLAYER#%d: %s was registered\n", p->id, p->get_player_name());
