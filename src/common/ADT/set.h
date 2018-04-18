@@ -1,5 +1,5 @@
-#ifndef __SET_H__
-#define __SET_H__
+#ifndef SET_H
+#define SET_H
 
 #include <stddef.h>
 
