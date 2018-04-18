@@ -24,6 +24,8 @@ set(CMAKE_C_STANDARD 99)
 file(GLOB SERVER_SOURCE_FILES
         "src/common/*.h"
         "src/common/*.c"
+        "src/common/ADT/*.h"
+        "src/common/ADT/*.c"
         "src/server/*.h"
         "src/server/*.c"
         )
