@@ -7,7 +7,8 @@
 #include "card_type.h"
 
 #define DIRECTION_NUMBER 4
-#define DEFAULT_ORIENTATION NORTH_TO_NORTH
+#define DEFAULT_ORIENTATION NORTH_IS_NORTH_SIDE
+#define INVALID_POSITION 999
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURES
@@ -15,14 +16,14 @@
 
 /**
  * @brief orientation
- * Lists all the possible orientations of the card comparing to its card_type
+ * Lists all the cards orientations indicating where is the north
  */
-enum orientation 
+enum orientation
 {
-  NORTH_TO_NORTH, // the north of card_type coincide with the north of the card
-  NORTH_TO_WEST,  // the north of card_type coincide with the west of the card
-  NORTH_TO_SOUTH, // the north of card_type coincide with the south of the card
-  NORTH_TO_EAST   // the north of card_type coincide with the east of the card
+    NORTH_IS_NORTH_SIDE, // the north of card_type coincide with the north of the card
+    NORTH_IS_WEST_SIDE,  // the north of card_type coincide with the west of the card
+    NORTH_IS_SOUTH_SIDE, // the north of card_type coincide with the south of the card
+    NORTH_IS_EAST_SIDE   // the north of card_type coincide with the east of the card
 };
 
 /**
@@ -31,10 +32,10 @@ enum orientation
  */
 struct card
 {
-  struct card_type type;
-  struct card * neighbors[DIRECTION_NUMBER]; // Indexed by enum direction
-  enum orientation orientation;
-  struct position pos;
+    struct card_type type;
+    struct card * neighbors[DIRECTION_NUMBER]; // Indexed by enum direction
+    enum orientation orientation;
+    struct position pos;
 };
 
 
@@ -84,10 +85,10 @@ int card__are_matching(struct card *c1, struct card *c2);
 
 
 /**
- * @brief Decide if two cards match in a certain direction
+ * @brief Decide if two cards are matching at first card direction
  * @param c1 a card
  * @param c2 a card
- * @param direction the direction in which the cards are compared
+ * @param direction the direction in which the first card coincide with the second
  * @return 1 if the cards match, 0 otherwise
  */
 int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction);

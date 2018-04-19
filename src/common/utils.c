@@ -33,8 +33,9 @@ void assert_no_dlerror()
 void assert_not_null(const void *ptr, const char *caller_fct, char *object)
 {
     if (ptr == NULL) {
-        char *message = NULL;
-        sprintf(message, "%s: NULL value on %s", caller_fct, object);
+        const size_t size = strlen(caller_fct) + strlen(": NULL value on ") + strlen(object);
+        char message[size];
+        snprintf(message, size, "%s: NULL value on %s", caller_fct, object);
         exit_on_error(message);
     }
 }

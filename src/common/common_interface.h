@@ -71,8 +71,7 @@ enum card_id
 	CARD_CITY_TUNNEL_SHLD,    // city connected E to W, shield
 	CARD_CITY_TUNNEL,         // city connected N to S
 	CARD_PLAIN_TUNNEL,        // plain connected N to S, city elsewhere
-	CARD_PLAIN_TWO_CITIES,    // plain connected W to N,
-	 						  // disconnected but jointive cities E and S
+	CARD_PLAIN_TWO_CITIES,    // plain connected W to N, disconnected but jointive cities E and S
     CARD_ROAD_TURN_RIGHT_CITY,// city N, road connected S to E
 	CARD_ROAD_TURN_LEFT_CITY, // city E, road connected W to N
 	CARD_JUNCTION_CITY,       // city E, 3 roads elsewhere connected at center

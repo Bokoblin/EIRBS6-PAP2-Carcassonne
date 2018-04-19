@@ -188,31 +188,24 @@ void card_debug_op(const struct card *c)
     if (c == NULL)
         printf("NULL");
     else {
-        //Building areas string
-        char* areas = "";
+        printf("Card (type id: %d, areas: { ", c->type.id);
         for (int i = 0; i < MAX_ZONES; i++) {
-            char* s = "";
             if (i < MAX_ZONES-1)
-                sprintf(s, "%d, ", c->type.areas[i]);
+                printf("%d, ", c->type.areas[i]);
             else
-                sprintf(s, "%d", c->type.areas[i]);
-            strcat(s, areas);
+                printf("%d", c->type.areas[i]);
         }
+        printf("}, pos: { %d, %d }, neighbours: {", c->pos.x, c->pos.y);
 
-        //Building neighbours string
-        char* neighbours = "";
         for (int i = 0; i < DIRECTION_NUMBER; i++) {
-            char* s = "";
             int id = c->neighbors[i] != NULL ? c->neighbors[i]->type.id : LAST_CARD;
             if (i < MAX_ZONES-1)
-                sprintf(s, "%d, ", id);
+                printf("%d, ", id);
             else
-                sprintf(s, "%d", id);
-            strcat(s, neighbours);
+                printf("%d", id);
         }
 
-        printf("Card (type id: %d, areas: { %s}, pos: { %d, %d }, neighbours: %s, orientation: %d)\n",
-               c->type.id, areas, c->pos.x, c->pos.y, neighbours, c->orientation);
+        printf(" }, orientation: %d)\n", c->orientation);
     }
 }
 

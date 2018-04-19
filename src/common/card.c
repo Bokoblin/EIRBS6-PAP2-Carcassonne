@@ -9,10 +9,10 @@ struct card* card__init(enum card_id card_id)
 
     c->type = card__id_to_type(card_id);
     c->orientation = DEFAULT_ORIENTATION;
-    c->pos.x = 999; //meaning invalid
-    c->pos.y = 999;
+    c->pos.x = INVALID_POSITION;
+    c->pos.y = INVALID_POSITION;
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < DIRECTION_NUMBER; i++)
         c->neighbors[i] = NULL;
 
     return c;
@@ -27,10 +27,13 @@ enum area_type card__get_area(struct card *card, enum place place)
 {
     assert_not_null(card, __func__, "card parameter");
 
+    if (place == LAST_POS)
+        exit_on_error("Wrong place position");
+
     if (place == POS_CENTER)
         return card->type.areas[place-1];
 
-    return card->type.areas[(12-(place-1+3*card->orientation))%12];
+    return card->type.areas[(12 - (place - 1 + 3 * card->orientation)) % 12];
 }
 
 unsigned int card__get_neighbour_number(struct card *card)
@@ -63,12 +66,20 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
     assert_not_null(c2, __func__, "c2 parameter");
 
     for (int i = 0; i < 3; i++) {
-        unsigned int place_index = (direction * 3 + 1 + i);
-        if (place_index > LAST_POS)
-            exit_on_error("Out of range place");
+        //unsigned int c1_place_index = (unsigned int) (3 * direction + i + 1); //+1 for NO_MEEPLE
+        //unsigned int c2_place_index = (unsigned int) (3 * ((direction + 2) % DIRECTION_NUMBER) + i + 1);
+        //
+        //if (c1_place_index > LAST_POS || c2_place_index > LAST_POS)
+        //    exit_on_error("Out of range place");
+        //
+        //enum place c1_p = (enum place) c1_place_index;
+        //enum place c2_p = (enum place) c2_place_index;
+        //enum area_type c1_a = card__get_area(c1, c1_p);
+        //enum area_type c2_a = card__get_area(c2, c2_p);
 
-        enum area_type c1_a = card__get_area(c1, (enum place) place_index);
-        enum area_type c2_a = card__get_area(c2, (enum place) place_index);
+        enum area_type c1_a = c1->type.areas[(3 * direction + 3 * c1->orientation + i) % 12];
+        enum area_type c2_a = c2->type.areas[(3 * ((direction + 2) % DIRECTION_NUMBER) + 3 * c2->orientation + 2 - i) % 12];
+
         if (c1_a != c2_a)
             return false; //on matching failure
     }

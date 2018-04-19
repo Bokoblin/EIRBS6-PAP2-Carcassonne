@@ -35,7 +35,8 @@ int board__add_card(struct board *b, struct card *c)
     if (b == NULL || c == NULL)
         return !SUCCESS;
 
-    struct card search_helper_card;
+    enum card_id ci = LAST_CARD;
+    struct card *search_helper_card = card__init(ci);
     struct position p_array[4]  = {
             //We consider North > South and East > West
             { c->pos.x, c->pos.y + 1 }, //North
@@ -46,11 +47,12 @@ int board__add_card(struct board *b, struct card *c)
 
     for (unsigned int i = 0; i < 4; i++) {
         enum direction d = (enum direction) i; //c's direction to link
-        search_helper_card.pos = p_array[i]; //Supposed position of searched card following direction chosen
-        struct card *neighbour = (struct card *) set__retrieve(b->cards_set, &search_helper_card);
+        search_helper_card->pos = p_array[i]; //Supposed position of searched card following direction chosen
+        struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
         if (neighbour != NULL && card__are_matching_direction(c, neighbour, d))
                 card__link_at_direction(c, neighbour, d);
     }
+    card__free(search_helper_card);
 
     if (card__get_neighbour_number(c) == 0)
         return !SUCCESS; //if unbound card

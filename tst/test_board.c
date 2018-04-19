@@ -21,7 +21,7 @@ int test_board__empty()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(s, &ci_first);
     b1 = board__init(s);
-    b1->first_card->orientation = NORTH_TO_EAST;
+    b1->first_card->orientation = NORTH_IS_EAST_SIDE;
 
     if (b1->first_card == NULL || set__is_empty(b1->cards_set) || !set__is_empty(b1->meeples_set)) {
         board__free(b1);
@@ -60,7 +60,7 @@ int test_board__add_card()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(s, &ci_first);
     b = board__init(s);
-    b->first_card->orientation = NORTH_TO_EAST;
+    b->first_card->orientation = NORTH_IS_EAST_SIDE;
 
     if (board__add_card(b, c1) == SUCCESS || card__get_neighbour_number(c1) != 0) {
         board__free(b);
@@ -85,43 +85,42 @@ int test_board__add_card()
 
     int res = !EXIT_SUCCESS;
 
-    struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
-    c2->pos.x = -1;
-    c2->pos.y = 0;
+    struct card *c2 = card__init(CARD_CITY_THREE);
+    c2->pos.x = 0;
+    c2->pos.y = 2;
+    c2->orientation = NORTH_IS_NORTH_SIDE;
     if (board__add_card(b, c2) != SUCCESS) { //must fail
-        c2->pos.x = 0;
-        c2->pos.y = 2;
-        c2->orientation = NORTH_TO_NORTH;
+        c2->orientation = NORTH_IS_SOUTH_SIDE;
         if (board__add_card(b, c2) == SUCCESS) { //must pass like beyond ones
             struct card *c3 = card__init(CARD_ROAD_TURN_RIGHT_CITY);
             c3->pos.x = -1;
             c3->pos.y = 2;
-            c3->orientation = NORTH_TO_EAST;
+            c3->orientation = NORTH_IS_WEST_SIDE;
             if (board__add_card(b, c3) == SUCCESS) {
                 struct card *c4 = card__init(CARD_ROAD_STRAIGHT);
                 c4->pos.x = -1;
                 c4->pos.y = 1;
-                c4->orientation = NORTH_TO_NORTH;
+                c4->orientation = NORTH_IS_NORTH_SIDE;
                 if (board__add_card(b, c4) == SUCCESS) {
                     struct card *c5 = card__init(CARD_JUNCTION_FOUR);
                     c5->pos.x = -1;
                     c5->pos.y = 0;
-                    c5->orientation = NORTH_TO_NORTH;
+                    c5->orientation = NORTH_IS_NORTH_SIDE;
                     if (board__add_card(b, c5) == SUCCESS) {
                         struct card *c6 = card__init(CARD_PLAIN_CITY_ROAD);
                         c6->pos.x = 1;
                         c6->pos.y = 2;
-                        c6->orientation = NORTH_TO_NORTH;
+                        c6->orientation = NORTH_IS_NORTH_SIDE;
                         if (board__add_card(b, c6) == SUCCESS) {
                             struct card *c7 = card__init(CARD_MONASTERY_ROAD);
                             c7->pos.x = 1;
                             c7->pos.y = 1;
-                            c7->orientation = NORTH_TO_SOUTH;
+                            c7->orientation = NORTH_IS_SOUTH_SIDE;
                             if (board__add_card(b, c7) == SUCCESS) {
                                 struct card *c8 = card__init(CARD_JUNCTION_THREE);
                                 c8->pos.x = 1;
                                 c8->pos.y = 0;
-                                c8->orientation = NORTH_TO_NORTH;
+                                c8->orientation = NORTH_IS_NORTH_SIDE;
                                 if (board__add_card(b, c8) == SUCCESS
                                         && card__get_neighbour_number(c1) == 4
                                         && c1->neighbors[NORTH] == set__retrieve(b->cards_set, c2)
