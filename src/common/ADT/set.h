@@ -108,12 +108,12 @@ int set__remove(struct set *s, void* e);
 
 
 /**
- * @brief Gets the pointor stocked into the set to the researched element
+ * @brief Gets the pointer stocked into the set to the researched element
+ * @note DO NOT FREE THAT POINTER !! Or the set__free will have a double-free issue.
  * 
  * @param s is the given set
  * @param e is the element you're looking for
- * @return A pointor to the data stocked by the set without a copy.
- * DO NOT FREE THAT POINTOR !! Or the set__free will have a double-free issue.
+ * @return A pointer to the data stocked by the set without a copy.
  */
 void* set__retrieve(struct set *s, void* e);
 
@@ -126,6 +126,17 @@ void* set__retrieve(struct set *s, void* e);
  * @return A copy of the i-th element stocked into the set if i is valid, NULL else.
  */
 void* set__get_i_th(struct set const *set, size_t i);
+
+
+/**
+ * @brief Get the element in position i into the set.
+ * @note DO NOT FREE THAT POINTER !! Or the set__free will have a double-free issue.
+ *
+ * @param set in the given set
+ * @param i is the i th element into the set (0 <= i < set__size(set))
+ * @return the i-th element stocked into the set if i is valid, NULL else.
+ */
+void* set__get_i_th_no_copy(struct set const *set, size_t i);
 
 
 /**

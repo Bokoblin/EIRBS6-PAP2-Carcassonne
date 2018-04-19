@@ -84,7 +84,6 @@ int test_board__add_card()
     //Fourth test: adding until having a full surrounding for CARD_CITY_TUNNEL
 
     int res = !EXIT_SUCCESS;
-    //FIXME: orientation
 
     struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
     c2->pos.x = -1;
@@ -98,7 +97,7 @@ int test_board__add_card()
             c3->pos.x = -1;
             c3->pos.y = 2;
             c3->orientation = NORTH_TO_EAST;
-            if (board__add_card(b, c3) == SUCCESS) { //FIXME: matching issue
+            if (board__add_card(b, c3) == SUCCESS) {
                 struct card *c4 = card__init(CARD_ROAD_STRAIGHT);
                 c4->pos.x = -1;
                 c4->pos.y = 1;

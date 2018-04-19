@@ -176,6 +176,13 @@ void* set__get_i_th(struct set const *set, size_t i)
     return set->copy(set->s[i]);
 }
 
+void* set__get_i_th_no_copy(struct set const *set, size_t i)
+{
+    if (i >= set__size(set))
+        return NULL;
+    return set->s[i];
+}
+
 void set__free(struct set *set)
 {
     for (size_t i = 0; i < set->size; i++)

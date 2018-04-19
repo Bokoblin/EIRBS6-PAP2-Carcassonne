@@ -18,11 +18,12 @@ struct board *board__init(struct stack *drawing_stack)
     if (ci == NULL) {
         b->first_card = NULL;
     } else {
-        b->first_card = card__init(*ci);
-        b->first_card->pos.x = 0;
-        b->first_card->pos.y = 0;
+        struct card *c = card__init(*ci);
         free(ci);
-        set__add(b->cards_set, b->first_card);
+        c->pos.x = 0;
+        c->pos.y = 0;
+        set__add(b->cards_set, c);
+        b->first_card = set__get_i_th_no_copy(b->cards_set, 0);
     }
 
     return b;
@@ -43,11 +44,11 @@ int board__add_card(struct board *b, struct card *c)
     };
 
     for (unsigned int i = 0; i < 4; i++) {
-        //enum direction d = (enum direction) ((i + 2) % DIRECTION_NUMBER); //c position in comparison to searched card
-        search_helper_card.pos = p_array[i]; //Supposed position of searched card
+        enum direction d = (enum direction) i; //c's direction to link
+        search_helper_card.pos = p_array[i]; //Supposed position of searched card following direction chosen
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, &search_helper_card);
-        if (neighbour != NULL && card__are_matching_direction(c, neighbour, (enum direction) i))
-                card__link_at_direction(c, neighbour, (enum direction) i);
+        if (neighbour != NULL && card__are_matching_direction(c, neighbour, d))
+                card__link_at_direction(c, neighbour, d);
     }
 
     if (card__get_neighbour_number(c) == 0)
@@ -58,8 +59,7 @@ int board__add_card(struct board *b, struct card *c)
 
 void board__free(struct board *b)
 {
-    if (b->first_card != NULL)
-        card__free(b->first_card);
+    //Never free first_card
     set__free(b->cards_set);
     set__free(b->meeples_set);
     free(b);

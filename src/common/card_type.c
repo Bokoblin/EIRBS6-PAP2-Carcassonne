@@ -3,6 +3,8 @@
 
 ////////////////////////////////////////////////////////////////////
 ///     CARD TYPE DEFINITIONS
+///
+/// ORDER IS : EAST*3, SOUTH *3, WEST *3 , NORTH*3
 ////////////////////////////////////////////////////////////////////
 
 static struct card_type ct_CARD_MONASTERY_ROAD = {CARD_MONASTERY_ROAD,
@@ -21,10 +23,10 @@ static struct card_type ct_CARD_CITY_ONE_SIDE = {CARD_CITY_ONE_SIDE,
         {FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD}};
 
 static struct card_type ct_CARD_CITY_TUNNEL = {CARD_CITY_TUNNEL,
-        {CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY}};
+        {FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY, CITY, CITY, CITY}};
 
 static struct card_type ct_CARD_CITY_TUNNEL_SHLD = {CARD_CITY_TUNNEL_SHLD,
-        {CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY}};
+        {FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY, CITY, CITY, CITY}};
 
 static struct card_type ct_CARD_PLAIN_TUNNEL = {CARD_PLAIN_TUNNEL,
         {CITY, CITY, CITY, FIELD, FIELD, FIELD, CITY, CITY, CITY, FIELD, FIELD, FIELD, FIELD}};
