@@ -7,7 +7,7 @@
 #define DEFAULT_STACK_CAPACITY 2
 
 
-int my_random(int min, int max){ //min included, max exlcuded
+int my_random(int min, int max){ //min included, max excluded
   return min + (rand() % (max -  min));
 }
 
@@ -18,8 +18,8 @@ int my_random(int min, int max){ //min included, max exlcuded
 struct stack
 {
     void* *array;
-    unsigned int capacity;
-    unsigned int head;
+    size_t capacity;
+    size_t head;
     void* (*operator_copy) (void*);
     void (*operator_delete) (void*);
     void (*operator_debug) (void*);
@@ -114,9 +114,9 @@ void stack__mix(struct stack *s)
     size_t a;
     size_t b;
     void* tmp;  
-    for (unsigned int i = 0; i < s->head; i++){
-        a = my_random(0, s->head);
-        b = my_random(0, s->head);
+    for (size_t i = 0; i < s->head; i++){
+        a = (size_t) my_random(0, (int) s->head);
+        b = (size_t) my_random(0, (int) s->head);
         tmp = s->array[a];
         s->array[a] = s->array[b];
         s->array[b] = tmp;
@@ -128,7 +128,7 @@ void stack__free(struct stack *s)
     if (s == NULL || s->array == NULL)
         return;
 
-    for (unsigned int i = 0; i < s->head; i++){
+    for (size_t i = 0; i < s->head; i++){
         if (s->array[i] != NULL)
             s->operator_delete(s->array[i]);
     }
@@ -136,14 +136,19 @@ void stack__free(struct stack *s)
     free(s);
 }
 
-void stack__debug(struct stack *s)
+void stack__debug(struct stack *s, int is_compact)
 {
+    setvbuf (stdout, NULL, _IONBF, 0);
     if (s == NULL || s->array == NULL)
-        return;
-
-    if (stack__is_empty(s) != 0)
-        printf("Stack is empty.");
-    else
-        for (unsigned int i = 0; i < s->head; i++)
+        printf("Queue (NULL)\n");
+    else {
+        if (!is_compact)
+            printf("Stack (capacity: %zu, size: %zu, content: \n\t", s->capacity, stack__length(s));
+        printf("{ ");
+        for (size_t i = 0; i < s->head; i++)
             s->operator_debug(s->array[i]);
+        printf("} ");
+        if (!is_compact)
+            printf("\n)\n");
+    }
 }

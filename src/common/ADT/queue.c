@@ -154,22 +154,29 @@ void queue__free(struct queue *q)
     free(q);
 }
 
-void queue__debug(struct queue *q)
+void queue__debug(struct queue *q, int is_compact)
 {
-    if (q == NULL)
-        return;
-
-    printf("=== QUEUE DETAILS ===\n");
-    printf("Queue capacity: %zu\n", q->capacity);
-    printf("Queue size: %zu\n", queue__length(q));
-
-    printf("Queue content in queue order...\t");
-    for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
-        q->operator_debug(q->array[i]);
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (q == NULL || q->array == NULL)
+        printf("Queue (NULL)\n");
+    else {
+        if (!is_compact) {
+            printf("Queue (capacity: %zu, size: %zu, content: \n", q->capacity, queue__length(q));
+            printf("\t in queue order: { ");
+            for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+                q->operator_debug(q->array[i]);
+            }
+            printf("}\n\t in array order: { ");
+            for (size_t i = 0; i < q->capacity; i++) {
+                q->operator_debug(q->array[i]);
+            }
+            printf("}\n)\n");
+        } else {
+            printf("{ ");
+            for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+                q->operator_debug(q->array[i]);
+            }
+            printf("}");
+        }
     }
-    printf("\nQueue content in array order...\t");
-    for (size_t i = 0; i < q->capacity; i++) {
-        q->operator_debug(q->array[i]);
-    }
-    printf("\n");
 }

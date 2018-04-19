@@ -228,7 +228,7 @@ int test_stack_debug()
     stack__push(s, &card4);
     stack__push(s, &card1);
 
-    stack__debug(s);
+    stack__debug(s, true);
 
     stack__free(s);
 

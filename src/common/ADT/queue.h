@@ -103,6 +103,6 @@ void queue__free(struct queue *q);
  * @note Complexity: O(n)
  * @param q the queue to debug
  */
-void queue__debug(struct queue *q);
+void queue__debug(struct queue *q, int is_compact);
   
 #endif

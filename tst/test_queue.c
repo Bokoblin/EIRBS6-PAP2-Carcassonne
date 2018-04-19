@@ -280,14 +280,14 @@ int test_queue_debug()
 
     printf("\nExpected: (6) and (NULL 6)\n");
 
-    queue__debug(q);
+    queue__debug(q, false);
 
     queue__enqueue(q, &card3);
     queue__enqueue(q, &card4);
 
     printf("\nExpected: (6 7 8) and (NULL 6 7 8)\n");
 
-    queue__debug(q);
+    queue__debug(q, false);
 
     queue__free(q);
 
@@ -313,7 +313,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
         return !TEST_SUCCESS;
     }
 
-    queue__debug(q);
+    queue__debug(q, false);
 
     for (unsigned int i = 0; i < 40; i++) {
         queue__dequeue(q);
@@ -326,7 +326,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
         return !TEST_SUCCESS;
     }
 
-    queue__debug(q);
+    queue__debug(q, false);
 
     for (unsigned int i = 0; i < 20; i++) {
         queue__enqueue(q, &card);
@@ -339,7 +339,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
         return !TEST_SUCCESS;
     }
 
-    queue__debug(q);
+    queue__debug(q, false);
 
     for (unsigned int i = 0; i < 30; i++) {
         queue__dequeue(q);
@@ -352,7 +352,7 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
         return !TEST_SUCCESS;
     }
 
-    queue__debug(q);
+    queue__debug(q, false);
 
     queue__free(q);
 

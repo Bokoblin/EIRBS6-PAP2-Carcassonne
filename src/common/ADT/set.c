@@ -207,13 +207,17 @@ struct set *set__filter(const struct set *set, int (*filter) (const void*))
 
 void set__debug_data(const struct set *set, void (*print_data) (const void*))
 {
-    size_t i = 0;
-    if (set__is_empty(set)) {
-        printf("Empty set ");
-        return;
-    }
-    while(i < set->size) {
-        print_data(set->s[i]);
-        i++;
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (set == NULL || set->s == NULL)
+        printf("Set (NULL)\n");
+    else {
+        printf("Set (capacity: %zu, size: %zu, content: \n", set->capacity, set->size);
+        printf("\t{ ");
+        size_t i = 0;
+        while(i < set->size) {
+            print_data(set->s[i]);
+            i++;
+        }
+        printf("}\n)\n");
     }
 }

@@ -98,6 +98,6 @@ void stack__free(struct stack *s);
  * @note Complexity: O(n)
  * @param s the stack to debug
  */
-void stack__debug(struct stack *s);
+void stack__debug(struct stack *s, int is_compact);
   
 #endif
