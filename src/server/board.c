@@ -24,6 +24,7 @@ struct board *board__init(struct stack *drawing_stack)
         c->pos.y = 0;
         set__add(b->cards_set, c);
         b->first_card = set__get_i_th_no_copy(b->cards_set, 0);
+        card__free(c);
     }
 
     return b;
