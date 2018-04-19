@@ -5,34 +5,6 @@
 #include "../src/common/ADT/stack.h"
 #include "../src/common/utils.h"
 
-////////////////////////////////////////////////////////////////////
-///     OPERATORS FUNCTIONS IMPLEMENTATION
-////////////////////////////////////////////////////////////////////
-
-void* operator_copy(void* given_card)
-{
-    enum card_id *_given_card = given_card;
-    enum card_id *new_card = safe_malloc(sizeof(enum card_id));
-    *new_card = *_given_card;
-    return new_card;
-}
-
-void operator_delete(void* given_card)
-{
-    free(given_card);
-}
-
-void operator_debug(void* given_card)
-{
-    enum card_id *_given_card = given_card;
-    printf("%d ", *_given_card);
-}
-
-
-////////////////////////////////////////////////////////////////////
-///     CARDS FUNCTIONS TESTS
-////////////////////////////////////////////////////////////////////
-
 int test_card__init()
 {
     printf("%s... ", __func__);

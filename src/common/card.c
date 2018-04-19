@@ -59,7 +59,6 @@ int card__are_matching(struct card *c1, struct card *c2)
 
 int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction)
 {
-    //FIXME: ONLY WORKING FOR SAME SIDES CARDS
     assert_not_null(c1, __func__, "c1 parameter");
     assert_not_null(c2, __func__, "c2 parameter");
 
@@ -69,7 +68,10 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
             exit_on_error("Out of range place");
 
         enum place p = (enum place) place_index;
-        if (card__get_area(c1, p) != card__get_area(c2, p))
+        //FIXME: temp
+        enum area_type c1_a = card__get_area(c1, p);
+        enum area_type c2_a = card__get_area(c2, (p + 2) % DIRECTION_NUMBER);
+        if (c1_a != c2_a)
             return false; //on matching failure
     }
 

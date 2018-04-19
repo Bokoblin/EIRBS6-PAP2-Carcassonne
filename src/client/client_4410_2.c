@@ -7,7 +7,7 @@
 
 char const* get_player_name()
 {
-    return("Team 4410 - Joueur 2");
+    return("4410-2");
 }
 
 void initialize(unsigned int id, unsigned int n_players)

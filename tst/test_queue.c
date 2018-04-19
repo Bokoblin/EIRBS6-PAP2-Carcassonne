@@ -5,40 +5,6 @@
 #include "../src/common/ADT/queue.h"
 #include "../src/common/utils.h"
 
-////////////////////////////////////////////////////////////////////
-///     OPERATORS FUNCTIONS IMPLEMENTATION
-////////////////////////////////////////////////////////////////////
-
-void* operator_copy(const enum card_id *p_card_id)
-{
-    if (p_card_id == NULL)
-        return NULL;
-
-    enum card_id *new_card = safe_malloc(sizeof(enum card_id));
-    *new_card = *p_card_id;
-    return new_card;
-}
-
-void operator_delete(enum card_id *p_card_id)
-{
-    free(p_card_id);
-}
-
-void operator_debug(const enum card_id* p_card_id)
-{
-    setvbuf (stdout, NULL, _IONBF, 0);
-    if (p_card_id == NULL) {
-        printf("NULL ");
-    } else {
-        printf("%d ", *p_card_id);
-    }
-}
-
-
-////////////////////////////////////////////////////////////////////
-///     QUEUE FUNCTIONS TESTS
-////////////////////////////////////////////////////////////////////
-
 int test_queue__empty()
 {
     printf("%s... ", __func__);
@@ -77,7 +43,7 @@ int test_queue__is_empty_on_non_empty_queue()
 
     struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
     enum card_id card = CARD_MONASTERY_ALONE;
-    
+
     if (queue__enqueue(q, &card) != TEST_SUCCESS) {
         queue__free(q);
         return !TEST_SUCCESS;

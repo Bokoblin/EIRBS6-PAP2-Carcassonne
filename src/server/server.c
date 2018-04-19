@@ -53,10 +53,10 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
             assert_no_dlerror();
             struct player* p = player__init(nb_players_registered, player_lib_ptr);
 
-            safe_dlsym(player_lib_ptr, p->get_player_name, "get_player_name");
-            safe_dlsym(player_lib_ptr, p->initialize, "initialize");
-            safe_dlsym(player_lib_ptr, p->play, "play");
-            safe_dlsym(player_lib_ptr, p->finalize, "finalize");
+            p->get_player_name = dlsym(player_lib_ptr, "get_player_name"); assert_no_dlerror();
+            p->initialize = dlsym(player_lib_ptr, "initialize"); assert_no_dlerror();
+            p->play = dlsym(player_lib_ptr, "play"); assert_no_dlerror();
+            p->finalize = dlsym(player_lib_ptr, "finalize"); assert_no_dlerror();
 
             queue__enqueue(players, p);
             nb_players_registered++;
@@ -144,7 +144,7 @@ void game_main(struct queue *players, unsigned int nb_player)
     //=== Game initialization
 
     struct stack* drawing_stack = init_deck();
-    struct queue* moves = queue__empty(move_queue_copy_op, move_queue_delete_op, move_queue_debug_op);
+    struct queue* moves = queue__empty(move_copy_op, move_delete_op, move_debug_op);
     struct board* board = board__init(drawing_stack);
 
     //=== Player initialization
@@ -210,7 +210,7 @@ int main(int argc, char** argv)
 
     //=== Register players
 
-    struct queue *players_queue = queue__empty(player_queue_copy_op, player_queue_delete_op, player_queue_debug_op);
+    struct queue *players_queue = queue__empty(player_copy_op, player_delete_op, player_debug_op);
     register_players(argc, (const char **) argv, players_queue, clients_count);
 
     //=== Start the game

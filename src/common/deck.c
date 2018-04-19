@@ -2,43 +2,11 @@
 #include "common_interface.h"
 #include "deck.h"
 #include "utils.h"
-
-////////////////////////////////////////////////////////////////////
-///     USER FUNCTIONS IMPLEMENTATION FOR ENUM CARD_ID
-////////////////////////////////////////////////////////////////////
-
-static void* operator_copy(const enum card_id *p_card_id)
-{
-    if (p_card_id == NULL)
-        return NULL;
-
-    enum card_id *new_card = safe_malloc(sizeof(enum card_id));
-    *new_card = *p_card_id;
-    return new_card;
-}
-
-static void operator_delete(enum card_id *p_card_id)
-{
-    free(p_card_id);
-}
-
-static void operator_debug(const enum card_id *p_card_id)
-{
-    setvbuf (stdout, NULL, _IONBF, 0);
-    if (p_card_id == NULL) {
-        printf("NULL ");
-    } else {
-        printf("%d ", *p_card_id);
-    }
-}
-
-////////////////////////////////////////////////////////////////////
-///     REQUIRED FUNCTION TO INITIALISE DECK
-////////////////////////////////////////////////////////////////////
+#include "../server/function_pointers.h"
 
 struct stack* init_deck()
 {
-    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
+    struct stack *s = stack__empty(&cardid_copy_op, &cardid_delete_op, &cardid_debug_op);
 
     enum card_id card_CARD_ROAD_STRAIGHT_CITY = CARD_ROAD_STRAIGHT_CITY;
     enum card_id card_CARD_CITY_ALL_SIDES = CARD_CITY_ALL_SIDES;

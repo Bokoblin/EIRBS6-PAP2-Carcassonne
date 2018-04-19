@@ -1,10 +1,11 @@
+#include <string.h>
 #include "function_pointers.h"
 
 ////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR MOVES QUEUE
+///     OPERATORS FOR MOVE STRUCT
 ////////////////////////////////////////////////////////////////////
 
-void* move_queue_copy_op(struct move* m)
+void* move_copy_op(struct move *m)
 {
     assert_not_null(m, __func__, "m parameter");
 
@@ -19,29 +20,43 @@ void* move_queue_copy_op(struct move* m)
     return new_move;
 }
 
-void move_queue_delete_op(struct move* m)
+void move_delete_op(struct move *m)
 {
     free(m);
 }
 
-void move_queue_debug_op(struct move* m)
+int move_compare_op(struct move* m1, struct move* m2)
 {
-    assert_not_null(m, __func__, "m parameter");
+    assert_not_null(m1, __func__, "m1 parameter");
+    assert_not_null(m2, __func__, "m2 parameter");
 
-    printf("=== Display move ===\n");
-    printf("\tplayer id: %d\n", m->player);
-    printf("\tcard id: %d\n", m->card);
-    printf("\tposition: {%d, %d}\n", m->onto.x, m->onto.y);
-    printf("\tdirection: %d\n", m->dir);
-    printf("\tplace: %d\n", m->place);
+    int serial_m1 = m1->card + m1->check + m1->place + m1->player + m1->dir + m1->onto.x + m1->onto.y;
+    int serial_m2 = m2->card + m2->check + m2->place + m2->player + m2->dir + m2->onto.x + m2->onto.y;
+
+    if (serial_m1 < serial_m2)
+        return -1;
+    else if (serial_m1 == serial_m2) //not relevant but unused for now
+        return 0;
+    else
+        return 1;
+}
+
+void move_debug_op(struct move *m)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (m == NULL)
+        printf("NULL");
+    else
+        printf("Move (player id: %d, card id: %d, pos: {%d, %d}, direction: %d, place: %d)\n",
+               m->player, m->card, m->onto.x, m->onto.y, m->dir, m->place);
 }
 
 
 ////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR PLAYERS QUEUE
+///     OPERATORS FOR PLAYER STRUCT
 ////////////////////////////////////////////////////////////////////
 
-void* player_queue_copy_op(struct player* p)
+void* player_copy_op(const struct player *p)
 {
     assert_not_null(p, __func__, "p parameter");
 
@@ -58,24 +73,81 @@ void* player_queue_copy_op(struct player* p)
     return new_p;
 }
 
-void player_queue_delete_op(struct player* p)
+void player_delete_op(struct player *p)
 {
     player__free(p);
 }
 
-void player_queue_debug_op(struct player* p)
+int player_compare_op(const struct player *p1, const struct player *p2)
 {
-    assert_not_null(p, __func__, "p parameter");
+    assert_not_null(p1, __func__, "p1 parameter");
+    assert_not_null(p2, __func__, "p2 parameter");
 
-    printf("Player #%d named %s\n", p->id, p->get_player_name());
+    if (p1->id < p2->id)
+        return -1;
+    else if (p1->id == p2->id)
+        return 0;
+    else
+        return 1;
+}
+
+void player_debug_op(const struct player *p)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (p == NULL)
+        printf("NULL");
+    else
+        printf("Player (id: %d, name: %s)\n", p->id, p->get_player_name());
 }
 
 
 ////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR CARDS SET
+///     OPERATORS FOR CARD_ID ENUM
 ////////////////////////////////////////////////////////////////////
 
-void* cards_set_copy_op(struct card* c)
+void* cardid_copy_op(const enum card_id *p_card_id)
+{
+    if (p_card_id == NULL)
+        return NULL;
+
+    enum card_id *new_card = safe_malloc(sizeof(enum card_id));
+    *new_card = *p_card_id;
+    return new_card;
+}
+
+void cardid_delete_op(enum card_id *p_card_id)
+{
+    free(p_card_id);
+}
+
+int cardid_compare_op(const enum card_id *ci1, const enum card_id *ci2)
+{
+    assert_not_null(ci1, __func__, "ci1 parameter");
+    assert_not_null(ci2, __func__, "ci2 parameter");
+
+    if (ci1 < ci2)
+        return -1;
+    else if (ci1 == ci2)
+        return 0;
+    else
+        return 1;
+}
+
+void cardid_debug_op(const enum card_id *p_card_id)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (p_card_id == NULL)
+        printf("NULL");
+    else
+        printf("Card id (%d)", *p_card_id);
+}
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS FOR CARD STRUCT
+////////////////////////////////////////////////////////////////////
+
+void* card_copy_op(struct card *c)
 {
     assert_not_null(c, __func__, "c parameter");
 
@@ -90,12 +162,12 @@ void* cards_set_copy_op(struct card* c)
     return new_card;
 }
 
-void cards_set_delete_op(struct card* c)
+void card_delete_op(struct card *c)
 {
     card__free(c);
 }
 
-int cards_set_compare_op(struct card* c1, struct card* c2)
+int card_compare_op(struct card *c1, struct card *c2)
 {
     assert_not_null(c1, __func__, "c1 parameter");
     assert_not_null(c2, __func__, "c2 parameter");
@@ -110,12 +182,46 @@ int cards_set_compare_op(struct card* c1, struct card* c2)
         return 1;
 }
 
+void card_debug_op(const struct card *c)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (c == NULL)
+        printf("NULL");
+    else {
+        //Building areas string
+        char* areas = "";
+        for (int i = 0; i < MAX_ZONES; i++) {
+            char* s = "";
+            if (i < MAX_ZONES-1)
+                sprintf(s, "%d, ", c->type.areas[i]);
+            else
+                sprintf(s, "%d", c->type.areas[i]);
+            strcat(s, areas);
+        }
+
+        //Building neighbours string
+        char* neighbours = "";
+        for (int i = 0; i < DIRECTION_NUMBER; i++) {
+            char* s = "";
+            int id = c->neighbors[i] != NULL ? c->neighbors[i]->type.id : LAST_CARD;
+            if (i < MAX_ZONES-1)
+                sprintf(s, "%d, ", id);
+            else
+                sprintf(s, "%d", id);
+            strcat(s, neighbours);
+        }
+
+        printf("Card (type id: %d, areas: { %s}, pos: { %d, %d }, neighbours: %s, orientation: %d)\n",
+               c->type.id, areas, c->pos.x, c->pos.y, neighbours, c->orientation);
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////
 ///     OPERATORS FOR MEEPLES SET
 ////////////////////////////////////////////////////////////////////
 
-void* meeples_set_copy_op(struct meeple* m)
+void* meeple_copy_op(struct meeple *m)
 {
     assert_not_null(m, __func__, "m parameter");
 
@@ -127,12 +233,12 @@ void* meeples_set_copy_op(struct meeple* m)
     return new_meeple;
 }
 
-void meeples_set_delete_op(struct meeple* m)
+void meeple_delete_op(struct meeple *m)
 {
     free(m);
 }
 
-int meeples_set_compare_op(struct meeple* m1, struct meeple* m2)
+int meeple_compare_op(struct meeple *m1, struct meeple *m2)
 {
     assert_not_null(m1, __func__, "m1 parameter");
     assert_not_null(m2, __func__, "m2 parameter");
@@ -143,4 +249,13 @@ int meeples_set_compare_op(struct meeple* m1, struct meeple* m2)
         return 0;
     else
         return 1;
+}
+
+void meeple_debug_op(const struct meeple *m)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (m == NULL)
+        printf("NULL");
+    else
+        printf("Meeple (player id: %d, pos: %d, area type: %d)", m->player_id, m->position, m->belonging_area);
 }

@@ -178,7 +178,8 @@ test_board: $(SRV_DIR)/board.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DI
 test_card: $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_card.o
 	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
 
-test_deck: $(COM_DIR)/deck.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_deck.o
+test_deck: $(COM_DIR)/deck.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
+			$(SRV_DIR)/player.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_deck.o
 	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
 
 test_queue: $(ADT_DIR)/queue.o $(COM_DIR)/utils.o $(TST_DIR)/test_queue.o

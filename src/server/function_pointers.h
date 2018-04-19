@@ -8,38 +8,52 @@
 #include "../server/meeple.h"
 
 ////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR MOVES QUEUE
+///     OPERATORS FOR MOVE ENUM
 ////////////////////////////////////////////////////////////////////
 
-extern void* move_queue_copy_op(struct move* m);
-extern void move_queue_delete_op(struct move* m);
-void move_queue_debug_op(struct move* m);
-
-
-////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR PLAYERS QUEUE
-////////////////////////////////////////////////////////////////////
-
-void* player_queue_copy_op(struct player* p);
-void player_queue_delete_op(struct player* p);
-void player_queue_debug_op(struct player* p);
+extern void* move_copy_op(struct move *m);
+extern void move_delete_op(struct move *m);
+int move_compare_op(struct move* m1, struct move* m2);
+void move_debug_op(struct move *m);
 
 
 ////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR CARDS SET
+///     OPERATORS FOR PLAYER STRUCT
 ////////////////////////////////////////////////////////////////////
 
-void* cards_set_copy_op(struct card* c);
-void cards_set_delete_op(struct card* c);
-int cards_set_compare_op(struct card* c1, struct card* c2);
+void* player_copy_op(const struct player *p);
+void player_delete_op(struct player *p);
+int player_compare_op(const struct player *p1, const struct player *p2);
+void player_debug_op(const struct player *p);
 
 
 ////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR MEEPLES SET
+///     OPERATORS FOR CARD_ID ENUM
 ////////////////////////////////////////////////////////////////////
 
-void* meeples_set_copy_op(struct meeple* m);
-void meeples_set_delete_op(struct meeple* m);
-int meeples_set_compare_op(struct meeple* m1, struct meeple* m2);
+void* cardid_copy_op(const enum card_id *p_card_id);
+void cardid_delete_op(enum card_id *p_card_id);
+int cardid_compare_op(const enum card_id *ci1, const enum card_id *ci2);
+void cardid_debug_op(const enum card_id *p_card_id);
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS FOR CARD STRUCT
+////////////////////////////////////////////////////////////////////
+
+void* card_copy_op(struct card *c);
+void card_delete_op(struct card *c);
+int card_compare_op(struct card *c1, struct card *c2);
+void card_debug_op(const struct card *c);
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS FOR MEEPLE STRUCT
+////////////////////////////////////////////////////////////////////
+
+void* meeple_copy_op(struct meeple *m);
+void meeple_delete_op(struct meeple *m);
+int meeple_compare_op(struct meeple *m1, struct meeple *m2);
+void meeple_debug_op(const struct meeple *m);
 
 #endif

@@ -31,7 +31,7 @@ void assert_no_dlerror();
 /**
  * @brief Checks that a pointer isn't null, quit otherwise
  */
-void assert_not_null(void *ptr, const char *caller_fct, char *object);
+void assert_not_null(const void *ptr, const char *caller_fct, char *object);
 
 
 /**
@@ -56,14 +56,5 @@ size_t positive_modulo(int a, int b);
  * @return a general pointer
  */
 void* safe_malloc(size_t size);
-
-
-/**
- * Execute safely dlsym by quitting on error
- * @param library_ptr the library pointer
- * @param target_ptr the target pointer
- * @param function_name the function name
- */
-void safe_dlsym(void *library_ptr, void *target_ptr, char* function_name);
 
 #endif

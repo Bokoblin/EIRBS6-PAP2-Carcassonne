@@ -30,7 +30,7 @@ void assert_no_dlerror()
         exit_on_error(error);
 }
 
-void assert_not_null(void *ptr, const char *caller_fct, char *object)
+void assert_not_null(const void *ptr, const char *caller_fct, char *object)
 {
     if (ptr == NULL) {
         char *message = NULL;
@@ -60,11 +60,4 @@ void *safe_malloc(size_t size)
     if (ptr == NULL)
         exit_on_error("Memory allocation failure");
     return ptr;
-}
-
-void safe_dlsym(void *library_ptr, void *target_ptr, char* function_name)
-{
-    target_ptr = dlsym(library_ptr, function_name);
-    assert_no_dlerror();
-    (void) target_ptr; //-Wunused-but-set-parameter false positive (because used in server)
 }

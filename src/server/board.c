@@ -11,8 +11,8 @@ struct board *board__init(struct stack *drawing_stack)
 {
     struct board *b = safe_malloc(sizeof(struct board));
 
-    b->cards_set = set__empty(cards_set_copy_op, cards_set_delete_op, cards_set_compare_op);
-    b->meeples_set = set__empty(meeples_set_copy_op, meeples_set_delete_op, meeples_set_compare_op);
+    b->cards_set = set__empty(card_copy_op, card_delete_op, card_compare_op);
+    b->meeples_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op);
 
     enum card_id *ci = stack__pop(drawing_stack);
     if (ci == NULL) {
@@ -43,10 +43,10 @@ int board__add_card(struct board *b, struct card *c)
     };
 
     for (unsigned int i = 0; i < 4; i++) {
-        enum direction d = (enum direction) ((i + 2) % DIRECTION_NUMBER); //c position in comparison to searched card
+        //enum direction d = (enum direction) ((i + 2) % DIRECTION_NUMBER); //c position in comparison to searched card
         search_helper_card.pos = p_array[i]; //Supposed position of searched card
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, &search_helper_card);
-        if (neighbour != NULL && card__are_matching_direction(c, neighbour, d))
+        if (neighbour != NULL && card__are_matching_direction(c, neighbour, (enum direction) i))
                 card__link_at_direction(c, neighbour, (enum direction) i);
     }
 
