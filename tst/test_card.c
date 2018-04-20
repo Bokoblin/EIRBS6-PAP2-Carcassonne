@@ -1,6 +1,4 @@
-#include <stdlib.h>
-#include "test_utils.h"
-#include "../src/common/common_interface.h"
+#include "common_tests_utils.h"
 #include "../src/common/card.h"
 #include "../src/common/ADT/stack.h"
 #include "../src/common/utils.h"

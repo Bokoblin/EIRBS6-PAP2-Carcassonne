@@ -63,31 +63,31 @@ enum place
  */
 enum card_id
 {
-	CARD_MONASTERY_ROAD,      // monastery center, connected to one road S
-	CARD_MONASTERY_ALONE,     // monastery center
-	CARD_CITY_ALL_SIDES,      // connected cities on all sides
-	CARD_ROAD_STRAIGHT_CITY,  // road connected N to S, city E
-	CARD_CITY_ONE_SIDE,       // city N
-	CARD_CITY_TUNNEL_SHLD,    // city connected E to W, shield
-	CARD_CITY_TUNNEL,         // city connected N to S
-	CARD_PLAIN_TUNNEL,        // plain connected N to S, city elsewhere
-	CARD_PLAIN_TWO_CITIES,    // plain connected W to N, disconnected but jointive cities E and S
-    CARD_ROAD_TURN_RIGHT_CITY,// city N, road connected S to E
-	CARD_ROAD_TURN_LEFT_CITY, // city E, road connected W to N
-	CARD_JUNCTION_CITY,       // city E, 3 roads elsewhere connected at center
-	CARD_PLAIN_CITY_SHLD,     // city connected W to N, shield
-	CARD_PLAIN_CITY,          // city connected W to N
-	CARD_PLAIN_CITY_ROAD_SHLD,// city connected W to N, road connected S to E, shield
-	CARD_PLAIN_CITY_ROAD,     // city connected W to N, road connected S to E
-	CARD_CITY_THREE_SHLD,     // plain S, connected city elsewhere, shield
-	CARD_CITY_THREE,          // plain S, connected city elsewhere
-	CARD_CITY_THREE_ROAD_SHLD,// road S, connected city elsewhere, shield
-	CARD_CITY_THREE_ROAD,     // road S, connected city elsewhere
-	CARD_ROAD_STRAIGHT,       // road connected N to S
-	CARD_ROAD_TURN,           // road connected W to S
-	CARD_JUNCTION_THREE,      // plain N, 3 roads elsewhere connected at center
-	CARD_JUNCTION_FOUR,       // 4 roads connected at the center
-	LAST_CARD,
+	CARD_MONASTERY_ROAD,      //  0 - monastery center, connected to one road S
+	CARD_MONASTERY_ALONE,     //  1 - monastery center
+	CARD_CITY_ALL_SIDES,      //  2 - connected cities on all sides
+	CARD_ROAD_STRAIGHT_CITY,  //  3 - road connected N to S, city E
+	CARD_CITY_ONE_SIDE,       //  4 - city N
+	CARD_CITY_TUNNEL_SHLD,    //  5 - city connected E to W, shield
+	CARD_CITY_TUNNEL,         //  6 - city connected N to S
+	CARD_PLAIN_TUNNEL,        //  7 - plain connected N to S, city elsewhere
+	CARD_PLAIN_TWO_CITIES,    //  8 - plain connected W to N, disconnected but jointive cities E and S
+    CARD_ROAD_TURN_RIGHT_CITY,//  9 - city N, road connected S to E
+	CARD_ROAD_TURN_LEFT_CITY, // 10 - city E, road connected W to N
+	CARD_JUNCTION_CITY,       // 11 - city E, 3 roads elsewhere connected at center
+	CARD_PLAIN_CITY_SHLD,     // 12 - city connected W to N, shield
+	CARD_PLAIN_CITY,          // 13 - city connected W to N
+	CARD_PLAIN_CITY_ROAD_SHLD,// 14 - city connected W to N, road connected S to E, shield
+	CARD_PLAIN_CITY_ROAD,     // 15 - city connected W to N, road connected S to E
+	CARD_CITY_THREE_SHLD,     // 16 - plain S, connected city elsewhere, shield
+	CARD_CITY_THREE,          // 17 - plain S, connected city elsewhere
+	CARD_CITY_THREE_ROAD_SHLD,// 18 - road S, connected city elsewhere, shield
+	CARD_CITY_THREE_ROAD,     // 19 - road S, connected city elsewhere
+	CARD_ROAD_STRAIGHT,       // 20 - road connected N to S
+	CARD_ROAD_TURN,           // 21 - road connected W to S
+	CARD_JUNCTION_THREE,      // 22 - plain N, 3 roads elsewhere connected at center
+	CARD_JUNCTION_FOUR,       // 23 - 4 roads connected at the center
+	LAST_CARD,			 	  // 24 - No card
 };
 
 

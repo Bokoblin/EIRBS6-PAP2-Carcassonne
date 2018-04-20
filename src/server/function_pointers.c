@@ -188,7 +188,7 @@ void card_debug_op(const struct card *c)
     if (c == NULL)
         printf("NULL");
     else {
-        printf("Card (type id: %d, areas: { ", c->type.id);
+        printf("Card (type id: %d, areas: {", c->type.id);
         for (int i = 0; i < MAX_ZONES; i++) {
             if (i < MAX_ZONES-1)
                 printf("%d, ", c->type.areas[i]);
@@ -198,14 +198,20 @@ void card_debug_op(const struct card *c)
         printf("}, pos: { %d, %d }, neighbours: {", c->pos.x, c->pos.y);
 
         for (int i = 0; i < DIRECTION_NUMBER; i++) {
-            int id = c->neighbors[i] != NULL ? c->neighbors[i]->type.id : LAST_CARD;
-            if (i < MAX_ZONES-1)
-                printf("%d, ", id);
-            else
-                printf("%d", id);
+            if (c->neighbors[i] != NULL) {
+                if (i < DIRECTION_NUMBER-1)
+                    printf("\x1B[33m%p (%d)\x1B[0m, ", c->neighbors[i], c->neighbors[i]->type.id);
+                else
+                    printf("\x1B[33m%p (%d)\x1B[0m", c->neighbors[i], c->neighbors[i]->type.id);
+            } else {
+                if (i < DIRECTION_NUMBER-1)
+                    printf("\x1B[32mNULL\x1B[0m, ");
+                else
+                    printf("\x1B[32mNULL\x1B[0m");
+            }
         }
 
-        printf(" }, orientation: %d)\n", c->orientation);
+        printf("}, orientation: %d)\n", c->orientation);
     }
 }
 

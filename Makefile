@@ -171,24 +171,27 @@ docs:
 ###				TEST EXECUTABLES
 #######################################################
 
-test_board: $(SRV_DIR)/board.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
-			$(SRV_DIR)/player.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_board.o
+test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
+			$(SRV_DIR)/board.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
+			$(SRV_DIR)/player.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
 
-test_card: $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_card.o
+test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
 
-test_deck: $(COM_DIR)/deck.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
-			$(SRV_DIR)/player.o $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_deck.o
+test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
+			$(COM_DIR)/deck.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
+			$(SRV_DIR)/player.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
 
-test_queue: $(ADT_DIR)/queue.o $(COM_DIR)/utils.o $(TST_DIR)/test_queue.o
+test_queue:	$(TST_DIR)/test_queue.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/queue.o
 	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
 
-test_set: $(ADT_DIR)/set.o $(COM_DIR)/utils.o $(TST_DIR)/test_set.o
+test_set:	$(TST_DIR)/test_set.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/set.o
 	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
 
-test_stack: $(ADT_DIR)/stack.o $(COM_DIR)/utils.o $(TST_DIR)/test_stack.o
+test_stack:	$(TST_DIR)/test_stack.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
 
 

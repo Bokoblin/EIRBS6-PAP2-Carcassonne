@@ -14,7 +14,8 @@ set(TEST_SET test_set)
 #       SET TEST SOURCES
 #----------------------------
 file(GLOB TEST_BOARD_SOURCE_FILES
-        "test_utils.h"
+        "common_tests_utils.h"
+        "common_tests_utils.c"
         "test_board.c"
         "../src/server/board.h"
         "../src/server/board.c"
@@ -36,7 +37,8 @@ file(GLOB TEST_BOARD_SOURCE_FILES
         )
 
 file(GLOB TEST_CARD_SOURCE_FILES
-        "test_utils.h"
+        "common_tests_utils.h"
+        "common_tests_utils.c"
         "test_card.c"
         "../src/common/card.c"
         "../src/common/card.h"
@@ -50,7 +52,7 @@ file(GLOB TEST_CARD_SOURCE_FILES
         )
 
 file(GLOB TEST_DECK_SOURCE_FILES
-        "test_utils.h"
+        "common_tests_utils.h"
         "test_deck.c"
         "../src/server/function_pointers.h"
         "../src/server/function_pointers.c"
@@ -70,7 +72,8 @@ file(GLOB TEST_DECK_SOURCE_FILES
         )
 
 file(GLOB TEST_STACK_SOURCE_FILES
-        "test_utils.h"
+        "common_tests_utils.h"
+        "common_tests_utils.c"
         "test_stack.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
@@ -79,7 +82,8 @@ file(GLOB TEST_STACK_SOURCE_FILES
         )
 
 file(GLOB TEST_QUEUE_SOURCE_FILES
-        "test_utils.h"
+        "common_tests_utils.h"
+        "common_tests_utils.c"
         "test_queue.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
@@ -88,7 +92,8 @@ file(GLOB TEST_QUEUE_SOURCE_FILES
         )
 
 file(GLOB TEST_SET_SOURCE_FILES
-        "test_utils.h"
+        "common_tests_utils.h"
+        "common_tests_utils.c"
         "test_set.c"
         "../src/common/utils.h"
         "../src/common/utils.c"

@@ -102,9 +102,9 @@ int set__add(struct set *set, void* x)
         return 1;
 
     //Increase memory if needed
-    if (set->size == set->capacity) {
+    if (set->size == set->capacity - 1) {
         set->capacity = set->capacity * 2;
-        set->s = realloc(set->s, sizeof(void*)*set->capacity);
+        set->s = realloc(set->s, sizeof(void *) * set->capacity);
         if (set->s == NULL)
             return -1;
         else
@@ -193,19 +193,29 @@ void set__free(struct set *set)
     free(set);
 }
 
-void set__debug_data(const struct set *s)
+void set__debug_data(const struct set *s, int is_compact)
 {
     setvbuf (stdout, NULL, _IONBF, 0);
     if (s == NULL || s->s == NULL)
         printf("Set (NULL)\n");
     else {
-        printf("Set (capacity: %zu, size: %zu, content: \n", s->capacity, s->size);
-        printf("\t{ ");
-        size_t i = 0;
-        while(i < s->size) {
-            s->debug(s->s[i]);
-            i++;
+        if (!is_compact) {
+            printf("Set (capacity: %zu, size: %zu, content: \n", s->capacity, s->size);
+            printf("\t{ ");
+            size_t i = 0;
+            while (i < s->size) {
+                s->debug(s->s[i]);
+                i++;
+            }
+            printf("}\n)\n");
+        } else {
+            printf("{ ");
+            size_t i = 0;
+            while (i < s->size) {
+                s->debug(s->s[i]);
+                i++;
+            }
+            printf("}");
         }
-        printf("}\n)\n");
     }
 }

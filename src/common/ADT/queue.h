@@ -102,6 +102,7 @@ void queue__free(struct queue *q);
  * @brief Prints the queue's content
  * @note Complexity: O(n)
  * @param q the queue to debug
+ * @param is_compact to display a compact debug (only values)
  */
 void queue__debug(struct queue *q, int is_compact);
   

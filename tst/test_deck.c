@@ -1,7 +1,5 @@
-#include <stdlib.h>
-#include "test_utils.h"
+#include "common_tests_utils.h"
 #include "../src/common/deck.h"
-#include "../src/common/common_interface.h"
 
 int test_init_deck()
 {

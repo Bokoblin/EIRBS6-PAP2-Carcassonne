@@ -123,7 +123,7 @@ void* set__retrieve(struct set *s, void* e);
  * 
  * @param s in the given set
  * @param i is the i th element into the set (0 <= i < set__size(set))
- * @return A copy of the umpteenth element stocked into the set if i is valid, NULL else.
+ * @return a copy of the umpteenth element stocked into the set if i is valid, NULL else.
  */
 void* set__get_umpteenth(struct set const *s, size_t i);
 
@@ -151,11 +151,8 @@ void set__free(struct set *s);
  * @brief Prints the set
  * 
  * @param s is the set you want to print
- * @param print_data is a function to print an object in the set
- * It musts have the following prototype:
- * void (*print_data) (const void*);
- * 
+ * @param is_compact to display a compact debug (only values)
  */
-void set__debug_data(const struct set *s);
+void set__debug_data(const struct set *s, int is_compact);
 
 #endif

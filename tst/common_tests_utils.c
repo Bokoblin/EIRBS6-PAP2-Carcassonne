@@ -1,15 +1,5 @@
-#ifndef TEST_UTILS_H
-#define TEST_UTILS_H
+#include "common_tests_utils.h"
 
-#include <stdio.h>
-#include "../src/common/common_interface.h"
-
-#define TEST_SUCCESS 0
-
-/**
- * @brief Print if a test succeeded or not, in color
- * @param result the test result
- */
 void print_success(int result)
 {
     if (result)
@@ -17,10 +7,6 @@ void print_success(int result)
     else
         printf("\x1B[32mSUCCESS\x1B[0m\n");
 }
-
-////////////////////////////////////////////////////////////////////
-///     OPERATORS FUNCTIONS IMPLEMENTATION
-////////////////////////////////////////////////////////////////////
 
 void* operator_copy(const enum card_id *p_card_id)
 {
@@ -38,7 +24,7 @@ void operator_delete(enum card_id *p_card_id)
     free(p_card_id);
 }
 
-int cardid_compare_op(const enum card_id *ci1, const enum card_id *ci2)
+int operator_compare(const enum card_id *ci1, const enum card_id *ci2)
 {
     if (ci1 == NULL || ci2 == NULL) {
         printf("NULL value compared");
@@ -61,6 +47,3 @@ void operator_debug(const enum card_id *p_card_id)
     else
         printf("%d ", *p_card_id);
 }
-
-
-#endif

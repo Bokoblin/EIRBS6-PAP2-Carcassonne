@@ -1,7 +1,4 @@
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include "test_utils.h"
+#include "common_tests_utils.h"
 #include "../src/common/ADT/set.h"
 #include "../src/common/utils.h"
 
@@ -40,17 +37,12 @@ void int__display(const void * i) {
     printf("%d ", *_i);
 }
 
-
-//Filter for test_set__filter
-int even(const void* i){
-    int *_i = (int *) i;
-    return !((*_i)%2);
-  //  return !(i&1);
-}
-
 ////////////////////////////////////////////////////////////////////
 ///     SET FUNCTIONS TESTS
 ////////////////////////////////////////////////////////////////////
+
+
+//TODO: LOTS TO FREE MEMORY
 
 int test_set__empty(void)
 {
@@ -58,11 +50,12 @@ int test_set__empty(void)
     fflush(stdout);
 
     struct set * st = set__empty(int__copy, int__free, int__cmp, int__display);
-    if ((st == NULL) || (!set__is_empty(st)))
+    if ((st == NULL) || (!set__is_empty(st))) {
+        set__free(st);
         return !TEST_SUCCESS;
-    
-    set__free(st);
+    }
 
+    set__free(st);
     return TEST_SUCCESS;
 }
 
@@ -74,7 +67,7 @@ int test_set__is_empty(void)
     struct set * st = set__empty(int__copy, int__free, int__cmp, int__display);
     if ((st == NULL) || (!set__is_empty(st)))
         return !TEST_SUCCESS;
-    
+
     int v1 = 1;
     if (set__add(st, &v1)) return !TEST_SUCCESS;
     if (set__is_empty(st)) return !TEST_SUCCESS;
@@ -84,7 +77,7 @@ int test_set__is_empty(void)
     return TEST_SUCCESS;
 }
 
-int test_set__size(void) 
+int test_set__size(void)
 {
     printf("%s... ", __func__);
     fflush(stdout);
@@ -251,8 +244,6 @@ int test_big_set(void)
     return TEST_SUCCESS;
 }
 
-//TODO : Write some tests for the following functions
-
 int test_set__retrieve(){
 
     printf("%s... ", __func__);
@@ -273,7 +264,7 @@ int test_set__retrieve(){
 
     if (set__retrieve(set, &nope_you_re_not_in_the_set) != NULL)
         return !TEST_SUCCESS;
-    
+
     int *retrieved = set__retrieve(set, &v4);
     //set__debug_data(set);
     *retrieved = 69;
@@ -281,8 +272,11 @@ int test_set__retrieve(){
     //set__debug_data(set);
 
     if (!set__find(set, &v69) //FIXME: 69 IS in the set
-     || set__find(set, &v4))
+            || set__find(set, &v4)) {
+        set__free(set);
         return !TEST_SUCCESS;
+    }
+    set__free(set);
 
     return TEST_SUCCESS;
 }
@@ -312,18 +306,22 @@ int test_set__get_umpteenth(void){
     int * _v6 = set__get_umpteenth(set, 6);
 
     if ((*_v0 != v0)
-    || (*_v1 != v1)
-    || (*_v2 != v2)
-    || (*_v3 != v3)
-    || (*_v4 != v4)
-    || (*_v5 != v5)
-    || (*_v6 != v6))
+            || (*_v1 != v1)
+            || (*_v2 != v2)
+            || (*_v3 != v3)
+            || (*_v4 != v4)
+            || (*_v5 != v5)
+            || (*_v6 != v6)) {
+        set__free(set);
         return !TEST_SUCCESS;
+    }
 
     *_v0 = 69;
     int v69 = 69;
-    if (set__find(set, &v69))
+    if (set__find(set, &v69)) {
+        set__free(set);
         return !TEST_SUCCESS;
+    }
 
     set__free(set);
 
@@ -354,23 +352,22 @@ int test_set__get_umpteenth_no_copy(void){
     int *_v5 = set__get_umpteenth_no_copy(set, 5);
     int *_v6 = set__get_umpteenth_no_copy(set, 6);
 
-    if ((*_v0 != v0)
-    || (*_v1 != v1)
-    || (*_v2 != v2)
-    || (*_v3 != v3)
-    || (*_v4 != v4)
-    || (*_v5 != v5)
-    || (*_v6 != v6))
+    if ((*_v0 != v0) || (*_v1 != v1) || (*_v2 != v2) || (*_v3 != v3)
+            || (*_v4 != v4) || (*_v5 != v5) || (*_v6 != v6)) {
+        set__free(set);
         return !TEST_SUCCESS;
-    
+    }
+
     //set__debug_data(set);
     *_v0 = 69;
     int v69 = 69;
     //set__debug_data(set);
 
     if (!set__find(set, &v69) //FIXME: 69 IS in the set
-    || set__find(set, &v0))
+            || set__find(set, &v0)) {
+        set__free(set);
         return !TEST_SUCCESS;
+    }
 
     set__free(set);
 
@@ -392,7 +389,7 @@ int test_set__debug_data(void){
     if (set__add(set, &v7)) return !TEST_SUCCESS;
 
     printf("(expected: 0 3 4 7) ");
-    set__debug_data(set);
+    set__debug_data(set, true);
 
     set__free(set);
 

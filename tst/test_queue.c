@@ -1,7 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include "test_utils.h"
-#include "../src/common/common_interface.h"
+#include "common_tests_utils.h"
 #include "../src/common/ADT/queue.h"
 #include "../src/common/utils.h"
 

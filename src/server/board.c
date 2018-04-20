@@ -11,8 +11,8 @@ struct board *board__init(struct stack *drawing_stack)
 {
     struct board *b = safe_malloc(sizeof(struct board));
 
-    b->cards_set = set__empty(card_copy_op, card_delete_op, card_compare_op);
-    b->meeples_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op);
+    b->cards_set = set__empty(card_copy_op, card_delete_op, card_compare_op, card_debug_op);
+    b->meeples_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op, meeple_debug_op);
 
     enum card_id *ci = stack__pop(drawing_stack);
     if (ci == NULL) {
@@ -23,7 +23,7 @@ struct board *board__init(struct stack *drawing_stack)
         c->pos.x = 0;
         c->pos.y = 0;
         set__add(b->cards_set, c);
-        b->first_card = set__get_i_th_no_copy(b->cards_set, 0);
+        b->first_card = set__get_umpteenth_no_copy(b->cards_set, 0);
         card__free(c);
     }
 
@@ -33,6 +33,9 @@ struct board *board__init(struct stack *drawing_stack)
 int board__add_card(struct board *b, struct card *c)
 {
     if (b == NULL || c == NULL)
+        return !SUCCESS;
+
+    if (set__retrieve(b->cards_set, c)) //a card of same position is already there
         return !SUCCESS;
 
     enum card_id ci = LAST_CARD;

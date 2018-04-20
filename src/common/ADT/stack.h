@@ -97,6 +97,7 @@ void stack__free(struct stack *s);
  * @brief Prints the stack's content
  * @note Complexity: O(n)
  * @param s the stack to debug
+ * @param is_compact to display a compact debug (only values)
  */
 void stack__debug(struct stack *s, int is_compact);
   
