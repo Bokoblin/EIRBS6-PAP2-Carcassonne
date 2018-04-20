@@ -109,7 +109,10 @@ int set__remove(struct set *s, void* e);
 
 /**
  * @brief Gets the pointer stocked into the set to the researched element
- * @note DO NOT FREE THAT POINTER !! Or the set__free will have a double-free issue.
+ * @attention DO NOT FREE THAT POINTER !! Or the set__free will have a double-free issue.
+ * @warning As the real pointer is retrieved, if you need to edit its content, you shouldn't use this function only
+ * if it affects element comparison, as the set is ordered at add step, this will break search feature otherwise.
+ * In this case you should use set__retrieve, then make a copy and edit it, use set__remove, and set__add at last
  * 
  * @param s is the given set
  * @param e is the element you're looking for
@@ -130,7 +133,10 @@ void* set__get_umpteenth(struct set const *s, size_t i);
 
 /**
  * @brief Get the element in position i into the set.
- * @note DO NOT FREE THAT POINTER !! Or the set__free will have a double-free issue.
+ * @attention DO NOT FREE THAT POINTER !! Or the set__free will have a double-free issue.
+ * @warning As the real pointer is retrieved, if you need to edit its content, you shouldn't use this function only
+ * if it affects element comparison, as the set is ordered at add step, this will break search feature otherwise.
+ * In this case you should use set__retrieve, then make a copy and edit it, use set__remove, and set__add at last
  *
  * @param s in the given set
  * @param i is the i th element into the set (0 <= i < set__size(set))

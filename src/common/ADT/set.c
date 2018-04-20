@@ -26,20 +26,32 @@ struct set
 ////////////////////////////////////////////////////////////////////
 
 
-//dichotomic search
-size_t find(struct set const *set, size_t beg, size_t end, void* x)
+/**
+ * Search an element recursively with dichotomous technique
+ * @param set the set
+ * @param begin the first index
+ * @param end the last index
+ * @param searched_e the searched element (criteria given in compare function pointer)
+ * @return the index of the found value or end pointer
+ */
+size_t find(struct set const *set, size_t begin, size_t end, void* searched_e)
 {
-    assert(x != NULL);
-    if (beg >= end)
-        return beg;
+    if (searched_e == NULL)
+        return end;
 
-    size_t m = (beg + end)/2;
-    if (set->s[m] == x)
-        return m;
-    if (set->cmp(x, set->s[m]) == 1)
-        return find(set, m + 1, end, x);
+    if (begin >= end)
+        return end;
+
+    size_t middle_e = (begin + end)/2;
+
+    int cmp_res = set->cmp(searched_e, set->s[middle_e]);
+
+    if (cmp_res == 0)
+        return middle_e;
+    if (cmp_res == 1)
+        return find(set, middle_e + 1, end, searched_e);
     else
-        return find(set, beg, m, x);
+        return find(set, begin, middle_e, searched_e);
 }
 
 void shift_right(struct set const *set, size_t begin, size_t end)
@@ -154,7 +166,7 @@ void* set__retrieve(struct set *set, void* x)
         return NULL;
 
     size_t pos = find(set, 0, set->size, x);
-    if  (pos >= set->size || (pos < set->size && set->cmp(set->s[pos], x) != 0))
+    if (pos >= set->size || (pos < set->size && set->cmp(set->s[pos], x) != 0))
         return NULL;
 
     return set->s[pos];
@@ -163,7 +175,7 @@ void* set__retrieve(struct set *set, void* x)
 int set__find(struct set const *set, void* x)
 {
     size_t pos = find(set, 0, set->size, x);
-    return  ((pos < set->size) && (set->cmp(set->s[pos], x) == 0));
+    return pos < set->size && set->cmp(set->s[pos], x) == 0;
 }
 
 size_t set__size(struct set const * set)
@@ -215,7 +227,7 @@ void set__debug_data(const struct set *s, int is_compact)
                 s->debug(s->s[i]);
                 i++;
             }
-            printf("}");
+            printf("} ");
         }
     }
 }
