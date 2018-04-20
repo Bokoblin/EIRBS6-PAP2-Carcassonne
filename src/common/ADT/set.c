@@ -101,7 +101,7 @@ int set__add(struct set *set, void* x)
     if  ((pos < set->size) && (set->cmp(set->s[pos], x) == 0))
         return 1;
 
-    //Augment memory if needed
+    //Increase memory if needed
     if (set->size == set->capacity) {
         set->capacity = set->capacity * 2;
         set->s = realloc(set->s, sizeof(void*)*set->capacity);
@@ -191,27 +191,6 @@ void set__free(struct set *set)
         set->delete(set->s[i]);
     free(set->s);
     free(set);
-}
-
-struct set *set__filter(const struct set *s, int (*filter) (const void*))
-{
-    struct set *filtered_set = set__empty(s->copy, s->delete, s->cmp, NULL);
-    size_t i = 0;
-    while ((i < s->capacity) && (i < s->size)) {
-        //Augment memory if  needed
-        if (filtered_set->size == filtered_set->capacity) {
-            filtered_set->capacity = filtered_set->capacity * 2;
-            filtered_set->s = realloc(filtered_set->s, sizeof(void*)*filtered_set->capacity);
-            if (filtered_set->s == NULL)
-                return NULL;
-        }
-        if (filter(s->s[i])) {
-            filtered_set->s[filtered_set->size -1] = s->copy(s->s[i]);
-            filtered_set->size++;
-        }
-        i++;
-    }
-    return filtered_set;
 }
 
 void set__debug_data(const struct set *s)

@@ -148,21 +148,6 @@ void set__free(struct set *s);
 
 
 /**
- * @brief Creates a new filtered set according to a given a predicate
- * 
- * @param s is the set you want to filter from (it is not modified)
- * @param filter is the predicate for the filter.
- * It musts have the following prototype:
- * int filter (const void*);
- * 1 : Keep the object
- * 0 : Do not Keep the object
- * 
- * @return A new struct set* having only the filtered elements.
- */
-struct set *set__filter(const struct set *s, int (*filter) (const void*));
-
-
-/**
  * @brief Prints the set
  * 
  * @param s is the set you want to print
