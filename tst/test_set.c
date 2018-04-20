@@ -396,23 +396,26 @@ int test_set__debug_data(void){
     return TEST_SUCCESS;
 }
 
-
-
 int main()
 {
     printf("----------- TEST SET -----------\n");
 
-    print_success(test_set__empty());
-    print_success(test_set__is_empty());
-    print_success(test_set__size());
-    print_success(test_set__add());
-    print_success(test_set__remove());
-    print_success(test_set__find());
-    print_success(test_big_set());
-    print_success(test_set__retrieve());
-    print_success(test_set__get_umpteenth());
-    print_success(test_set__get_umpteenth_no_copy());
-    print_success(test_set__debug_data());
+    int nb_success = 0;
+    int nb_tests = 0;
+
+    print_test_result(test_set__empty(), &nb_success, &nb_tests);
+    print_test_result(test_set__is_empty(), &nb_success, &nb_tests);
+    print_test_result(test_set__size(), &nb_success, &nb_tests);
+    print_test_result(test_set__add(), &nb_success, &nb_tests);
+    print_test_result(test_set__remove(), &nb_success, &nb_tests);
+    print_test_result(test_set__find(), &nb_success, &nb_tests);
+    print_test_result(test_big_set(), &nb_success, &nb_tests);
+    print_test_result(test_set__retrieve(), &nb_success, &nb_tests);
+    print_test_result(test_set__get_umpteenth(), &nb_success, &nb_tests);
+    print_test_result(test_set__get_umpteenth_no_copy(), &nb_success, &nb_tests);
+    print_test_result(test_set__debug_data(), &nb_success, &nb_tests);
+
+    print_test_summary(nb_success, nb_tests);
 
     return TEST_SUCCESS;
 }

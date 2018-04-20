@@ -362,19 +362,24 @@ int main()
 {
     printf("----------- TEST QUEUE -----------\n");
 
-    print_success(test_queue__empty());
-    print_success(test_queue__is_empty_on_empty_queue());
-    print_success(test_queue__is_empty_on_non_empty_queue());
-    print_success(test_queue__enqueue_on_non_empty_queue());
-    print_success(test_queue_NULL());
-    print_success(test_queue__enqueue_on_multiple_elements());
-    print_success(test_queue__front());
-    print_success(test_queue__back());
-    print_success(test_queue__dequeue_on_empty_queue());
-    print_success(test_queue__dequeue_on_non_empty_queue());
-    print_success(test_queue_length());
-    print_success(test_queue_debug());
-    print_success(test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug());
+    int nb_success = 0;
+    int nb_tests = 0;
+
+    print_test_result(test_queue__empty(), &nb_success, &nb_tests);
+    print_test_result(test_queue__is_empty_on_empty_queue(), &nb_success, &nb_tests);
+    print_test_result(test_queue__is_empty_on_non_empty_queue(), &nb_success, &nb_tests);
+    print_test_result(test_queue__enqueue_on_non_empty_queue(), &nb_success, &nb_tests);
+    print_test_result(test_queue_NULL(), &nb_success, &nb_tests);
+    print_test_result(test_queue__enqueue_on_multiple_elements(), &nb_success, &nb_tests);
+    print_test_result(test_queue__front(), &nb_success, &nb_tests);
+    print_test_result(test_queue__back(), &nb_success, &nb_tests);
+    print_test_result(test_queue__dequeue_on_empty_queue(), &nb_success, &nb_tests);
+    print_test_result(test_queue__dequeue_on_non_empty_queue(), &nb_success, &nb_tests);
+    print_test_result(test_queue_length(), &nb_success, &nb_tests);
+    print_test_result(test_queue_debug(), &nb_success, &nb_tests);
+    print_test_result(test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug(), &nb_success, &nb_tests);
+
+    print_test_summary(nb_success, nb_tests);
 
     return TEST_SUCCESS;
 }

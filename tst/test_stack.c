@@ -236,17 +236,22 @@ int main()
 {
     printf("----------- TEST STACK -----------\n");
 
-    print_success(test_stack__empty());
-    print_success(test_stack__is_empty_on_empty_stack());
-    print_success(test_stack__is_empty_on_non_empty_stack());
-    print_success(test_stack__push_on_non_empty_stack());
-    print_success(test_stack_NULL());
-    print_success(test_stack__push_on_multiple_elements());
-    print_success(test_stack__peek());
-    print_success(test_stack__pop_on_empty_stack());
-    print_success(test_stack__pop_on_non_empty_stack());
-    print_success(test_stack_length());
-    print_success(test_stack_debug());
+    int nb_success = 0;
+    int nb_tests = 0;
+
+    print_test_result(test_stack__empty(), &nb_success, &nb_tests);
+    print_test_result(test_stack__is_empty_on_empty_stack(), &nb_success, &nb_tests);
+    print_test_result(test_stack__is_empty_on_non_empty_stack(), &nb_success, &nb_tests);
+    print_test_result(test_stack__push_on_non_empty_stack(), &nb_success, &nb_tests);
+    print_test_result(test_stack_NULL(), &nb_success, &nb_tests);
+    print_test_result(test_stack__push_on_multiple_elements(), &nb_success, &nb_tests);
+    print_test_result(test_stack__peek(), &nb_success, &nb_tests);
+    print_test_result(test_stack__pop_on_empty_stack(), &nb_success, &nb_tests);
+    print_test_result(test_stack__pop_on_non_empty_stack(), &nb_success, &nb_tests);
+    print_test_result(test_stack_length(), &nb_success, &nb_tests);
+    print_test_result(test_stack_debug(), &nb_success, &nb_tests);
+
+    print_test_summary(nb_success, nb_tests);
 
     return TEST_SUCCESS;
 }

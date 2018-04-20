@@ -178,14 +178,19 @@ int main()
 {
     printf("----------- TEST CARD -----------\n");
 
-    print_success(test_card__init());
-    print_success(test_card__get_area());
-    print_success(test_card__get_neighbour_number());
-    print_success(test_card__are_matching_direction_success_case());
-    print_success(test_card__are_matching_direction_failure_case());
-    print_success(test_card__link_at_direction());
-    print_success(test_card__draw());
-    print_success(test_card__set_orientation());
+    int nb_success = 0;
+    int nb_tests = 0;
+
+    print_test_result(test_card__init(), &nb_success, &nb_tests);
+    print_test_result(test_card__get_area(), &nb_success, &nb_tests);
+    print_test_result(test_card__get_neighbour_number(), &nb_success, &nb_tests);
+    print_test_result(test_card__are_matching_direction_success_case(), &nb_success, &nb_tests);
+    print_test_result(test_card__are_matching_direction_failure_case(), &nb_success, &nb_tests);
+    print_test_result(test_card__link_at_direction(), &nb_success, &nb_tests);
+    print_test_result(test_card__draw(), &nb_success, &nb_tests);
+    print_test_result(test_card__set_orientation(), &nb_success, &nb_tests);
+
+    print_test_summary(nb_success, nb_tests);
 
     return TEST_SUCCESS;
 }

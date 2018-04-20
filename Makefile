@@ -103,7 +103,7 @@ ifneq ($(TESTS_EXECUTABLE),)
 	@for e in $(TESTS_EXECUTABLE); do \
 		echo =====  $${e} =====; \
 		valgrind --log-fd=1 ./$${e} \
-		| grep "ERROR SUMMARY:\|total heap usage:" \
+		| grep "TESTS SUMMARY:\|ERROR SUMMARY:\|total heap usage:" \
 		| $(VALGRIND_AWK) \
 	done
 	@echo Tests complete.
@@ -209,19 +209,32 @@ test_stack:	$(TST_DIR)/test_stack.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/u
 
 VALGRIND_AWK = \
 awk '{	\
-	for(i=2;i<=NF;i++) { \
-		if (match($$((i+1)), /allocs/) && $$i > $$((i+2))) \
-			   printf "\x1B[31m%s \x1b[0m", $$i; \
-		else if (match($$i, /[1-9]+$$/) && match($$((i+1)), /errors/)) \
-			   printf "\x1B[31m%s \x1b[0m", $$i; \
-		else if (match($$i, /[1-9]+$$/) && match($$((i+1)), /contexts/)) \
-			   printf "\x1B[31m%s \x1b[0m", $$i; \
-		else if (match($$i, /[0-9]+$$/)) \
-			printf "\x1B[32m%s \x1b[0m", $$i; \
-		   else if (match($$i, /ERROR/)) \
-			printf "\n%s ", $$i; \
-		   else \
-			printf "%s ", $$i; \
-		} \
+	if (match( $$0, /TESTS.*/)) \
+		printf "%s\n", $$0; \
+	else \
+		for(i=2;i<=NF;i++) { \
+			if (match($$((i+1)), /allocs/) && $$i > $$((i+2))) \
+				   printf "\x1B[31m%s \x1b[0m", $$i; \
+			else if (match($$i, /[1-9]+$$/) && match($$((i+1)), /errors/)) \
+				   printf "\x1B[31m%s \x1b[0m", $$i; \
+			else if (match($$i, /[1-9]+$$/) && match($$((i+1)), /contexts/)) \
+				   printf "\x1B[31m%s \x1b[0m", $$i; \
+			else if (match($$i, /[0-9]+$$/)) \
+				printf "\x1B[32m%s \x1b[0m", $$i; \
+		   	else if (match($$i, /ERROR/)) \
+				printf "\n%s ", $$i; \
+			else if (match($$i, /total/)) \
+				printf ""; \
+			else if (match($$i, /heap/)) \
+				printf "HEAP "; \
+			else if (match($$i, /usage:/)) \
+				printf "USAGE: \t"; \
+			else if (match($$i, /frees\,/)) \
+				{printf "frees", $$i; break;}\
+			else if (match($$i, /contexts/)) \
+				{printf "%s", $$i; break;}\
+			else \
+				printf "%s ", $$i; \
+			} \
 	}'; \
 echo; echo;

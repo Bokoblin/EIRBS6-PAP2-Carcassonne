@@ -63,7 +63,12 @@ int main()
 {
     printf("----------- TEST DECK -----------\n");
 
-    print_success(test_init_deck());
+    int nb_success = 0;
+    int nb_tests = 0;
+
+    print_test_result(test_init_deck(), &nb_success, &nb_tests);
+
+    print_test_summary(nb_success, nb_tests);
 
     return TEST_SUCCESS;
 }

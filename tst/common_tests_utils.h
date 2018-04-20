@@ -19,7 +19,14 @@
  * @brief Print if a test succeeded or not, in color
  * @param result the test result
  */
-void print_success(int result);
+void print_test_result(int result, int *nb_success, int *nb_tests);
+
+/**
+ * @brief Print tests results
+ * @param nb_success number of successes
+ * @param nb_tests number of tests
+ */
+void print_test_summary(int nb_success, int nb_tests);
 
 ////////////////////////////////////////////////////////////////////
 ///     OPERATORS FOR ADT TESTS
