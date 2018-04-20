@@ -124,11 +124,11 @@ void* set__retrieve(struct set *s, void* e);
 /**
  * @brief Get the element in position i into the set.
  * 
- * @param s in the given set
+ * @param set in the given set
  * @param i is the i th element into the set (0 <= i < set__size(set))
  * @return a copy of the umpteenth element stocked into the set if i is valid, NULL else.
  */
-void* set__get_umpteenth(struct set const *s, size_t i);
+void* set__get_umpteenth(struct set const *set, size_t i);
 
 
 /**
@@ -138,11 +138,11 @@ void* set__get_umpteenth(struct set const *s, size_t i);
  * if it affects element comparison, as the set is ordered at add step, this will break search feature otherwise.
  * In this case you should use set__retrieve, then make a copy and edit it, use set__remove, and set__add at last
  *
- * @param s in the given set
+ * @param set in the given set
  * @param i is the i th element into the set (0 <= i < set__size(set))
  * @return the umpteenth element stocked into the set if i is valid, NULL else.
  */
-void* set__get_umpteenth_no_copy(struct set const *s, size_t i);
+void* set__get_umpteenth_no_copy(struct set const *set, size_t i);
 
 
 /**
@@ -156,9 +156,9 @@ void set__free(struct set *s);
 /**
  * @brief Prints the set
  * 
- * @param s is the set you want to print
+ * @param set is the set you want to print
  * @param is_compact to display a compact debug (only values)
  */
-void set__debug_data(const struct set *s, int is_compact);
+void set__debug_data(const struct set *set, int is_compact);
 
 #endif

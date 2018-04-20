@@ -8,7 +8,9 @@ int test_board__empty()
 
     struct board* b1 = board__init(NULL);
 
-    if (b1->first_card != NULL || !set__is_empty(b1->cards_set) || !set__is_empty(b1->meeples_set)) {
+    if (b1->first_card != NULL || !set__is_empty(b1->cards_set)
+            || !set__is_empty(b1->meeples_set)
+            || !stack__is_empty(b1->moves_stack)) {
         board__free(b1);
         return !TEST_SUCCESS;
     }

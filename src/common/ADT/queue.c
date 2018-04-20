@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include "queue.h"
 #include "../utils.h"
 
@@ -46,16 +43,17 @@ struct queue *queue__empty(void* copy_op, void* delete_op, void* debug_op)
 
 int queue__is_empty(struct queue *q)
 {
-    if (q == NULL)
-        return 1;
+    assert_not_null(q, __func__, "queue parameter");
 
     return queue__length(q) == 0;
 }
 
 int queue__enqueue(struct queue *q, void* element)
 {
-    if (q == NULL || element == NULL)
-        return -1;
+    assert_not_null(q, __func__, "queue parameter");
+
+    if (element == NULL)
+        return !SUCCESS;
 
     // Adjust capacity if necessary
     if (queue__length(q) == q->capacity) {
@@ -63,7 +61,7 @@ int queue__enqueue(struct queue *q, void* element)
         q->capacity *= 2;
         q->array = realloc(q->array, sizeof(void *) * q->capacity);
         if (q->array == NULL)
-            return -1;
+            return !SUCCESS;
         else
             for (size_t i = prev_capacity; i < q->capacity; i++)
                 q->array[i] = NULL;
@@ -79,13 +77,15 @@ int queue__enqueue(struct queue *q, void* element)
     q->array[q->back] = q->operator_copy(element);
     q->back = (q->back + 1) % q->capacity;
 
-    return 0;
+    return SUCCESS;
 }
 
 int queue__dequeue(struct queue *q)
 {
-    if (q == NULL || queue__is_empty(q))
-        return -1;
+    assert_not_null(q, __func__, "queue parameter");
+
+    if (queue__is_empty(q))
+        return !SUCCESS;
 
     q->operator_delete(q->array[q->front]);
     q->array[q->front] = NULL;
@@ -103,17 +103,19 @@ int queue__dequeue(struct queue *q)
 
         q->array = realloc(q->array, sizeof(void *) * q->capacity / 2);
         if (q->array == NULL)
-            return -1;
+            return !SUCCESS;
         else
             q->capacity /= 2;
     }
 
-    return 0;
+    return SUCCESS;
 }
 
 void* queue__front(struct queue *q)
 {
-    if (q == NULL || queue__is_empty(q))
+    assert_not_null(q, __func__, "queue parameter");
+
+    if (queue__is_empty(q))
         return NULL;
 
     return q->operator_copy(q->array[q->front]);
@@ -121,7 +123,9 @@ void* queue__front(struct queue *q)
 
 void* queue__back(struct queue *q)
 {
-    if (q == NULL || queue__is_empty(q))
+    assert_not_null(q, __func__, "queue parameter");
+
+    if (queue__is_empty(q))
         return NULL;
 
     if (q->back == 0)
@@ -132,8 +136,7 @@ void* queue__back(struct queue *q)
 
 size_t queue__length(struct queue *q)
 {
-    if (q == NULL)
-        return 0;
+    assert_not_null(q, __func__, "queue parameter");
 
     if (q->back > q->front || q->array[q->front] == NULL)
         return q->back - q->front;

@@ -1,44 +1,9 @@
+#include "server.h"
 #include <dlfcn.h>
 #include <string.h>
 #include <assert.h>
 #include <time.h>
-#include "../server/function_pointers.h"
-#include "../common/utils.h"
-#include "../common/ADT/queue.h"
-#include "../common/ADT/stack.h"
-#include "../common/card.h"
-#include "../common/deck.h"
-#include "../server/board.h"
 
-#define DEFAULT_GRAPHIC_MODE_FLAG 0
-#define DEFAULT_CLIENT_COUNT 0
-
-////////////////////////////////////////////////////////////////////
-///     FUNCTIONS DECLARATION
-////////////////////////////////////////////////////////////////////
-
-void register_players(int argc, const char **argv, struct queue *players, unsigned int nb_players);
-int is_valid_card(struct board *b, enum card_id ci);
-int is_valid_play(struct player *p, struct move *m);
-enum card_id draw_until_valid(struct board* b, struct stack *s);
-struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves);
-void free_resources(struct queue *players_queue);
-void game_main(struct queue *players, unsigned int nb_player);
-void init_next_player(struct queue *players_queue, unsigned int nb_player);
-void finalize_next_player(struct queue *players_queue);
-
-
-////////////////////////////////////////////////////////////////////
-///     FUNCTIONS IMPLEMENTATION & MAIN
-////////////////////////////////////////////////////////////////////
-
-/**
- * @brief Registers all player libraries passed in program arguments
- * @param argc argument count
- * @param argv argument content array
- * @param players the players container
- * @param nb_players the number of players to register
- */
 void register_players(int argc, const char **argv, struct queue *players, unsigned int nb_players)
 {
     unsigned int nb_players_registered = 0;
@@ -73,7 +38,7 @@ int is_valid_card(struct board *b, enum card_id ci)
     (void) b;
     (void) ci;
 
-    return 1;
+    return true;
 }
 
 int is_valid_play(struct player *p, struct move *m)
@@ -83,13 +48,13 @@ int is_valid_play(struct player *p, struct move *m)
     //if (?) {
     //    ...
     //    m->check = FAILED;
-    //    return 0;
+    //    return false;
     //}
 
 
     m->check = VALID;
 
-    return 1;
+    return true;
 }
 
 enum card_id draw_until_valid(struct board* b, struct stack *s)
@@ -170,7 +135,7 @@ void game_main(struct queue *players, unsigned int nb_player)
             nb_player--;
         }
 
-        //TODO: add move to server full move list (to be created too)
+        stack__push(board->moves_stack, &m);
 
         player__free(p);
         free(moves_array);

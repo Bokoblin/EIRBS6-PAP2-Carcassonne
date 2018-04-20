@@ -44,8 +44,7 @@ int stack__is_empty(struct stack *s);
  * @note Complexity: O(1)
  * @param s the stack
  * @param element the element to add
- * @return 0 on success
- * @return -1 otherwise
+ * @return 0 on success, 1 otherwise
  */
 int stack__push(struct stack *s, void* element);
 

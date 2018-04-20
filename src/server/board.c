@@ -13,11 +13,12 @@ struct board *board__init(struct stack *drawing_stack)
 
     b->cards_set = set__empty(card_copy_op, card_delete_op, card_compare_op, card_debug_op);
     b->meeples_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op, meeple_debug_op);
+    b->moves_stack = stack__empty(move_copy_op, move_delete_op, move_debug_op);
 
-    enum card_id *ci = stack__pop(drawing_stack);
-    if (ci == NULL) {
+    if (drawing_stack == NULL) {
         b->first_card = NULL;
     } else {
+        enum card_id *ci = stack__pop(drawing_stack);
         struct card *c = card__init(*ci);
         free(ci);
         c->pos.x = 0;
@@ -68,5 +69,6 @@ void board__free(struct board *b)
     //Never free first_card
     set__free(b->cards_set);
     set__free(b->meeples_set);
+    stack__free(b->moves_stack);
     free(b);
 }

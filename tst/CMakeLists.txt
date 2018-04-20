@@ -53,6 +53,7 @@ file(GLOB TEST_CARD_SOURCE_FILES
 
 file(GLOB TEST_DECK_SOURCE_FILES
         "common_tests_utils.h"
+        "common_tests_utils.c"
         "test_deck.c"
         "../src/server/function_pointers.h"
         "../src/server/function_pointers.c"

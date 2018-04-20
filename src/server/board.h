@@ -19,6 +19,7 @@ struct board
     struct card* first_card;
     struct set *cards_set;
     struct set *meeples_set;
+    struct stack *moves_stack; //can't use a set to keep play order - stack or queue depending on future usage
 };
 
 
@@ -38,7 +39,7 @@ struct board *board__init(struct stack *drawing_stack);
  * @brief Add a card to the board
  * @param b the board
  * @param c a card
- * @return 0 on succes, -1 otherwise
+ * @return 0 on success, 1 otherwise
  */
 int board__add_card(struct board *b, struct card* c);
 

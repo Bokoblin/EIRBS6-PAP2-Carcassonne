@@ -59,6 +59,8 @@ add_library(client2 SHARED ${CLIENT2_SOURCE_FILES})
 # Server
 add_executable(${APP_EXECUTABLE} ${SERVER_SOURCE_FILES})
 target_link_libraries(${APP_EXECUTABLE} ${CMAKE_DL_LIBS})
+target_link_libraries(${APP_EXECUTABLE} client1)
+target_link_libraries(${APP_EXECUTABLE} client2)
 
 
 if(ENABLE_TESTS)

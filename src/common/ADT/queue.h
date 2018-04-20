@@ -36,8 +36,7 @@ struct queue *queue__empty(void* copy_op, void* delete_op, void* debug_op);
  * @brief Verify if the queue is empty
  * @note Complexity: O(1)
  * @param q the queue
- * @return 1 if empty
- * @return 0 otherwise
+ * @return 1 if empty, 0 otherwise
  */
 int queue__is_empty(struct queue *q);
 
@@ -47,7 +46,7 @@ int queue__is_empty(struct queue *q);
  * @note Complexity: O(n)
  * @param q the queue
  * @param element the element to add
- * @return 0 on success, -1 otherwise
+ * @return 0 on success, 1 otherwise
  */
 int queue__enqueue(struct queue *q, void* element);
 
@@ -76,7 +75,7 @@ void* queue__back(struct queue *q);
  * @brief Pop the front element out of the queue
  * @note Complexity: O(n)
  * @param q the queue
- * @return 0 on success, -1 otherwise
+ * @return 0 on success, 1 otherwise
  */
 int queue__dequeue(struct queue *q);
 

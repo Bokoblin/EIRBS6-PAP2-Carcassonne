@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
 #include "stack.h"
 #include "../utils.h"
 
@@ -46,33 +43,38 @@ struct stack *stack__empty(void* copy_op, void* delete_op, void* debug_op)
 
 int stack__is_empty(struct stack *s)
 {
-    if (s == NULL)
-        return -1;
-
+    assert_not_null(s, __func__, "stack parameter");
     return (s->head == 0);
 }
 
 int stack__push(struct stack *s, void* element)
 {
-    if (s == NULL || s->array == NULL || element == NULL)
-        return -1;
+    assert_not_null(s, __func__, "stack parameter");
+    assert_not_null(s->array, __func__, "stack array");
+
+    if (element == NULL)
+        return !SUCCESS;
 
     /* Adjust capacity if necessary */
     if (s->head == s->capacity){
         s->capacity = s->capacity * 2;
         s->array = realloc(s->array, sizeof(void*) * s->capacity);
         if (s->array == NULL)
-            return -1;
+            return !SUCCESS;
     }
 
     s->array[s->head] = s->operator_copy(element);
     s->head++;
-    return 0;
+
+    return SUCCESS;
 }
 
 void* stack__peek(struct stack *s)
 {
-    if (s == NULL || s->array == NULL || stack__is_empty(s))
+    assert_not_null(s, __func__, "stack parameter");
+    assert_not_null(s->array, __func__, "stack array");
+
+    if (stack__is_empty(s))
         return NULL;
 
     return s->operator_copy(s->array[s->head-1]);
@@ -80,7 +82,10 @@ void* stack__peek(struct stack *s)
 
 void* stack__pop(struct stack *s)
 {
-    if (s == NULL || s->array == NULL || stack__is_empty(s))
+    assert_not_null(s, __func__, "stack parameter");
+    assert_not_null(s->array, __func__, "stack array");
+
+    if (stack__is_empty(s))
         return NULL;
 
     // Adjust capacity if necessary
@@ -100,16 +105,14 @@ void* stack__pop(struct stack *s)
 
 size_t stack__length(struct stack *s)
 {
-    if (s == NULL)
-        return 0;
-
+    assert_not_null(s, __func__, "stack parameter");
     return s->head;
 }
 
 void stack__mix(struct stack *s)
 {
-    if (s == NULL || s->array == NULL)
-        return;
+    assert_not_null(s, __func__, "stack parameter");
+    assert_not_null(s->array, __func__, "stack array");
 
     size_t a;
     size_t b;
