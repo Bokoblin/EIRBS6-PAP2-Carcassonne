@@ -55,7 +55,7 @@ struct set;
  * 
  * @return An empty struct set* 
  */
-struct set *set__empty(void* copy_op, void* delete_op, void* compare_op);
+struct set *set__empty(void *copy_op, void *delete_op, void *compare_op, void *debug_op);
 
 
 /**
@@ -121,22 +121,22 @@ void* set__retrieve(struct set *s, void* e);
 /**
  * @brief Get the element in position i into the set.
  * 
- * @param set in the given set
+ * @param s in the given set
  * @param i is the i th element into the set (0 <= i < set__size(set))
- * @return A copy of the i-th element stocked into the set if i is valid, NULL else.
+ * @return A copy of the umpteenth element stocked into the set if i is valid, NULL else.
  */
-void* set__get_i_th(struct set const *set, size_t i);
+void* set__get_umpteenth(struct set const *s, size_t i);
 
 
 /**
  * @brief Get the element in position i into the set.
  * @note DO NOT FREE THAT POINTER !! Or the set__free will have a double-free issue.
  *
- * @param set in the given set
+ * @param s in the given set
  * @param i is the i th element into the set (0 <= i < set__size(set))
- * @return the i-th element stocked into the set if i is valid, NULL else.
+ * @return the umpteenth element stocked into the set if i is valid, NULL else.
  */
-void* set__get_i_th_no_copy(struct set const *set, size_t i);
+void* set__get_umpteenth_no_copy(struct set const *s, size_t i);
 
 
 /**
@@ -150,7 +150,7 @@ void set__free(struct set *s);
 /**
  * @brief Creates a new filtered set according to a given a predicate
  * 
- * @param set is the set you want to filter from (it is not modified)
+ * @param s is the set you want to filter from (it is not modified)
  * @param filter is the predicate for the filter.
  * It musts have the following prototype:
  * int filter (const void*);
@@ -159,18 +159,18 @@ void set__free(struct set *s);
  * 
  * @return A new struct set* having only the filtered elements.
  */
-struct set *set__filter(const struct set *set, int (*filter) (const void*));
+struct set *set__filter(const struct set *s, int (*filter) (const void*));
 
 
 /**
  * @brief Prints the set
  * 
- * @param set is the set you want to print
+ * @param s is the set you want to print
  * @param print_data is a function to print an object in the set
  * It musts have the following prototype:
  * void (*print_data) (const void*);
  * 
  */
-void set__debug_data(const struct set *set, void (*print_data) (const void*));
+void set__debug_data(const struct set *s);
 
 #endif

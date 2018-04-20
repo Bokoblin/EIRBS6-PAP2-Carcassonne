@@ -38,6 +38,21 @@ void operator_delete(enum card_id *p_card_id)
     free(p_card_id);
 }
 
+int cardid_compare_op(const enum card_id *ci1, const enum card_id *ci2)
+{
+    if (ci1 == NULL || ci2 == NULL) {
+        printf("NULL value compared");
+        exit(EXIT_FAILURE);
+    }
+
+    if (ci1 < ci2)
+        return -1;
+    else if (ci1 == ci2)
+        return 0;
+    else
+        return 1;
+}
+
 void operator_debug(const enum card_id *p_card_id)
 {
     setvbuf (stdout, NULL, _IONBF, 0);

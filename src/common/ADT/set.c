@@ -15,9 +15,10 @@ struct set
     void **s;
     size_t capacity;
     size_t size;
-    int (*cmp) (void* x, void* y);
     void* (*copy) (void* x);
+    int (*cmp) (void* x, void* y);
     void (*delete) (void*);
+    void (*debug) (void*);
 };
 
 ////////////////////////////////////////////////////////////////////
@@ -70,7 +71,7 @@ void shift_left(struct set const *set, size_t begin, size_t end)
 ///     SET FUNCTIONS IMPLEMENTATION
 ////////////////////////////////////////////////////////////////////
 
-struct set *set__empty(void* copy_op, void* delete_op, void* compare_op)
+struct set *set__empty(void *copy_op, void *delete_op, void *compare_op, void *debug_op)
 {
     struct set *set = safe_malloc(sizeof(struct set));
     set->capacity = BASIC_SET_SIZE;
@@ -81,6 +82,7 @@ struct set *set__empty(void* copy_op, void* delete_op, void* compare_op)
     set->copy = copy_op;
     set->delete = delete_op;
     set->cmp = compare_op;
+    set->debug = debug_op;
 
     return set;
 }
@@ -169,18 +171,18 @@ size_t set__size(struct set const * set)
     return set->size;
 }
 
-void* set__get_i_th(struct set const *set, size_t i)
+void* set__get_umpteenth(struct set const *s, size_t i)
 {
-    if (i >= set__size(set))
+    if (i >= set__size(s))
         return NULL;
-    return set->copy(set->s[i]);
+    return s->copy(s->s[i]);
 }
 
-void* set__get_i_th_no_copy(struct set const *set, size_t i)
+void* set__get_umpteenth_no_copy(struct set const *s, size_t i)
 {
-    if (i >= set__size(set))
+    if (i >= set__size(s))
         return NULL;
-    return set->s[i];
+    return s->s[i];
 }
 
 void set__free(struct set *set)
@@ -191,11 +193,11 @@ void set__free(struct set *set)
     free(set);
 }
 
-struct set *set__filter(const struct set *set, int (*filter) (const void*))
+struct set *set__filter(const struct set *s, int (*filter) (const void*))
 {
-    struct set *filtered_set = set__empty(set->copy, set->delete, set->cmp);
+    struct set *filtered_set = set__empty(s->copy, s->delete, s->cmp, NULL);
     size_t i = 0;
-    while ((i < set->capacity) && (i < set->size)) {
+    while ((i < s->capacity) && (i < s->size)) {
         //Augment memory if  needed
         if (filtered_set->size == filtered_set->capacity) {
             filtered_set->capacity = filtered_set->capacity * 2;
@@ -203,8 +205,8 @@ struct set *set__filter(const struct set *set, int (*filter) (const void*))
             if (filtered_set->s == NULL)
                 return NULL;
         }
-        if (filter(set->s[i])) {
-            filtered_set->s[filtered_set->size -1] = set->copy(set->s[i]);
+        if (filter(s->s[i])) {
+            filtered_set->s[filtered_set->size -1] = s->copy(s->s[i]);
             filtered_set->size++;
         }
         i++;
@@ -212,17 +214,17 @@ struct set *set__filter(const struct set *set, int (*filter) (const void*))
     return filtered_set;
 }
 
-void set__debug_data(const struct set *set, void (*print_data) (const void*))
+void set__debug_data(const struct set *s)
 {
     setvbuf (stdout, NULL, _IONBF, 0);
-    if (set == NULL || set->s == NULL)
+    if (s == NULL || s->s == NULL)
         printf("Set (NULL)\n");
     else {
-        printf("Set (capacity: %zu, size: %zu, content: \n", set->capacity, set->size);
+        printf("Set (capacity: %zu, size: %zu, content: \n", s->capacity, s->size);
         printf("\t{ ");
         size_t i = 0;
-        while(i < set->size) {
-            print_data(set->s[i]);
+        while(i < s->size) {
+            s->debug(s->s[i]);
             i++;
         }
         printf("}\n)\n");
