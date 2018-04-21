@@ -53,6 +53,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
         printf("\tThe move is invalid...\n"); //temp
     }
 
+    card__free(card);
     return m->check == VALID ? true : false;
 }
 
