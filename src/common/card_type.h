@@ -4,7 +4,7 @@
 #include "common_interface.h"
 #include "area_type.h"
 
-#define MAX_ZONES (LAST_POS-1)
+#define MAX_ZONES 13
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURES

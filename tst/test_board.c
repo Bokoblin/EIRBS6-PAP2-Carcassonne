@@ -35,6 +35,13 @@ int test_board__empty()
     return TEST_SUCCESS;
 }
 
+int test_board__is_valid_card()
+{
+    printf("%s... ", __func__);
+    printf("NOT DONE YET - ");
+    return !TEST_SUCCESS;
+}
+
 int test_board__add_card()
 {
     printf("%s... ", __func__);
@@ -201,6 +208,7 @@ int main()
     int nb_tests = 0;
 
     print_test_result(test_board__empty(), &nb_success, &nb_tests);
+    print_test_result(test_board__is_valid_card(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);

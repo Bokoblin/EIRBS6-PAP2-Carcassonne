@@ -3,6 +3,7 @@
 
 #include "../common/common_interface.h"
 #include "../common/card.h"
+#include "../server/board.h"
 
 
 ////////////////////////////////////////////////////////////////////
@@ -33,6 +34,16 @@ struct board
  * @return a pointer towards a newly created board
  */
 struct board *board__init(struct stack *drawing_stack);
+
+
+/**
+ * @brief Verify that a card can be played in next turn
+ * @details Verifies that a card matches with another on the board
+ * @param b the board
+ * @param ci the card id to verify
+ * @return true if verification is a success, false otherwise
+ */
+int board__is_valid_card(struct board *b, enum card_id ci);
 
 
 /**

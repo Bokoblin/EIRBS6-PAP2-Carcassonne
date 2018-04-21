@@ -24,15 +24,6 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 
 
 /**
- * @brief Verify that a card can be played in next turn
- * @param b the board
- * @param ci the card id to verify
- * @return true if verification is a success, false otherwise
- */
-int is_valid_card(struct board *b, enum card_id ci);
-
-
-/**
  * @brief Verify that a player move is valid
  * @param p the player
  * @param m the move

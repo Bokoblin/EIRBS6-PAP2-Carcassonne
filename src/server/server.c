@@ -1,7 +1,6 @@
 #include "server.h"
 #include <dlfcn.h>
 #include <string.h>
-#include <assert.h>
 #include <time.h>
 
 void register_players(int argc, const char **argv, struct queue *players, unsigned int nb_players)
@@ -32,15 +31,6 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
     }
 }
 
-int is_valid_card(struct board *b, enum card_id ci)
-{
-    //TODO : verify that card can be played
-    (void) b;
-    (void) ci;
-
-    return true;
-}
-
 int is_valid_play(struct player *p, struct move *m)
 {
     //TODO : verify that player hasn't cheated
@@ -62,7 +52,8 @@ enum card_id draw_until_valid(struct board* b, struct stack *s)
     enum card_id ci;
     do {
         ci = card__draw(s);
-    } while (!is_valid_card(b, ci));
+        printf("[DEBUG] Drawing a new card (card: %d)...\n", ci);
+    } while (!board__is_valid_card(b, ci));
 
     return ci;
 }

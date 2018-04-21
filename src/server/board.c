@@ -1,3 +1,4 @@
+#include "server.h"
 #include <stdlib.h>
 #include "board.h"
 #include "../common/utils.h"
@@ -29,6 +30,19 @@ struct board *board__init(struct stack *drawing_stack)
     }
 
     return b;
+}
+
+int board__is_valid_card(struct board *b, enum card_id ci)
+{
+    struct card *c = card__init(ci);
+    for (size_t i = 0; i < set__size(b->cards_set); i++) {
+        if (card__are_matching(c, set__get_umpteenth_no_copy(b->cards_set, i))) {
+            card__free(c);
+            return true;
+        }
+    }
+    card__free(c);
+    return false;
 }
 
 int board__add_card(struct board *b, struct card *c)

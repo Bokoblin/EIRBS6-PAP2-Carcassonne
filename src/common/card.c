@@ -66,19 +66,15 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
     assert_not_null(c2, __func__, "c2 parameter");
 
     for (int i = 0; i < 3; i++) {
-        //unsigned int c1_place_index = (unsigned int) (3 * direction + i + 1); //+1 for NO_MEEPLE
-        //unsigned int c2_place_index = (unsigned int) (3 * ((direction + 2) % DIRECTION_NUMBER) + i + 1);
-        //
-        //if (c1_place_index > LAST_POS || c2_place_index > LAST_POS)
-        //    exit_on_error("Out of range place");
-        //
-        //enum place c1_p = (enum place) c1_place_index;
-        //enum place c2_p = (enum place) c2_place_index;
-        //enum area_type c1_a = card__get_area(c1, c1_p);
-        //enum area_type c2_a = card__get_area(c2, c2_p);
+        enum direction opposite_dir = (direction + 2) % DIRECTION_NUMBER;
+        int c1_area_index = (3 * direction + 3 * c1->orientation + i) % 12;
+        int c2_area_index = (3 * opposite_dir + 3 * c2->orientation + 2 - i) % 12;
 
-        enum area_type c1_a = c1->type.areas[(3 * direction + 3 * c1->orientation + i) % 12];
-        enum area_type c2_a = c2->type.areas[(3 * ((direction + 2) % DIRECTION_NUMBER) + 3 * c2->orientation + 2 - i) % 12];
+        if (c1_area_index > LAST_POS || c2_area_index > LAST_POS)
+            exit_on_error("Out of range area");
+
+        enum area_type c1_a = c1->type.areas[c1_area_index];
+        enum area_type c2_a = c2->type.areas[c2_area_index];
 
         if (c1_a != c2_a)
             return false; //on matching failure
