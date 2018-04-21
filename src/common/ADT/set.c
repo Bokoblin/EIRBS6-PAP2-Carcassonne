@@ -134,6 +134,37 @@ int set__add(struct set *set, void* x)
     return SUCCESS;
 }
 
+int set__add_no_copy(struct set *set, void* x)
+{
+    assert_not_null(set, __func__, "set parameter");
+    assert_not_null(set->s, __func__, "set array");
+
+    if  (x == NULL)
+        return !SUCCESS;
+
+    size_t pos = find(set, 0, set->size, x);
+    if  ((pos < set->size) && (set->cmp(set->s[pos], x) == 0))
+        return !SUCCESS;
+
+    //Increase memory if needed
+    if (set->size == set->capacity - 1) {
+        set->capacity = set->capacity * 2;
+        set->s = realloc(set->s, sizeof(void *) * set->capacity);
+        if (set->s == NULL)
+            return !SUCCESS;
+        else
+            for (size_t i = set->capacity / 2; i < set->capacity; i++)
+                set->s[i] = NULL;
+    }
+
+    //Add x into the set
+    shift_right(set, pos, set->size);
+    set->s[pos] = x;
+    set->size++;
+
+    return SUCCESS;
+}
+
 int set__remove(struct set *set, void* x)
 {
     assert_not_null(set, __func__, "set parameter");

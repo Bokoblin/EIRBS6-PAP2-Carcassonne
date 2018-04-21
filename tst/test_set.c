@@ -144,6 +144,69 @@ int test_set__add(void)
     return test_result;
 }
 
+
+int test_set__add_no_copy(void)
+{
+    printf("%s... ", __func__);
+
+    struct set * st = set__empty(int__copy, int__free, int__cmp, int__debug);
+    int test_result = TEST_SUCCESS;
+
+    if (st == NULL) test_result = !TEST_SUCCESS;
+
+    int *v1 = malloc(sizeof(int));
+    *v1 = 3;
+    if (set__add_no_copy(st, v1)) test_result = !TEST_SUCCESS;
+    if (set__size(st) != 1) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v1)) test_result = !TEST_SUCCESS;
+
+    if (!set__add_no_copy(st, v1)) test_result = !TEST_SUCCESS;
+    if (set__size(st) != 1) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v1)) test_result = !TEST_SUCCESS;
+
+    int *v2 = malloc(sizeof(int));
+    *v2 = 3;
+    if (!set__add_no_copy(st, v2)) test_result = !TEST_SUCCESS;
+    if (set__size(st) != 1) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v2)) test_result = !TEST_SUCCESS;
+
+    int *v3 = malloc(sizeof(int));
+    *v3 = 9;
+    if (set__add_no_copy(st, v3)) test_result = !TEST_SUCCESS;
+    if (set__size(st) != 2) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v1)) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v3)) test_result = !TEST_SUCCESS;
+    *v3 = 69;
+    int *v69 = malloc(sizeof(int));
+    *v69 = 69;
+    if (!set__add_no_copy(st, v3)) test_result = !TEST_SUCCESS;
+    if (set__size(st) != 2) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v69)) test_result = !TEST_SUCCESS;
+
+    int *v4 = malloc(sizeof(int));
+    *v4 = 5;
+    if (set__add_no_copy(st, v4)) test_result = !TEST_SUCCESS;
+    if (set__size(st) != 3) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v1)) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v3)) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v4)) test_result = !TEST_SUCCESS;
+
+    int *v5 = malloc(sizeof(int));
+    *v5 = 1;
+    if (set__add_no_copy(st, v5)) test_result = !TEST_SUCCESS;
+    if (set__size(st) != 4) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v1)) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v3)) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v4)) test_result = !TEST_SUCCESS;
+    if (!set__find(st, v5)) test_result = !TEST_SUCCESS;
+
+    set__free(st);
+    free(v2);
+    free(v69);
+
+    return test_result;
+}
+
 int test_set__remove(void)
 {
     printf("%s... ", __func__);
@@ -207,7 +270,7 @@ int test_set__find(void)
     return test_result;
 }
 
-int test_big_set(void)
+int test_set__big_set(void)
 {
     printf("%s... ", __func__);
 
@@ -219,26 +282,41 @@ int test_big_set(void)
     struct set * st = set__empty(int__copy, int__free, int__cmp, int__debug);
     int test_result = TEST_SUCCESS;
 
-    if (st == NULL)
+    if (st == NULL){
+        set__free(st);
+        free(t);
         return !TEST_SUCCESS;
+    }
 
     for (size_t j = 0; j < 3; ++j)
         for (size_t i = 0; i < set_size; ++i)
             if (i%3 == j)
-                if (set__add(st, t+i))
+                if (set__add(st, t+i)){
+                    set__free(st);
+                    free(t);
                     return !TEST_SUCCESS;
+                }
 
-    if (set__size(st) != set_size)
+    if (set__size(st) != set_size){
+        set__free(st);
+        free(t);
         return !TEST_SUCCESS;
+    }
 
     for (size_t j = 0; j < 3; ++j)
         for (size_t i = 0; i < set_size; ++i)
             if (i%3 == j)
-                if (set__remove(st, t+i))
+                if (set__remove(st, t+i)){
+                    set__free(st);
+                    free(t);
                     return !TEST_SUCCESS;
+                }
 
-    if (!set__is_empty(st))
+    if (!set__is_empty(st)){
+        set__free(st);
+        free(t);
         return !TEST_SUCCESS;
+    }
 
 
     set__free(st);
@@ -404,9 +482,10 @@ int main()
     print_test_result(test_set__is_empty(), &nb_success, &nb_tests);
     print_test_result(test_set__size(), &nb_success, &nb_tests);
     print_test_result(test_set__add(), &nb_success, &nb_tests);
+    print_test_result(test_set__add_no_copy(), &nb_success, &nb_tests);
     print_test_result(test_set__remove(), &nb_success, &nb_tests);
     print_test_result(test_set__find(), &nb_success, &nb_tests);
-    print_test_result(test_big_set(), &nb_success, &nb_tests);
+    print_test_result(test_set__big_set(), &nb_success, &nb_tests);
     print_test_result(test_set__retrieve(), &nb_success, &nb_tests);
     print_test_result(test_set__get_umpteenth(), &nb_success, &nb_tests);
     print_test_result(test_set__get_umpteenth_no_copy(), &nb_success, &nb_tests);

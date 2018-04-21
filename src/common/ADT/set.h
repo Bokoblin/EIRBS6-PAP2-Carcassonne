@@ -87,7 +87,7 @@ size_t set__size(const struct set *s);
 
 
 /**
- * @brief Adds an object into the given set
+ * @brief Adds a copy of an object into the given set
  * The object won't be added if it already is in the set.
  * 
  * @param s is the set
@@ -95,6 +95,23 @@ size_t set__size(const struct set *s);
  * @return 0 for a success, 1 for a failure
  */
 int set__add(struct set *s, void* e);
+
+/**
+ * @brief Adds an object into the given set, without copy.
+ * The object won't be added if it already is in the set.
+ * 
+ * WARNINGS : Every object added in the set must be dynamicaly allocated.
+ * There will be an issue if it's allocated in the stack, because it will be deleted at the end of the function.
+ * There will alos be an issue in the "set__free" if it's not dynamically allocated.
+ * DO NOT free those objects, or there will be a double free in "set__free".
+ * If set__add == 1, the object have to be freed.
+ * It is recommended to use only set__add or only set__add_no_copy for a given set.
+ * 
+ * @param s is the set
+ * @param e is the object you want to add
+ * @return 0 for a success, 1 for a failure
+ */
+int set__add_no_copy(struct set *set, void* x);
 
 
 /**
