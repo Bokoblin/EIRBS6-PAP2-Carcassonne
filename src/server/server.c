@@ -31,20 +31,29 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
     }
 }
 
-int is_valid_play(struct player *p, struct move *m)
+int is_valid_play(struct board *b, struct player *p, struct move *m)
 {
     //TODO : verify that player hasn't cheated
-    (void) p;
-    //if (?) {
-    //    ...
-    //    m->check = FAILED;
-    //    return false;
-    //}
+    printf("\x1B[36m[SERVER] Validating move...\x1B[0m\n");
 
+    m->check = FAILED; //By default
+    printf("\tPlayer %d has sent the following move :\n\t", p->id);
+    move_debug_op(m);
 
-    m->check = VALID;
+    struct card *card = card__init(m->card);
+    card->pos = m->onto;
+    card->orientation = (enum orientation) m->dir; //FIXME: Design issue? equivalent?
 
-    return true;
+    if (board__add_card(b, card) == SUCCESS) {
+        //TODO: check if a meeple can be placed and if so, place it
+        printf("\tThe Card %d has been added to the board.\n", card->type.id);
+        m->check = VALID; //for now move is valid whenever card can be placed
+        //TODO: ASK: Is a move invalid if card is correct but meeple misplaced ?
+    } else {
+        printf("\tThe move is invalid...\n"); //temp
+    }
+
+    return m->check == VALID ? true : false;
 }
 
 enum card_id draw_until_valid(struct board* b, struct stack *s)
@@ -52,7 +61,7 @@ enum card_id draw_until_valid(struct board* b, struct stack *s)
     enum card_id ci;
     do {
         ci = card__draw(s);
-        printf("[DEBUG] Drawing a new card (card: %d)...\n", ci);
+        printf("\x1B[36m[SERVER] Drawing a new card (card: %d)...\x1B[0m\n", ci);
     } while (!board__is_valid_card(b, ci));
 
     return ci;
@@ -119,9 +128,10 @@ void game_main(struct queue *players, unsigned int nb_player)
         queue__dequeue(players);
         queue__dequeue(moves);
 
-        if (is_valid_play(p, &m)) {
+        if (is_valid_play(board, p, &m)) {
             queue__enqueue(players, p);
             queue__enqueue(moves, &m);
+            //TODO: handle meeple
         } else {
             nb_player--;
         }

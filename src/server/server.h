@@ -25,11 +25,12 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 
 /**
  * @brief Verify that a player move is valid
+ * @param b the board
  * @param p the player
  * @param m the move
  * @return true if verification is a success, false otherwise
  */
-int is_valid_play(struct player *p, struct move *m);
+int is_valid_play(struct board *b, struct player *p, struct move *m);
 
 
 /**

@@ -7,14 +7,14 @@
 
 char const* get_player_name()
 {
-    return("4410-2");
+    return("client4410-2");
 }
 
 void initialize(unsigned int id, unsigned int n_players)
 {
     (void) id;
     (void) n_players;
-    printf("Placeholder execution of \"initialize\" for %s\n", get_player_name());
+    printf("\x1B[35m[CLIENT] Executing placeholder %s::initialize()...\x1B[0m\n", get_player_name());
 }
 
 struct move play(enum card_id card, struct move const previous_moves[], size_t n_moves)
@@ -22,14 +22,14 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     (void) card;
     (void) previous_moves;
     (void) n_moves;
-    printf("Placeholder execution of \"play\" for %s\n", get_player_name());
+    printf("\x1B[35m[CLIENT] Executing placeholder %s::play()...\x1B[0m\n", get_player_name());
 
-    struct move move_placeholder = { FAILED, 0, CARD_PLAIN_CITY, { 0, 0 }, SOUTH, POS_WEST_NORTH};
+    struct move move_placeholder = { FAILED, 1, card, { 0, 1 }, SOUTH, POS_WEST_NORTH}; //small chance to work on first call
     return move_placeholder;
 }
 
 
 void finalize()
 {
-    printf("Placeholder execution of \"finalize\" for %s\n", get_player_name());
+    printf("\x1B[35m[CLIENT] Executing placeholder %s::finalize()...\x1B[0m\n", get_player_name());
 }
