@@ -129,8 +129,9 @@ ifneq ($(TESTS_EXEC),)
 		echo =====  $${e} =====; \
 		./$${e} | grep "TESTS SUMMARY:"; \
 		printf "COVERAGE:\t"; \
-		gcov $(TST_DIR)/$${e} 2>/dev/null | grep "Lines" | cut -f 2 -d ':';\
-		mv -f $${e}.c.gcov -t $(COV_DIR)/ 2>/dev/null; \
+		filename=$$(echo $(TST_DIR)/$${e} | cut -d_ -f2); \
+		gcov $$(find -name $$filename.o) 2>/dev/null | grep "Lines" | cut -f 2 -d ':';\
+		mv -f $$filename.c.gcov -t $(COV_DIR)/ 2>/dev/null; \
 	done
 	@find . -type f -name '*.o' -delete
 	@printf "\nTests complete.\n";
@@ -228,8 +229,6 @@ test_set:	$(TST_DIR)/test_set.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils
 
 test_stack:	$(TST_DIR)/test_stack.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
-
-# FIXME: The above is test files coverage not implemntation files
 
 
 #######################################################
