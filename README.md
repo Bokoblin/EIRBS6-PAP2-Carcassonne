@@ -3,9 +3,10 @@
 ### Description
 
 This project is the second programming project at ENSEIRB.
-Project period : 23/03/2018 - 27/04/2018
+Project period : 23/03/2018 - 18/05/2018
 
 Jalon 1: until commit #22
+Jalon 2: until commit #73
 
 
 ### Authors
