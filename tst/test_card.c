@@ -42,6 +42,11 @@ int test_card__get_area()
         return !TEST_SUCCESS;
     }
 
+    if (card__get_area(c, (enum place) 50) != INVALID_AREA) {
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+
     card__free(c);
 
     return TEST_SUCCESS;
@@ -104,6 +109,12 @@ int test_card__are_matching_direction_failure_case()
         return TEST_SUCCESS;
     }
 
+    if (!card__are_matching_direction(c1, c1, EAST)) {
+        card__free(c1);
+        card__free(c2);
+        return TEST_SUCCESS;
+    }
+
     card__free(c1);
     card__free(c2);
 
@@ -117,18 +128,28 @@ int test_card__link_at_direction()
     struct card *c1 = card__init(CARD_MONASTERY_ALONE);
     struct card *c2 = card__init(CARD_MONASTERY_ROAD);
 
-    card__link_at_direction(c1, c2, EAST);
-
-    if ((c1->neighbors[EAST] == c2) && (c2->neighbors[WEST] == c1)) {
+    if (card__link_at_direction(c1, c2, EAST) != SUCCESS) {
         card__free(c1);
         card__free(c2);
-        return TEST_SUCCESS;
+        return !TEST_SUCCESS;
+    }
+
+    if (c1->neighbors[EAST] != c2 || c2->neighbors[WEST] != c1) {
+        card__free(c1);
+        card__free(c2);
+        return !TEST_SUCCESS;
+    }
+
+    if (card__link_at_direction(c1, c1, EAST) == SUCCESS) {
+        card__free(c1);
+        card__free(c2);
+        return !TEST_SUCCESS;
     }
 
     card__free(c1);
     card__free(c2);
 
-    return !TEST_SUCCESS;
+    return TEST_SUCCESS;
 }
 
 

@@ -26,8 +26,8 @@ enum area_type card__get_area(struct card *card, enum place place)
 {
     assert_not_null(card, __func__, "card parameter");
 
-    if (place == LAST_POS)
-        exit_on_error("Wrong place position");
+    if (place >= LAST_POS)
+        return INVALID_AREA;
 
     if (place == POS_CENTER)
         return card->type.areas[place-1];
@@ -64,6 +64,9 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
     assert_not_null(c1, __func__, "c1 parameter");
     assert_not_null(c2, __func__, "c2 parameter");
 
+    if (c1 == c2)
+        return false;
+
     for (int i = 0; i < 3; i++) {
         enum direction opposite_dir = (direction + 2) % DIRECTION_NUMBER;
         int c1_area_index = (3 * direction + 3 * c1->orientation + i) % 12;
@@ -82,16 +85,21 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
     return true;
 }
 
-void card__link_at_direction(struct card *c1, struct card *c2, enum direction direction)
+int card__link_at_direction(struct card *c1, struct card *c2, enum direction direction)
 {
     assert_not_null(c1, __func__, "c1 parameter");
     assert_not_null(c2, __func__, "c2 parameter");
 
+    if (c1 == c2)
+        return !SUCCESS;
+
     if (direction > DIRECTION_NUMBER)
-        exit_on_error("Out of range direction");
+        return !SUCCESS;
 
     c1->neighbors[direction] = c2;
     c2->neighbors[(direction + 2) % DIRECTION_NUMBER] = c1;
+
+    return SUCCESS;
 }
 
 enum card_id card__draw(struct stack *s)

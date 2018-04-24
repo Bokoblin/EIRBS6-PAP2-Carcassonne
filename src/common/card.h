@@ -99,8 +99,9 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
  * @param c1 a card
  * @param c2 a card
  * @param direction the direction in which the cards match (relative to card_1)
+ * @return 0 if the cards link, 1 otherwise
  */
-void card__link_at_direction(struct card *c1, struct card *c2, enum direction direction);
+int card__link_at_direction(struct card *c1, struct card *c2, enum direction direction);
 
 
 /**
