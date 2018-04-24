@@ -7,33 +7,33 @@
 SRC_DIR = src
 TST_DIR = tst
 INS_DIR = install
+COV_DIR = coverage
 
 CLI_DIR = $(SRC_DIR)/client
 COM_DIR = $(SRC_DIR)/common
 ADT_DIR = $(COM_DIR)/ADT
 SRV_DIR = $(SRC_DIR)/server
 
-CC 		= gcc
-CFLAGS	= -Wall -Wextra -std=c99 -g -O0
-CPPFLAGS= -I ${SRC_DIR} -I ${TST_DIR} -I ${INS_DIR}
+CC			= gcc
+CFLAGS		= -Wall -Wextra -std=c99 -g -O0
+CPPFLAGS	= -I ${SRC_DIR} -I ${TST_DIR} -I ${INS_DIR}
+LFFLAGS		= -lm -ldl
 
-SERVER_SOURCES 	= $(wildcard $(SRC_DIR)/server/*.c $(SRC_DIR)/common/*.c $(SRC_DIR)/common/ADT/*.c)
-CLIENT_SOURCES 	= $(wildcard $(SRC_DIR)/client/*.c)
-TESTS_SOURCES 	= $(wildcard $(TST_DIR)/*.c $(SRC_DIR)/common/*.c)
+SERVER_SRC 	= $(wildcard $(SRC_DIR)/server/*.c $(SRC_DIR)/common/*.c $(SRC_DIR)/common/ADT/*.c)
+CLIENT_SRC 	= $(wildcard $(SRC_DIR)/client/*.c)
 
-SERVER_OBJECTS	= $(SERVER_SOURCES:%.c=%.o)
-CLIENT_OBJECTS 	= $(CLIENT_SOURCES:%.c=%.o)
-TESTS_OBJECTS 	= $(TESTS_SOURCES:%.c=%.o)
+SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
+CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
 
-SERVER_EXECUTABLE 	= server
-TESTS_EXECUTABLE 	= test_board test_card test_deck test_set test_stack test_queue
+SERVER_EXEC	= server
+TESTS_EXEC 	= test_board test_card test_deck test_set test_stack test_queue
 
 
 #######################################################
 ###				MAKE DEFAULT COMMAND
 #######################################################
 
-.PHONY: all help prebuild build test vtest install clean run vrun docs
+.PHONY: all help prebuild build test vtest enable_coverage ctest install clean run vrun docs
 all: help
 
 
@@ -47,6 +47,7 @@ help:
 		'\t' make build			'\n' \
 		'\t' make test			'\n' \
 		'\t' make vtest			'\n' \
+		'\t' make ctest			'\n' \
 		'\t' make install		'\n' \
 		'\t' make clean			'\n' \
 		'\t' make run			'\n' \
@@ -63,31 +64,31 @@ help:
 prebuild:
 	@echo Starting building...
 
-build: prebuild $(SERVER_EXECUTABLE)
+build: prebuild $(SERVER_EXEC)
 	@echo building clients...
-	@for client in `find src/client -name "client*.c" | sed -e "s/\.c$$//" `; do \
+	@for client in `find $(CLI_DIR) -name "client*.c" | sed -e "s/\.c$$//" `; do \
 		echo building $${client}.c; \
-		$(CC) $(CFLAGS) -c -fPIC $${client}.c -o $${client}.o -lm; \
-		$(CC) -shared -o $${client}.so $${client}.o -ldl; \
+		$(CC) $(CFLAGS) -c -fPIC $${client}.c -o $${client}.o; \
+		$(CC) -shared -o $${client}.so $${client}.o $(LFFLAGS); \
 	done
 	@echo Building complete.
 
-$(SERVER_EXECUTABLE): $(SERVER_OBJECTS)
+$(SERVER_EXEC): $(SERVER_OBJ)
 	@echo building server...
-	$(CC) $(CPPFLAGS) $(SERVER_OBJECTS) -o $@ -ldl
+	$(CC) $(CPPFLAGS) $(SERVER_OBJ) -o $@ $(LFFLAGS)
 
 
 #######################################################
 ###				MAKE TEST
 #######################################################
 
-test: $(TESTS_EXECUTABLE)
-ifneq ($(TESTS_EXECUTABLE),)
+test: $(TESTS_EXEC)
+ifneq ($(TESTS_EXEC),)
 	@echo Starting tests...
-	@for e in $(TESTS_EXECUTABLE); do \
+	@for e in $(TESTS_EXEC); do \
 		./$${e}; echo; \
 	done
-	@echo Tests complete.
+	@printf "\nTests complete.\n";
 else
 	@echo No test available
 endif
@@ -97,16 +98,42 @@ endif
 ###				MAKE TEST WITH VALGRIND
 #######################################################
 
-vtest: $(TESTS_EXECUTABLE)
-ifneq ($(TESTS_EXECUTABLE),)
+vtest: $(TESTS_EXEC)
+ifneq ($(TESTS_EXEC),)
 	@echo Starting tests...
-	@for e in $(TESTS_EXECUTABLE); do \
+	@for e in $(TESTS_EXEC); do \
 		echo =====  $${e} =====; \
 		valgrind --log-fd=1 ./$${e} \
 		| grep "TESTS SUMMARY:\|ERROR SUMMARY:\|total heap usage:" \
 		| $(VALGRIND_AWK) \
 	done
-	@echo Tests complete.
+	@printf "\nTests complete.\n";
+else
+	@echo No test available
+endif
+
+#######################################################
+###				MAKE TEST WITH COVERAGE
+#######################################################
+
+enable_coverage:
+	@find . -type f -name '*.o' -delete
+	$(eval CFLAGS += --coverage)
+	$(eval LFFLAGS += -lgcov)
+
+ctest: enable_coverage $(TESTS_EXEC)
+ifneq ($(TESTS_EXEC),)
+	@mkdir -p $(COV_DIR)
+	@echo Starting tests with coverage...
+	@for e in $(TESTS_EXEC); do \
+		echo =====  $${e} =====; \
+		./$${e} | grep "TESTS SUMMARY:"; \
+		printf "COVERAGE:\t"; \
+		gcov $(TST_DIR)/$${e} 2>/dev/null | grep "Lines" | cut -f 2 -d ':';\
+		mv -f $${e}.c.gcov -t $(COV_DIR)/ 2>/dev/null; \
+	done
+	@find . -type f -name '*.o' -delete
+	@printf "\nTests complete.\n";
 else
 	@echo No test available
 endif
@@ -120,10 +147,10 @@ install: build
 	@echo
 	@echo Starting installation...
 	@echo Installation directory: "${PWD}/$(INS_DIR)"
-	@mv server $(INS_DIR)
-	@mv $(SRC_DIR)/client/*.so $(INS_DIR)
-	@rm -rf $(CLIENT_OBJECTS)
-	@rm -rf $(SERVER_OBJECTS)
+	@mv $(SERVER_EXEC) $(INS_DIR)
+	@mv $(CLI_DIR)/*.so $(INS_DIR)
+	@rm -rf $(CLIENT_OBJ)
+	@rm -rf $(SERVER_OBJ)
 	@echo Installation complete.
 
 
@@ -135,9 +162,13 @@ clean:
 	@echo Starting cleanup...
 	@find . -type f -name '*.o' -delete
 	@find . -type f -name '*.so' -delete
-	@rm -rf $(SERVER_EXECUTABLE)
-	@rm -rf $(TESTS_EXECUTABLE)
-	@rm -rf install/*
+	@find . -type f -name '*.gcda' -delete
+	@find . -type f -name '*.gcno' -delete
+	@find . -maxdepth 1 -type f -name '*.gcov' -delete
+	@rm -rf $(COV_DIR)
+	@rm -rf $(TESTS_EXEC)
+	@rm -rf $(TESTS_EXEC)
+	@rm -rf $(INS_DIR)/*
 	@echo Cleanup complete.
 
 
@@ -147,7 +178,7 @@ clean:
 
 run:
 	@echo Running program...
-	@./install/server ./install/*.so
+	@./$(INS_DIR)/$(SERVER_EXEC) ./$(INS_DIR)/*.so
 
 
 #######################################################
@@ -156,7 +187,7 @@ run:
 
 vrun:
 	@echo Running program...
-	@valgrind ./install/server ./install/*.so
+	@valgrind ./$(INS_DIR)/$(SERVER_EXEC) ./$(INS_DIR)/*.so
 
 
 #######################################################
@@ -174,25 +205,25 @@ docs:
 test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
 			$(SRV_DIR)/board.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
 			$(SRV_DIR)/player.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o
-	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
 			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
-	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
 			$(COM_DIR)/deck.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
 			$(SRV_DIR)/player.o $(ADT_DIR)/stack.o
-	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_queue:	$(TST_DIR)/test_queue.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/queue.o
-	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_set:	$(TST_DIR)/test_set.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/set.o
-	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_stack:	$(TST_DIR)/test_stack.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/stack.o
-	${CC} $(CPPFLAGS) $^ -o $@ -lm -ldl
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 
 #######################################################

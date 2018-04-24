@@ -40,6 +40,7 @@ make [help]  #To show the available commands
 make build   #To build the project
 make test    #To build and start the tests
 make vtest   #To build and start the tests with valgrind check
+make ctest   #To build and start the tests with coverage
 make install #To install the project in /install
 make clean   #To remove objects files, executables and installation
 make run     #To run program once installed (make install before required)
@@ -59,7 +60,11 @@ Two shell files automatically build and clean project:
 
 ### Code conventions
 
+- Use english for code, comments and documentation
+- Use 4-space indentation instead of tab for multi-platform support (you can configure tab key to make it automatically)
+- Don't write lines above 120 characters
 - Put a space after a comma and between operators
+- Put macro and constants names in full uppercase with underscore separated words
 - Put structures names, variables and functions in lower case with underscores to separate words
 - Put functions/structures start bracket on the line after the prototype
     (small structures, getters, setters can be inline though)
