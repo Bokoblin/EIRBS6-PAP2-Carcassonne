@@ -200,6 +200,13 @@ int test_board__add_card()
     return test_result;
 }
 
+int test_board__add_meeple()
+{
+    printf("%s... ", __func__);
+    printf("NOT DONE YET - ");
+    return !TEST_SUCCESS;
+}
+
 int main()
 {
     printf("----------- TEST BOARD -----------\n");
@@ -210,6 +217,7 @@ int main()
     print_test_result(test_board__empty(), &nb_success, &nb_tests);
     print_test_result(test_board__is_valid_card(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_meeple(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
 

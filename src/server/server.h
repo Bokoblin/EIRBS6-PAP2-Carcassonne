@@ -11,6 +11,7 @@
 
 #define DEFAULT_GRAPHIC_MODE_FLAG 0
 #define DEFAULT_CLIENT_COUNT 0
+#define NOT_APPLICABLE 2
 
 
 /**

@@ -33,27 +33,36 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 
 int is_valid_play(struct board *b, struct player *p, struct move *m)
 {
-    //TODO : verify that player hasn't cheated
+    //TODO : Check this function correctness
     printf("\x1B[36m[SERVER] Validating move...\x1B[0m\n");
 
     m->check = FAILED; //By default
     printf("\tPlayer %d has sent the following move :\n\t", p->id);
     move_debug_op(m);
 
+    //=== Card checking
+
     struct card *card = card__init(m->card);
     card->pos = m->onto;
     card->orientation = (enum orientation) m->dir; //FIXME: Design issue? equivalent?
+    int was_card_added = board__add_card(b, card) == SUCCESS;
 
-    if (board__add_card(b, card) == SUCCESS) {
-        //TODO: check if a meeple can be placed and if so, place it
-        printf("\tThe Card %d has been added to the board.\n", card->type.id);
-        m->check = VALID; //for now move is valid whenever card can be placed
-        //TODO: ASK: Is a move invalid if card is correct but meeple misplaced ?
+    //=== Meeple checking
+
+    struct meeple *meeple = meeple__init(m->player, card, m->place);
+    int was_meeple_added = meeple == NULL ? NOT_APPLICABLE : board__add_meeple(b, meeple) == SUCCESS;
+
+    //=== Checking sum
+
+    if (was_card_added && was_meeple_added != false) {
+        printf("\tThe move is valid.\n");
+        m->check = VALID;
     } else {
-        printf("\tThe move is invalid...\n"); //temp
+        printf("\tThe move is invalid...\n");
     }
 
     card__free(card);
+    meeple__free(meeple);
     return m->check == VALID ? true : false;
 }
 
@@ -132,9 +141,10 @@ void game_main(struct queue *players, unsigned int nb_player)
         if (is_valid_play(board, p, &m)) {
             queue__enqueue(players, p);
             queue__enqueue(moves, &m);
-            //TODO: handle meeple
+            board__check_sub_completion(board);
         } else {
             nb_player--;
+            p->finalize();
         }
 
         stack__push(board->moves_stack, &m);
@@ -142,6 +152,10 @@ void game_main(struct queue *players, unsigned int nb_player)
         player__free(p);
         free(moves_array);
     }
+
+    //=== Final score counting
+
+    //TODO: Final score counting
 
     //=== Players finalization
 
@@ -170,6 +184,8 @@ void free_resources(struct queue *players_queue)
 
 int main(int argc, char** argv)
 {
+    //TODO: debug with Thor to check where it fails for run config n°3
+
     unsigned int is_graphic = DEFAULT_GRAPHIC_MODE_FLAG;
     unsigned int clients_count = DEFAULT_CLIENT_COUNT;
     parse_opts(argc, argv, &is_graphic, &clients_count);

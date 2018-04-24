@@ -3,6 +3,7 @@
 
 #include "../common/common_interface.h"
 #include "../common/card.h"
+#include "../common/meeple.h"
 #include "../server/board.h"
 
 
@@ -47,12 +48,29 @@ int board__is_valid_card(struct board *b, enum card_id ci);
 
 
 /**
- * @brief Add a card to the board
+ * @brief Add a card to the board (if possible)
  * @param b the board
  * @param c a card
  * @return 0 on success, 1 otherwise
  */
 int board__add_card(struct board *b, struct card* c);
+
+
+/**
+ * @brief Add a meeple to the board on a card (if possible)
+ * @param b the board
+ * @param m the meeple to place
+ * @return 0 on success, 1 otherwise
+ */
+int board__add_meeple(struct board *b, struct meeple *m);
+
+
+/**
+ * Checks if previous moves have permitted a board sub-completion and process it
+ * (count score for area closed depending on meeples)
+ * @param b the board
+ */
+void board__check_sub_completion(struct board *b);
 
 
 /**

@@ -68,7 +68,8 @@ int board__add_card(struct board *b, struct card *c)
         search_helper_card->pos = p_array[i]; //Supposed position of searched card following direction chosen
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
         if (neighbour != NULL && card__are_matching_direction(c, neighbour, d))
-                card__link_at_direction(c, neighbour, d);
+            if (card__link_at_direction(c, neighbour, d) != SUCCESS)
+                return !SUCCESS;
     }
     card__free(search_helper_card);
 
@@ -76,6 +77,25 @@ int board__add_card(struct board *b, struct card *c)
         return !SUCCESS; //if unbound card
 
     return set__add(b->cards_set, c);
+}
+
+int board__add_meeple(struct board *b, struct meeple *m)
+{
+    //TODO: add meeple to board after verifications
+    //Check if a meeple is already on the card
+    //Graph path-course to check if meeple is authorized to be placed on requested area.
+    (void) b;
+    (void) m;
+
+    //return set__add(b->meeples_set, m);
+    return !SUCCESS;
+}
+
+void board__check_sub_completion(struct board *b)
+{
+    //TODO: check if new areas were closed in order to calculate sub-score
+    //-> mark already closed areas somewhere to avoid recalculation ?
+    (void) b;
 }
 
 void board__free(struct board *b)
