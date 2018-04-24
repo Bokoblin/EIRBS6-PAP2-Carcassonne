@@ -3,7 +3,7 @@
 #include "board.h"
 #include "../common/utils.h"
 #include "../common/ADT/set.h"
-#include "../server/meeple.h"
+#include "../common/meeple.h"
 #include "../common/deck.h"
 #include "player.h"
 #include "function_pointers.h"
