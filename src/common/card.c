@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "card.h"
 #include "utils.h"
 
