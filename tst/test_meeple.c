@@ -133,6 +133,27 @@ int test_meeple__init_valid_card_invalid_place()
     return test_res;
 }
 
+int test_meeple__init_fail_no_needed()
+{
+    printf("%s... ", __func__);
+
+    int test_res = TEST_SUCCESS;
+
+    struct card *c = card__init(CARD_ROAD_TURN_RIGHT_CITY);
+
+    enum place p1 = NO_MEEPLE;
+    struct meeple* m = meeple__init(0, c, p1);
+
+    if (m != NULL) {
+        meeple__free(m);
+        test_res = !TEST_SUCCESS;
+    }
+
+    card__free(c);
+
+    return test_res;
+}
+
 int main()
 {
     printf("----------- TEST MEEPLE -----------\n");
@@ -144,6 +165,7 @@ int main()
     print_test_result(test_meeple__init_valid_card_default_orientation(), &nb_success, &nb_tests);
     print_test_result(test_meeple__init_valid_card_other_orientation(), &nb_success, &nb_tests);
     print_test_result(test_meeple__init_valid_card_invalid_place(), &nb_success, &nb_tests);
+    print_test_result(test_meeple__init_fail_no_needed(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
 
