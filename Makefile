@@ -26,7 +26,7 @@ SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
 CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
 
 SERVER_EXEC	= server
-TESTS_EXEC 	= test_board test_card test_deck test_set test_stack test_queue
+TESTS_EXEC 	= test_board test_card test_deck test_meeple test_queue test_set test_stack
 
 
 #######################################################
@@ -216,6 +216,10 @@ test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/ut
 			$(SRV_DIR)/player.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
+test_meeple: $(TST_DIR)/test_meeple.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
+			$(COM_DIR)/meeple.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
+
 test_queue:	$(TST_DIR)/test_queue.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/queue.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
@@ -224,6 +228,8 @@ test_set:	$(TST_DIR)/test_set.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils
 
 test_stack:	$(TST_DIR)/test_stack.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
+
+# FIXME: The above is test files coverage not implemntation files
 
 
 #######################################################

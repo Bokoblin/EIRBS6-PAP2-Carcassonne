@@ -5,7 +5,7 @@
 #include "../common/common_interface.h"
 #include "../server/player.h"
 #include "../common/card.h"
-#include "../server/meeple.h"
+#include "../common/meeple.h"
 
 ////////////////////////////////////////////////////////////////////
 ///     OPERATORS FOR MOVE ENUM

@@ -5,9 +5,10 @@
 set(TEST_BOARD test_board)
 set(TEST_CARD test_card)
 set(TEST_DECK test_deck)
-set(TEST_STACK test_stack)
+set(TEST_MEEPLE test_meeple)
 set(TEST_QUEUE test_queue)
 set(TEST_SET test_set)
+set(TEST_STACK test_stack)
 
 
 #----------------------------
@@ -72,14 +73,21 @@ file(GLOB TEST_DECK_SOURCE_FILES
         "../src/common/common_interface.h"
         )
 
-file(GLOB TEST_STACK_SOURCE_FILES
+file(GLOB TEST_MEEPLE_SOURCE_FILES
         "common_tests_utils.h"
         "common_tests_utils.c"
-        "test_stack.c"
+        "test_meeple.c"
+        "../src/common/meeple.c"
+        "../src/common/meeple.h"
+        "../src/common/card.h"
+        "../src/common/card.c"
+        "../src/common/card_type.h"
+        "../src/common/card_type.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
         "../src/common/ADT/stack.h"
         "../src/common/ADT/stack.c"
+        "../src/common/common_interface.h"
         )
 
 file(GLOB TEST_QUEUE_SOURCE_FILES
@@ -101,6 +109,16 @@ file(GLOB TEST_SET_SOURCE_FILES
         "../src/common/ADT/set.h"
         "../src/common/ADT/set.c"
         )
+
+file(GLOB TEST_STACK_SOURCE_FILES
+        "common_tests_utils.h"
+        "common_tests_utils.c"
+        "test_stack.c"
+        "../src/common/utils.h"
+        "../src/common/utils.c"
+        "../src/common/ADT/stack.h"
+        "../src/common/ADT/stack.c"
+        )
         
 #----------------------------
 #       CONFIGURE BUILDING
@@ -112,12 +130,14 @@ add_executable(${TEST_CARD} ${TEST_CARD_SOURCE_FILES})
 target_link_libraries(${TEST_CARD} ${CMAKE_DL_LIBS})
 add_executable(${TEST_DECK} ${TEST_DECK_SOURCE_FILES})
 target_link_libraries(${TEST_DECK} ${CMAKE_DL_LIBS})
-add_executable(${TEST_STACK} ${TEST_STACK_SOURCE_FILES})
-target_link_libraries(${TEST_STACK} ${CMAKE_DL_LIBS})
 add_executable(${TEST_QUEUE} ${TEST_QUEUE_SOURCE_FILES})
 target_link_libraries(${TEST_QUEUE} ${CMAKE_DL_LIBS})
+add_executable(${TEST_MEEPLE} ${TEST_MEEPLE_SOURCE_FILES})
+target_link_libraries(${TEST_MEEPLE} ${CMAKE_DL_LIBS})
 add_executable(${TEST_SET} ${TEST_SET_SOURCE_FILES})
 target_link_libraries(${TEST_SET} ${CMAKE_DL_LIBS})
+add_executable(${TEST_STACK} ${TEST_STACK_SOURCE_FILES})
+target_link_libraries(${TEST_STACK} ${CMAKE_DL_LIBS})
 
 #----------------------------
 #       CONFIGURE TESTS
@@ -126,6 +146,7 @@ target_link_libraries(${TEST_SET} ${CMAKE_DL_LIBS})
 add_test(NAME ${TEST_BOARD} COMMAND ./${TEST_BOARD})
 add_test(NAME ${TEST_CARD} COMMAND ./${TEST_CARD})
 add_test(NAME ${TEST_DECK} COMMAND ./${TEST_DECK})
-add_test(NAME ${TEST_STACK} COMMAND ./${TEST_STACK})
+add_test(NAME ${TEST_MEEPLE} COMMAND ./${TEST_MEEPLE})
 add_test(NAME ${TEST_QUEUE} COMMAND ./${TEST_QUEUE})
 add_test(NAME ${TEST_SET} COMMAND ./${TEST_SET})
+add_test(NAME ${TEST_STACK} COMMAND ./${TEST_STACK})

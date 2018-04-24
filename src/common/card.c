@@ -32,7 +32,7 @@ enum area_type card__get_area(struct card *card, enum place place)
     if (place == POS_CENTER)
         return card->type.areas[place-1];
 
-    return card->type.areas[(12 - (place - 1 + 3 * card->orientation)) % 12];
+    return card->type.areas[(place - 1 + 3 * card->orientation) % 12];
 }
 
 unsigned int card__get_neighbour_number(struct card *card)
