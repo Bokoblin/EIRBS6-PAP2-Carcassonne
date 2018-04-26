@@ -73,7 +73,7 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
         int c2_area_index = (3 * opposite_dir + 3 * c2->orientation + 2 - i) % 12;
 
         if (c1_area_index > LAST_POS || c2_area_index > LAST_POS)
-            exit_on_error("Out of range area");
+            return false;
 
         enum area_type c1_a = c1->type.areas[c1_area_index];
         enum area_type c2_a = c2->type.areas[c2_area_index];

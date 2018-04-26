@@ -1,9 +1,8 @@
-#ifndef SERVER_FUNCTION_POINTERS_H
-#define SERVER_FUNCTION_POINTERS_H
+#ifndef COMMON_FUNCTION_POINTERS_H
+#define COMMON_FUNCTION_POINTERS_H
 
 #include <stdio.h>
 #include "../common/common_interface.h"
-#include "../server/player.h"
 #include "../common/card.h"
 #include "../common/meeple.h"
 
@@ -15,16 +14,6 @@ extern void* move_copy_op(struct move *m);
 extern void move_delete_op(struct move *m);
 int move_compare_op(struct move* m1, struct move* m2);
 void move_debug_op(struct move *m);
-
-
-////////////////////////////////////////////////////////////////////
-///     OPERATORS FOR PLAYER STRUCT
-////////////////////////////////////////////////////////////////////
-
-void* player_copy_op(const struct player *p);
-void player_delete_op(struct player *p);
-int player_compare_op(const struct player *p1, const struct player *p2);
-void player_debug_op(const struct player *p);
 
 
 ////////////////////////////////////////////////////////////////////

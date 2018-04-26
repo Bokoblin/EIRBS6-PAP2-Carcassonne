@@ -1,8 +1,8 @@
 #include <stdio.h>
+#include "com_func_ptrs.h"
 #include "common_interface.h"
 #include "deck.h"
 #include "utils.h"
-#include "../server/function_pointers.h"
 
 struct stack* init_deck()
 {

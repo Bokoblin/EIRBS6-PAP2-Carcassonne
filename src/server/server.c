@@ -145,6 +145,7 @@ void game_main(struct queue *players, unsigned int nb_player)
         } else {
             nb_player--;
             p->finalize();
+            free_player_resources(p);
         }
 
         stack__push(board->moves_stack, &m);
@@ -169,13 +170,18 @@ void game_main(struct queue *players, unsigned int nb_player)
     board__free(board);
 }
 
+void free_player_resources(struct player *p)
+{
+    dlclose(p->lib_ptr);
+    assert_no_dlerror();
+}
+
 void free_resources(struct queue *players_queue)
 {
     while(!queue__is_empty(players_queue)) {
         struct player *p = queue__front(players_queue);
         queue__dequeue(players_queue);
-        dlclose(p->lib_ptr);
-        assert_no_dlerror();
+        free_player_resources(p);
         player__free(p);
     }
 

@@ -1,12 +1,10 @@
-#include "server.h"
 #include <stdlib.h>
 #include "board.h"
-#include "../common/utils.h"
 #include "../common/ADT/set.h"
-#include "../common/meeple.h"
+#include "../common/com_func_ptrs.h"
 #include "../common/deck.h"
-#include "player.h"
-#include "function_pointers.h"
+#include "../common/meeple.h"
+#include "../common/utils.h"
 
 struct board *board__init(struct stack *drawing_stack)
 {
@@ -88,7 +86,7 @@ int board__add_meeple(struct board *b, struct meeple *m)
     (void) m;
 
     //return set__add(b->meeples_set, m);
-    return !SUCCESS;
+    return SUCCESS; //NOTE: Meeple handling not needed for due date May 4th
 }
 
 void board__check_sub_completion(struct board *b)

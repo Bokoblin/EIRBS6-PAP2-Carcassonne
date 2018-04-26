@@ -4,10 +4,12 @@
 #include "../common/ADT/queue.h"
 #include "../common/ADT/stack.h"
 #include "../common/card.h"
+#include "../common/com_func_ptrs.h"
 #include "../common/deck.h"
 #include "../common/utils.h"
 #include "../server/board.h"
-#include "../server/function_pointers.h"
+#include "../server/player.h"
+#include "server_func_ptrs.h"
 
 #define DEFAULT_GRAPHIC_MODE_FLAG 0
 #define DEFAULT_CLIENT_COUNT 0
@@ -51,6 +53,12 @@ enum card_id draw_until_valid(struct board* b, struct stack *s);
  */
 struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves);
 
+
+/**
+ * @brief Free resources used by player structure
+ * @param p a player
+ */
+void free_player_resources(struct player *p);
 
 /**
  * @brief Free all resources used

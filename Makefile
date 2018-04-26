@@ -102,7 +102,9 @@ vtest: $(TESTS_EXEC)
 ifneq ($(TESTS_EXEC),)
 	@echo Starting tests...
 	@for e in $(TESTS_EXEC); do \
-		echo =====  $${e} =====; \
+		echo ======= $${e} =======; \
+		filename=$$(echo $(TST_DIR)/$${e} | cut -d_ -f2); \
+		printf "TESTED FILE:\t$$filename.c\n"; \
 		valgrind --log-fd=1 ./$${e} \
 		| grep "TESTS SUMMARY:\|ERROR SUMMARY:\|total heap usage:" \
 		| $(VALGRIND_AWK) \
@@ -126,11 +128,12 @@ ifneq ($(TESTS_EXEC),)
 	@mkdir -p $(COV_DIR)
 	@echo Starting tests with coverage...
 	@for e in $(TESTS_EXEC); do \
-		echo =====  $${e} =====; \
+		filename=$$(echo $(TST_DIR)/$${e} | cut -d_ -f2); \
+		echo ======= $${e} =======; \
+		printf "TESTED FILE:\t$$filename.c\n"; \
 		./$${e} | grep "TESTS SUMMARY:"; \
 		printf "COVERAGE:\t"; \
-		filename=$$(echo $(TST_DIR)/$${e} | cut -d_ -f2); \
-		gcov $$(find -name $$filename.o) 2>/dev/null | grep "Lines" | cut -f 2 -d ':';\
+		gcov $$(find -name $$filename.o) 2>/dev/null | grep "Lines" | cut -f 2 -d ':'; echo;\
 		mv -f $$filename.c.gcov -t $(COV_DIR)/ 2>/dev/null; \
 	done
 	@find . -type f -name '*.o' -delete
@@ -203,18 +206,16 @@ docs:
 ###				TEST EXECUTABLES
 #######################################################
 
-test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
-			$(SRV_DIR)/board.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
-			$(SRV_DIR)/player.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o
+test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(SRV_DIR)/board.o \
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
 			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
-test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
-			$(COM_DIR)/deck.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(SRV_DIR)/function_pointers.o \
-			$(SRV_DIR)/player.o $(ADT_DIR)/stack.o
+test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(COM_DIR)/deck.o \
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_meeple: $(TST_DIR)/test_meeple.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
