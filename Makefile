@@ -69,7 +69,8 @@ build: prebuild $(SERVER_EXEC)
 	@for client in `find $(CLI_DIR) -name "client*.c" | sed -e "s/\.c$$//" `; do \
 		echo building $${client}.c; \
 		$(CC) $(CFLAGS) -c -fPIC $${client}.c -o $${client}.o; \
-		$(CC) -shared -o $${client}.so $${client}.o $(LFFLAGS); \
+		$(CC) $(CFLAGS) -c -fPIC $(CLI_DIR)/aux_functions.c -o $(CLI_DIR)/aux_functions.o; \
+		$(CC) -shared -o $${client}.so $${client}.o $(CLI_DIR)/aux_functions.o $(LFFLAGS); \
 	done
 	@echo Building complete.
 
