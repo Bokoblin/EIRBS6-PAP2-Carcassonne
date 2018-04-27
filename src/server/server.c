@@ -188,27 +188,21 @@ void free_resources(struct queue *players_queue)
 
 int main(int argc, char** argv)
 {
-    //DOING: debug with Thor to check where it fails for run config n°3
-    printf("[DEBUG WITH THOR] : main start");
-
     unsigned int is_graphic = DEFAULT_GRAPHIC_MODE_FLAG;
     unsigned int clients_count = DEFAULT_CLIENT_COUNT;
     parse_opts(argc, argv, &is_graphic, &clients_count);
     srand((unsigned int) time(NULL));
 
-    printf("[DEBUG WITH THOR] : register players");
     //=== Register players
 
     struct queue *players_queue = queue__empty(player_copy_op, player_delete_op, player_debug_op);
     register_players(argc, (const char **) argv, players_queue, clients_count);
 
     //=== Start the game
-    printf("[DEBUG WITH THOR] : start game_main");
 
     game_main(players_queue, clients_count);
 
     //=== Free used resources & memory
-    printf("[DEBUG WITH THOR] : free_resources");
 
     free_resources(players_queue);
 
