@@ -1,19 +1,12 @@
 #include "../common/common_interface.h"
+#include "client.h"
 #include <stdio.h>
 
 /////////////////////////////////////////////////////////
 /// Structures
 /////////////////////////////////////////////////////////
 
-struct client{
-    int id;
-    int nb_meeples;
-    struct meeple meeples[MAX_MEEPLES];
-    char *name;
-    struct board client_board;
-};
 
-struct client client;
 
 /////////////////////////////////////////////////////////
 /// Implementation of interface functions
@@ -26,7 +19,7 @@ char const* get_player_name()
 
 void initialize(unsigned int id, unsigned int n_players)
 {
-
+    ask_for_player_name(&client);
     client.id = id;
     (void) n_players;
     //TODO: Implement client "initialize"
