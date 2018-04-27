@@ -77,12 +77,37 @@ int test_card__get_neighbour_number()
 }
 
 
-int test_card__are_matching_direction_success_case()
+int test_card__are_matching_direction_success_case1()
 {
     printf("%s... ", __func__);
 
     struct card *c1 = card__init(CARD_CITY_THREE_SHLD);
     struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
+
+    if (card__are_matching_direction(c1, c2, WEST)) {
+        card__free(c1);
+        card__free(c2);
+        return TEST_SUCCESS;
+    }
+
+    card__free(c1);
+    card__free(c2);
+
+    return !TEST_SUCCESS;
+}
+
+int test_card__are_matching_direction_success_case2()
+{
+    printf("%s... ", __func__);
+
+    struct card *c1 = card__init(CARD_CITY_THREE_SHLD);
+    struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
+
+    printf("\n %d %d %d\n", card__get_area(c1, POS_EAST_NORTH), card__get_area(c1, POS_EAST), card__get_area(c1, POS_SOUTH_EAST));
+    printf("\n %d %d %d\n", card__get_area(c1, POS_SOUTH_EAST), card__get_area(c1, POS_SOUTH), card__get_area(c1, POS_SOUTH_WEST));
+    printf("\n %d %d %d\n", card__get_area(c1, POS_WEST_SOUTH), card__get_area(c1, POS_WEST), card__get_area(c1, POS_WEST_NORTH));
+    printf("\n %d %d %d\n", card__get_area(c1, POS_NORTH_WEST), card__get_area(c1, POS_NORTH), card__get_area(c1, POS_NORTH_EAST));
+
 
     if (card__are_matching_direction(c1, c2, WEST)) {
         card__free(c1);
