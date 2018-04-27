@@ -2,17 +2,32 @@
 #include <stdio.h>
 
 /////////////////////////////////////////////////////////
+/// Structures
+/////////////////////////////////////////////////////////
+
+struct client{
+    int id;
+    int nb_meeples;
+    struct meeple meeples[MAX_MEEPLES];
+    char *name;
+    struct board client_board;
+};
+
+struct client client;
+
+/////////////////////////////////////////////////////////
 /// Implementation of interface functions
 /////////////////////////////////////////////////////////
 
 char const* get_player_name()
 {
-    return("client4410-1");
+    return client.name;
 }
 
 void initialize(unsigned int id, unsigned int n_players)
 {
-    (void) id;
+
+    client.id = id;
     (void) n_players;
     //TODO: Implement client "initialize"
     printf("\x1B[35m[CLIENT] Executing placeholder %s::initialize()...\x1B[0m\n", get_player_name());
