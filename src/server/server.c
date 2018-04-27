@@ -118,8 +118,7 @@ void game_main(struct queue *players, unsigned int nb_player)
 {
     //=== Game initialization
 
-    struct stack* drawing_stack = init_deck();
-    struct queue* moves = queue__empty(move_copy_op, move_delete_op, move_debug_op);
+    struct stack* drawing_stack = init_deck(); //TODO: move this into board
     struct board* board = board__init(drawing_stack);
 
     //=== Player initialization
@@ -130,17 +129,17 @@ void game_main(struct queue *players, unsigned int nb_player)
     //=== Game loop
 
     while (!stack__is_empty(drawing_stack) && nb_player > 0) {
-        struct move *moves_array = build_previous_moves_array(moves, nb_player);
+        struct move *moves_array = build_previous_moves_array(board->moves_queue, nb_player);
         enum card_id c = draw_until_valid(board, drawing_stack);
         struct player *p = queue__front(players);
         struct move m = p->play(c, moves_array, nb_player);
 
         queue__dequeue(players);
-        queue__dequeue(moves);
+        queue__dequeue(board->moves_queue);
 
         if (is_valid_play(board, p, &m)) {
             queue__enqueue(players, p);
-            queue__enqueue(moves, &m);
+            queue__enqueue(board->moves_queue, &m);
             board__check_sub_completion(board);
         } else {
             nb_player--;
@@ -148,7 +147,7 @@ void game_main(struct queue *players, unsigned int nb_player)
             free_player_resources(p);
         }
 
-        stack__push(board->moves_stack, &m);
+        queue__enqueue(board->moves_queue, &m);
 
         player__free(p);
         free(moves_array);
@@ -166,7 +165,6 @@ void game_main(struct queue *players, unsigned int nb_player)
     //=== Stack && Queue memory release
 
     stack__free(drawing_stack);
-    queue__free(moves);
     board__free(board);
 }
 

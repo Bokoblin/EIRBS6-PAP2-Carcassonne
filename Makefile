@@ -207,7 +207,8 @@ docs:
 #######################################################
 
 test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(SRV_DIR)/board.o \
-			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o \
+		 	$(ADT_DIR)/queue.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \

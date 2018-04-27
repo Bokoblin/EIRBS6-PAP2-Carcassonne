@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "board.h"
-#include "../common/ADT/set.h"
 #include "../common/com_func_ptrs.h"
 #include "../common/deck.h"
 #include "../common/meeple.h"
@@ -12,7 +11,7 @@ struct board *board__init(struct stack *drawing_stack)
 
     b->cards_set = set__empty(card_copy_op, card_delete_op, card_compare_op, card_debug_op);
     b->meeples_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op, meeple_debug_op);
-    b->moves_stack = stack__empty(move_copy_op, move_delete_op, move_debug_op);
+    b->moves_queue = queue__empty(move_copy_op, move_delete_op, move_debug_op);
 
     if (drawing_stack == NULL) {
         b->first_card = NULL;
@@ -48,7 +47,7 @@ int board__add_card(struct board *b, struct card *c)
     if (b == NULL || c == NULL)
         return !SUCCESS;
 
-    if (set__retrieve(b->cards_set, c)) //a card of same position is already there
+    if (set__retrieve(b->cards_set, c) != NULL) //a card of same position is already there
         return !SUCCESS;
 
     enum card_id ci = LAST_CARD;
@@ -61,20 +60,43 @@ int board__add_card(struct board *b, struct card *c)
             { c->pos.x + 1, c->pos.y }  //East
     };
 
+    //=== Checking if card can be linked to another already on the board
+
+    int nb_possible_neighbours = 0;
     for (unsigned int i = 0; i < 4; i++) {
-        enum direction d = (enum direction) i; //c's direction to link
         search_helper_card->pos = p_array[i]; //Supposed position of searched card following direction chosen
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
-        if (neighbour != NULL && card__are_matching_direction(c, neighbour, d))
-            if (card__link_at_direction(c, neighbour, d) != SUCCESS)
+        if (neighbour != NULL && card__are_matching_direction(c, neighbour, (enum direction) i))
+            nb_possible_neighbours++;
+    }
+
+    if (nb_possible_neighbours == 0) {
+        card__free(search_helper_card);
+        return !SUCCESS;
+    }
+
+    //=== Adding card to the board (to avoid linking copies)
+
+    if(set__add(b->cards_set, c) != SUCCESS) {
+        card__free(search_helper_card);
+        return !SUCCESS;
+    }
+    struct card* c_in_set = set__retrieve(b->cards_set, c);
+
+    //=== Linking cards
+
+    for (unsigned int i = 0; i < 4; i++) {
+        enum direction d = (enum direction) i; //c's direction to link
+        search_helper_card->pos = p_array[i];
+        struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
+        if (neighbour != NULL && card__are_matching_direction(c_in_set, neighbour, d))
+            if (card__link_at_direction(c_in_set, neighbour, d) != SUCCESS)
                 return !SUCCESS;
     }
+
     card__free(search_helper_card);
 
-    if (card__get_neighbour_number(c) == 0)
-        return !SUCCESS; //if unbound card
-
-    return set__add(b->cards_set, c);
+    return card__get_neighbour_number(c_in_set) == 0; //0 -> SUCCESS
 }
 
 int board__add_meeple(struct board *b, struct meeple *m)
@@ -101,6 +123,6 @@ void board__free(struct board *b)
     //Never free first_card
     set__free(b->cards_set);
     set__free(b->meeples_set);
-    stack__free(b->moves_stack);
+    queue__free(b->moves_queue);
     free(b);
 }

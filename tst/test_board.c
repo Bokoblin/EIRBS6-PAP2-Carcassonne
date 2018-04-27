@@ -10,7 +10,7 @@ int test_board__empty()
 
     if (b1->first_card != NULL || !set__is_empty(b1->cards_set)
             || !set__is_empty(b1->meeples_set)
-            || !stack__is_empty(b1->moves_stack)) {
+            || !queue__is_empty(b1->moves_queue)) {
         board__free(b1);
         return !TEST_SUCCESS;
     }
@@ -80,8 +80,11 @@ int test_board__add_card()
 
     c1->type = card__id_to_type(CARD_CITY_TUNNEL);
 
-    if (board__add_card(b, c1) != SUCCESS || card__get_neighbour_number(c1) != 1
-            || c1->neighbors[SOUTH] != b->first_card) {
+    int adding_result = board__add_card(b, c1);
+    struct card * saved_c1 = set__retrieve(b->cards_set, c1);   //Positioned Above starting card
+    if (adding_result != SUCCESS
+            || card__get_neighbour_number(saved_c1) != 1
+            || saved_c1->neighbors[SOUTH] != b->first_card) {
         board__free(b);
         stack__free(s);
         card__free(c1);
@@ -99,7 +102,7 @@ int test_board__add_card()
 
     //Fifth test: adding until having a full surrounding for CARD_CITY_TUNNEL
 
-    int test_result = EXIT_SUCCESS;
+    int test_result = TEST_SUCCESS;
     struct card *c2 = NULL, *c3 = NULL, *c4 = NULL, *c5 = NULL, *c6 = NULL, *c7 = NULL, *c8 = NULL;
 
     c2 = card__init(CARD_CITY_THREE);
@@ -153,8 +156,8 @@ int test_board__add_card()
     //NOTE: With previous test, we have made a 3*3 grid of cards, coordinates are indicated below
     //We recover below the current cards because the set in board stores copies of the cards we have added :
 
-    struct card * cur_c0 = b->first_card; //SC
-    struct card * cur_c1 = set__retrieve(b->cards_set, c1); //C
+    struct card * cur_c0 = b->first_card;                   //SC
+    struct card * cur_c1 = saved_c1;                        //C
     struct card * cur_c2 = set__retrieve(b->cards_set, c2); //NC
     struct card * cur_c3 = set__retrieve(b->cards_set, c3); //NW
     struct card * cur_c4 = set__retrieve(b->cards_set, c4); //CW
@@ -177,11 +180,41 @@ int test_board__add_card()
 
     //Linking test :
 
-    if (cur_c0->neighbors[NORTH] == cur_c1 && cur_c0->neighbors[WEST] == cur_c5
-            && cur_c0->neighbors[SOUTH] == NULL && cur_c0->neighbors[EAST] == cur_c8)
+    if (cur_c0->neighbors[NORTH] != cur_c1 || cur_c0->neighbors[WEST] != cur_c5
+            || cur_c0->neighbors[SOUTH] != NULL || cur_c0->neighbors[EAST] != cur_c8)
         test_result = !TEST_SUCCESS;
 
-    //TODO: 8 others
+    if (cur_c1->neighbors[NORTH] != cur_c2 || cur_c1->neighbors[WEST] != cur_c4
+            || cur_c1->neighbors[SOUTH] != cur_c0 || cur_c1->neighbors[EAST] != cur_c7)
+        test_result = !TEST_SUCCESS;
+
+    if (cur_c2->neighbors[NORTH] != NULL || cur_c2->neighbors[WEST] != cur_c3
+            || cur_c2->neighbors[SOUTH] != cur_c1 || cur_c2->neighbors[EAST] != cur_c6)
+        test_result = !TEST_SUCCESS;
+
+    if (cur_c3->neighbors[NORTH] != NULL || cur_c3->neighbors[WEST] != NULL
+            || cur_c3->neighbors[SOUTH] != cur_c4 || cur_c3->neighbors[EAST] != cur_c2)
+        test_result = !TEST_SUCCESS;
+
+    if (cur_c4->neighbors[NORTH] != cur_c3 || cur_c4->neighbors[WEST] != NULL
+            || cur_c4->neighbors[SOUTH] != cur_c5 || cur_c4->neighbors[EAST] != cur_c1)
+        test_result = !TEST_SUCCESS;
+
+    if (cur_c5->neighbors[NORTH] != cur_c4 || cur_c5->neighbors[WEST] != NULL
+            || cur_c5->neighbors[SOUTH] != NULL || cur_c5->neighbors[EAST] != cur_c0)
+        test_result = !TEST_SUCCESS;
+
+    if (cur_c6->neighbors[NORTH] != NULL || cur_c6->neighbors[WEST] != cur_c2
+            || cur_c6->neighbors[SOUTH] != cur_c7 || cur_c6->neighbors[EAST] != NULL)
+        test_result = !TEST_SUCCESS;
+
+    if (cur_c7->neighbors[NORTH] != cur_c6 || cur_c7->neighbors[WEST] != cur_c1
+            || cur_c7->neighbors[SOUTH] != cur_c8 || cur_c7->neighbors[EAST] != NULL)
+        test_result = !TEST_SUCCESS;
+
+    if (cur_c8->neighbors[NORTH] != cur_c7 || cur_c8->neighbors[WEST] != cur_c0
+            || cur_c8->neighbors[SOUTH] != NULL || cur_c8->neighbors[EAST] != NULL)
+        test_result = !TEST_SUCCESS;
 
 
     //== Freeing resources

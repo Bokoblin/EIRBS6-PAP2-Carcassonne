@@ -24,6 +24,8 @@ file(GLOB TEST_BOARD_SOURCE_FILES
         "../src/common/ADT/set.c"
         "../src/common/ADT/stack.h"
         "../src/common/ADT/stack.c"
+        "../src/common/ADT/queue.h"
+        "../src/common/ADT/queue.c"
         "../src/common/card.h"
         "../src/common/card.c"
         "../src/common/card_type.h"

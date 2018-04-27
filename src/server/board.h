@@ -4,7 +4,8 @@
 #include "../common/common_interface.h"
 #include "../common/card.h"
 #include "../common/meeple.h"
-#include "../server/board.h"
+#include "../common/ADT/set.h"
+#include "../common/ADT/queue.h"
 
 
 ////////////////////////////////////////////////////////////////////
@@ -21,7 +22,7 @@ struct board
     struct card* first_card;
     struct set *cards_set;
     struct set *meeples_set;
-    struct stack *moves_stack; //can't use a set to keep play order - stack or queue depending on future usage
+    struct queue *moves_queue;
 };
 
 
