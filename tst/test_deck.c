@@ -5,10 +5,12 @@ int test_init_deck()
 {
     printf("%s... ", __func__);
 
-    struct stack *d = init_deck();
+    struct stack *d = stack__empty(&operator_copy, &operator_delete, &operator_debug);
 
     if (d == NULL)
         return !TEST_SUCCESS;
+
+    init_deck(d);
 
     if (stack__length(d) != CARDS_NUMBER) {
         stack__free(d);

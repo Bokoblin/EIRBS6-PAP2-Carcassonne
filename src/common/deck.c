@@ -1,12 +1,10 @@
-#include <stdio.h>
-#include "com_func_ptrs.h"
 #include "common_interface.h"
 #include "deck.h"
 #include "utils.h"
 
-struct stack* init_deck()
+void init_deck(struct stack* s)
 {
-    struct stack *s = stack__empty(&cardid_copy_op, &cardid_delete_op, &cardid_debug_op);
+    assert_not_null(s, __func__, "s parameter");
 
     enum card_id card_CARD_ROAD_STRAIGHT_CITY = CARD_ROAD_STRAIGHT_CITY;
     enum card_id card_CARD_CITY_ALL_SIDES = CARD_CITY_ALL_SIDES;
@@ -77,7 +75,5 @@ struct stack* init_deck()
     }
 
     stack__mix(s);
-    stack__push(s, &card_CARD_JUNCTION_CITY); //First card to always place in first
-
-    return s;
+    stack__push(s, &card_CARD_JUNCTION_CITY); //First card to always place at top
 }

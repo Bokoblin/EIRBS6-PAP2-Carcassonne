@@ -19,10 +19,11 @@
  */
 struct board
 {
+    struct stack* drawing_stack;
     struct card* first_card;
-    struct set *cards_set;
-    struct set *meeples_set;
-    struct queue *moves_queue;
+    struct set* cards_set;
+    struct set* meeples_set;
+    struct queue* moves_queue;
 };
 
 
@@ -35,7 +36,15 @@ struct board
  * @brief Initialize a gameboard
  * @return a pointer towards a newly created board
  */
-struct board *board__init(struct stack *drawing_stack);
+struct board *board__init();
+
+
+/**
+ * @brief Init the first card from drawing stack top card
+ * @param b the board
+ * @return 0 on success, 1 otherwise
+ */
+int board__init_first_card(struct board *b);
 
 
 /**

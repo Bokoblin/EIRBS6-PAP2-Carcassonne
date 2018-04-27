@@ -33,7 +33,6 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 
 int is_valid_play(struct board *b, struct player *p, struct move *m)
 {
-    //TODO : Check this function correctness
     printf("\x1B[36m[SERVER] Validating move...\x1B[0m\n");
 
     m->check = FAILED; //By default
@@ -44,7 +43,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
 
     struct card *card = card__init(m->card);
     card->pos = m->onto;
-    card->orientation = (enum orientation) m->dir; //FIXME: Design issue? equivalent?
+    card->orientation = (enum orientation) m->dir;
     int was_card_added = board__add_card(b, card) == SUCCESS;
 
     //=== Meeple checking
@@ -116,10 +115,14 @@ void finalize_next_player(struct queue *players_queue)
 
 void game_main(struct queue *players, unsigned int nb_player)
 {
-    //=== Game initialization
+    //=== Board initialization
 
-    struct stack* drawing_stack = init_deck(); //TODO: move this into board
-    struct board* board = board__init(drawing_stack);
+    struct board* board = board__init();
+    init_deck(board->drawing_stack);
+    board__init_first_card(board);
+
+    if (board->first_card == NULL)
+        exit_on_error("Missing first card");
 
     //=== Player initialization
 
@@ -128,9 +131,9 @@ void game_main(struct queue *players, unsigned int nb_player)
 
     //=== Game loop
 
-    while (!stack__is_empty(drawing_stack) && nb_player > 0) {
+    while (!stack__is_empty(board->drawing_stack) && nb_player > 0) {
         struct move *moves_array = build_previous_moves_array(board->moves_queue, nb_player);
-        enum card_id c = draw_until_valid(board, drawing_stack);
+        enum card_id c = draw_until_valid(board, board->drawing_stack);
         struct player *p = queue__front(players);
         struct move m = p->play(c, moves_array, nb_player);
 
@@ -155,16 +158,15 @@ void game_main(struct queue *players, unsigned int nb_player)
 
     //=== Final score counting
 
-    //TODO: Final score counting
+    //TODO after May 4th: Final score counting
 
     //=== Players finalization
 
     for (size_t i = 0; i < nb_player; i++)
         finalize_next_player(players);
 
-    //=== Stack && Queue memory release
+    //=== Board memory release
 
-    stack__free(drawing_stack);
     board__free(board);
 }
 

@@ -5,32 +5,47 @@
 #include "../common/meeple.h"
 #include "../common/utils.h"
 
-struct board *board__init(struct stack *drawing_stack)
+struct board *board__init()
 {
     struct board *b = safe_malloc(sizeof(struct board));
 
     b->cards_set = set__empty(card_copy_op, card_delete_op, card_compare_op, card_debug_op);
     b->meeples_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op, meeple_debug_op);
     b->moves_queue = queue__empty(move_copy_op, move_delete_op, move_debug_op);
-
-    if (drawing_stack == NULL) {
-        b->first_card = NULL;
-    } else {
-        enum card_id *ci = stack__pop(drawing_stack);
-        struct card *c = card__init(*ci);
-        free(ci);
-        c->pos.x = 0;
-        c->pos.y = 0;
-        set__add(b->cards_set, c);
-        b->first_card = set__get_umpteenth_no_copy(b->cards_set, 0);
-        card__free(c);
-    }
+    b->drawing_stack = stack__empty(&cardid_copy_op, &cardid_delete_op, &cardid_debug_op);;
+    //NOTE: Not filling it inside init at least for now because board is also used by clients
+    b->first_card = NULL;
 
     return b;
 }
 
+int board__init_first_card(struct board *b)
+{
+    if (b == NULL)
+        return !SUCCESS;
+
+    if (stack__is_empty(b->drawing_stack)) {
+        printf("[ERROR] : Card drawing stack is empty, please fill it before");
+        return !SUCCESS;
+    }
+
+    enum card_id *ci = stack__pop(b->drawing_stack);
+    struct card *c = card__init(*ci);
+    free(ci);
+    c->pos.x = 0;
+    c->pos.y = 0;
+    set__add(b->cards_set, c);
+    b->first_card = set__get_umpteenth_no_copy(b->cards_set, 0);
+    card__free(c);
+
+    return SUCCESS;
+}
+
 int board__is_valid_card(struct board *b, enum card_id ci)
 {
+    if (b == NULL || ci == LAST_CARD)
+        return false;
+
     struct card *c = card__init(ci);
     for (size_t i = 0; i < set__size(b->cards_set); i++) {
         if (card__are_matching(c, set__get_umpteenth_no_copy(b->cards_set, i))) {
@@ -101,28 +116,36 @@ int board__add_card(struct board *b, struct card *c)
 
 int board__add_meeple(struct board *b, struct meeple *m)
 {
-    //TODO: add meeple to board after verifications
+    if (b == NULL || m == NULL)
+        return !SUCCESS;
+
+    //TODO after May 4th: add meeple to board after verifications
     //Check if a meeple is already on the card
     //Graph path-course to check if meeple is authorized to be placed on requested area.
     (void) b;
     (void) m;
 
     //return set__add(b->meeples_set, m);
-    return SUCCESS; //NOTE: Meeple handling not needed for due date May 4th
+    return SUCCESS; //Meeple handling not needed for due date May 4th
 }
 
 void board__check_sub_completion(struct board *b)
 {
-    //TODO: check if new areas were closed in order to calculate sub-score
+    if (b == NULL) return;
+
+    //TODO after May 4th: check if new areas were closed in order to calculate sub-score
     //-> mark already closed areas somewhere to avoid recalculation ?
     (void) b;
 }
 
 void board__free(struct board *b)
 {
+    if (b == NULL) return;
+
     //Never free first_card
     set__free(b->cards_set);
     set__free(b->meeples_set);
     queue__free(b->moves_queue);
+    stack__free(b->drawing_stack);
     free(b);
 }

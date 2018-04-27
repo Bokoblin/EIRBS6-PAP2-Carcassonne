@@ -33,6 +33,8 @@ file(GLOB TEST_BOARD_SOURCE_FILES
         "../src/common/com_func_ptrs.h"
         "../src/common/com_func_ptrs.c"
         "../src/common/common_interface.h"
+        "../src/common/deck.h"
+        "../src/common/deck.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
         )

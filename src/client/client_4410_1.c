@@ -25,7 +25,7 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     (void) previous_moves;
     (void) n_moves;
 
-    client.nb_players = n_moves;
+    client.nb_players = (int) n_moves;
 
     //TODO: Implement client "play"
     printf("\x1B[35m[CLIENT] Executing placeholder %s::play()...\x1B[0m\n", get_player_name());

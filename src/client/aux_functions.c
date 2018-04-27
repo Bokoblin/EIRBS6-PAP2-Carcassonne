@@ -13,7 +13,7 @@ void client__init(struct client *client, unsigned int id, unsigned int n_players
     client->id = id;
     client->nb_players = n_players;
     client->nb_meeples = MAX_MEEPLES;
-    client->client_board = board__init(NULL);
+    client->client_board = board__init();
 }
 
 void client__free(struct client *client)

@@ -6,11 +6,11 @@
 #define CARDS_NUMBER 72
 
 /**
- * @brief Creates a stack of enum card_id,
- *  according to the game's rules
- * @note Complexity O(n)
- * @return A struct stack of enum card_id
+ * @brief Fill a stack of enum card_id
+ * according to the game's rules
+ * @note Complexity O(number of card)
+ * @param s a stack to fill
  */
-struct stack* init_deck();
+void init_deck(struct stack* s);
 
 #endif

@@ -1,36 +1,51 @@
 #include "common_tests_utils.h"
 #include "../src/server/board.h"
 #include "../src/common/ADT/set.h"
+#include "../src/common/deck.h"
 
 int test_board__empty()
 {
     printf("%s... ", __func__);
 
-    struct board* b1 = board__init(NULL);
+    struct board* b = board__init();
 
-    if (b1->first_card != NULL || !set__is_empty(b1->cards_set)
-            || !set__is_empty(b1->meeples_set)
-            || !queue__is_empty(b1->moves_queue)) {
-        board__free(b1);
+    if (!set__is_empty(b->cards_set) || !set__is_empty(b->meeples_set)
+            || !queue__is_empty(b->moves_queue) || !stack__is_empty(b->drawing_stack)) {
+        board__free(b);
         return !TEST_SUCCESS;
     }
 
-    board__free(b1);
+    board__free(b);
 
-    struct stack* s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(s, &ci_first);
-    b1 = board__init(s);
-    b1->first_card->orientation = NORTH_IS_EAST_SIDE;
+    return TEST_SUCCESS;
+}
 
-    if (b1->first_card == NULL || set__is_empty(b1->cards_set) || !set__is_empty(b1->meeples_set)) {
-        board__free(b1);
-        stack__free(s);
+int test_board__init_first_card()
+{
+    printf("%s... ", __func__);
+
+    struct board* b = board__init();
+    init_deck(b->drawing_stack);
+
+    if (b->first_card != NULL || !set__is_empty(b->cards_set)) {
+        board__free(b);
         return !TEST_SUCCESS;
     }
 
-    board__free(b1);
-    stack__free(s);
+    if (board__init_first_card(NULL) == SUCCESS) {
+        board__free(b);
+        return !TEST_SUCCESS;
+    }
+
+    board__init_first_card(b);
+
+
+    if (b->first_card == NULL || set__is_empty(b->cards_set)) {
+        board__free(b);
+        return !TEST_SUCCESS;
+    }
+
+    board__free(b);
 
     return TEST_SUCCESS;
 }
@@ -38,17 +53,69 @@ int test_board__empty()
 int test_board__is_valid_card()
 {
     printf("%s... ", __func__);
-    printf("NOT DONE YET - ");
-    return !TEST_SUCCESS;
+
+    if (board__is_valid_card(NULL, CARD_ROAD_TURN_RIGHT_CITY))
+        return !TEST_SUCCESS;
+
+    struct board* b = board__init();
+    if (board__is_valid_card(b, LAST_CARD)) {
+        board__free(b);
+        return !TEST_SUCCESS;
+    }
+
+    //TODO: to continue : test_board__is_valid_card
+
+    board__free(b);
+
+    return TEST_SUCCESS;
 }
 
-int test_board__add_card()
+int test_board__add_card___empty_set()
 {
     printf("%s... ", __func__);
 
-    //=== First test: adding in empty set
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->orientation = NORTH_IS_EAST_SIDE;
+    struct card *c1 = card__init(CARD_MONASTERY_ROAD);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
 
-    struct board *b = board__init(NULL);
+    if (board__add_card(NULL, c1) == SUCCESS) {
+        board__free(b);
+        card__free(c1);
+        return !TEST_SUCCESS;
+    }
+
+    if (board__add_card(b, NULL) == SUCCESS) {
+        board__free(b);
+        card__free(c1);
+        return !TEST_SUCCESS;
+    }
+
+    if (board__add_card(b, c1) == SUCCESS || card__get_neighbour_number(c1) != 0) {
+        board__free(b);
+        card__free(c1);
+        return !TEST_SUCCESS;
+    }
+
+    board__free(b);
+    card__free(c1);
+
+    return TEST_SUCCESS;
+}
+
+int test_board__add_card__non_empty_set_no_match()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->orientation = NORTH_IS_EAST_SIDE;
     struct card *c1 = card__init(CARD_MONASTERY_ROAD);
     c1->pos.x = 0;
     c1->pos.y = 1;
@@ -60,89 +127,128 @@ int test_board__add_card()
     }
 
     board__free(b);
+    card__free(c1);
 
-    //=== Second test: adding in non empty set (1) with no match
+    return TEST_SUCCESS;
+}
 
-    struct stack* s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
+int test_board__add_card__non_empty_set_with_match()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(s, &ci_first);
-    b = board__init(s);
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
     b->first_card->orientation = NORTH_IS_EAST_SIDE;
 
-    if (board__add_card(b, c1) == SUCCESS || card__get_neighbour_number(c1) != 0) {
-        board__free(b);
-        stack__free(s);
-        card__free(c1);
-        return !TEST_SUCCESS;
-    }
-
-    //=== Third test: adding in non empty set with a match
-
-    c1->type = card__id_to_type(CARD_CITY_TUNNEL);
+    struct card *c1 = card__init(CARD_CITY_TUNNEL);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
 
     int adding_result = board__add_card(b, c1);
-    struct card * saved_c1 = set__retrieve(b->cards_set, c1);   //Positioned Above starting card
+    struct card *saved_c1 = set__retrieve(b->cards_set, c1);   //Positioned Above starting card
     if (adding_result != SUCCESS
             || card__get_neighbour_number(saved_c1) != 1
             || saved_c1->neighbors[SOUTH] != b->first_card) {
         board__free(b);
-        stack__free(s);
         card__free(c1);
         return !TEST_SUCCESS;
     }
 
-    //=== Fourth test adding same twice
+    board__free(b);
+    card__free(c1);
+
+    return TEST_SUCCESS;
+}
+
+int test_board__add_card__non_empty_set_with_match_twice()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->orientation = NORTH_IS_EAST_SIDE;
+
+    struct card *c1 = card__init(CARD_CITY_TUNNEL);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
+    board__add_card(b, c1);
+
+    //test adding same twice
 
     if (board__add_card(b, c1) == SUCCESS) {
         board__free(b);
-        stack__free(s);
         card__free(c1);
         return !TEST_SUCCESS;
     }
 
-    //Fifth test: adding until having a full surrounding for CARD_CITY_TUNNEL
+    board__free(b);
+    card__free(c1);
 
-    int test_result = TEST_SUCCESS;
-    struct card *c2 = NULL, *c3 = NULL, *c4 = NULL, *c5 = NULL, *c6 = NULL, *c7 = NULL, *c8 = NULL;
+    return TEST_SUCCESS;
+}
 
-    c2 = card__init(CARD_CITY_THREE);
-    c2->pos.x = 0;
-    c2->pos.y = 2;
-    c2->orientation = NORTH_IS_NORTH_SIDE;
-    if (board__add_card(b, c2) != SUCCESS) { //must fail
-        c2->orientation = NORTH_IS_SOUTH_SIDE;
-        if (board__add_card(b, c2) == SUCCESS) { //must pass like beyond ones
-            c3 = card__init(CARD_ROAD_TURN_RIGHT_CITY);
-            c3->pos.x = -1;
-            c3->pos.y = 2;
-            c3->orientation = NORTH_IS_WEST_SIDE;
-            if (board__add_card(b, c3) == SUCCESS) {
-                c4 = card__init(CARD_ROAD_STRAIGHT);
-                c4->pos.x = -1;
-                c4->pos.y = 1;
-                c4->orientation = NORTH_IS_NORTH_SIDE;
-                if (board__add_card(b, c4) == SUCCESS) {
-                    c5 = card__init(CARD_JUNCTION_FOUR);
-                    c5->pos.x = -1;
-                    c5->pos.y = 0;
-                    c5->orientation = NORTH_IS_NORTH_SIDE;
-                    if (board__add_card(b, c5) == SUCCESS) {
-                        c6 = card__init(CARD_PLAIN_CITY_ROAD);
-                        c6->pos.x = 1;
-                        c6->pos.y = 2;
-                        c6->orientation = NORTH_IS_NORTH_SIDE;
-                        if (board__add_card(b, c6) == SUCCESS) {
-                            c7 = card__init(CARD_MONASTERY_ROAD);
-                            c7->pos.x = 1;
-                            c7->pos.y = 1;
-                            c7->orientation = NORTH_IS_SOUTH_SIDE;
-                            if (board__add_card(b, c7) == SUCCESS) {
-                                c8 = card__init(CARD_JUNCTION_THREE);
-                                c8->pos.x = 1;
-                                c8->pos.y = 0;
-                                c8->orientation = NORTH_IS_NORTH_SIDE;
-                                if (board__add_card(b, c8) != SUCCESS)
-                                    test_result = !TEST_SUCCESS;
+int test_board__add_card__non_empty_set()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->orientation = NORTH_IS_EAST_SIDE;
+
+    //=== Adding until having a full surrounding for CARD_CITY_TUNNEL
+
+    int test_result = !TEST_SUCCESS;
+    struct card *c1 = NULL, *c2 = NULL, *c3 = NULL, *c4 = NULL, *c5 = NULL, *c6 = NULL, *c7 = NULL, *c8 = NULL;
+
+    c1 = card__init(CARD_CITY_TUNNEL);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
+    if (board__add_card(b, c1) == SUCCESS) {
+        c2 = card__init(CARD_CITY_THREE);
+        c2->pos.x = 0;
+        c2->pos.y = 2;
+        c2->orientation = NORTH_IS_NORTH_SIDE;
+        if (board__add_card(b, c2) != SUCCESS) { //must fail
+            c2->orientation = NORTH_IS_SOUTH_SIDE;
+            if (board__add_card(b, c2) == SUCCESS) { //must pass like beyond ones
+                c3 = card__init(CARD_ROAD_TURN_RIGHT_CITY);
+                c3->pos.x = -1;
+                c3->pos.y = 2;
+                c3->orientation = NORTH_IS_WEST_SIDE;
+                if (board__add_card(b, c3) == SUCCESS) {
+                    c4 = card__init(CARD_ROAD_STRAIGHT);
+                    c4->pos.x = -1;
+                    c4->pos.y = 1;
+                    c4->orientation = NORTH_IS_NORTH_SIDE;
+                    if (board__add_card(b, c4) == SUCCESS) {
+                        c5 = card__init(CARD_JUNCTION_FOUR);
+                        c5->pos.x = -1;
+                        c5->pos.y = 0;
+                        c5->orientation = NORTH_IS_NORTH_SIDE;
+                        if (board__add_card(b, c5) == SUCCESS) {
+                            c6 = card__init(CARD_PLAIN_CITY_ROAD);
+                            c6->pos.x = 1;
+                            c6->pos.y = 2;
+                            c6->orientation = NORTH_IS_NORTH_SIDE;
+                            if (board__add_card(b, c6) == SUCCESS) {
+                                c7 = card__init(CARD_MONASTERY_ROAD);
+                                c7->pos.x = 1;
+                                c7->pos.y = 1;
+                                c7->orientation = NORTH_IS_SOUTH_SIDE;
+                                if (board__add_card(b, c7) == SUCCESS) {
+                                    c8 = card__init(CARD_JUNCTION_THREE);
+                                    c8->pos.x = 1;
+                                    c8->pos.y = 0;
+                                    c8->orientation = NORTH_IS_NORTH_SIDE;
+                                    if (board__add_card(b, c8) == SUCCESS)
+                                        test_result = TEST_SUCCESS;
+                                }
                             }
                         }
                     }
@@ -151,13 +257,13 @@ int test_board__add_card()
         }
     }
 
-    //=== Sixth test : Card link verification
+    //=== Card link verification
 
-    //NOTE: With previous test, we have made a 3*3 grid of cards, coordinates are indicated below
+    //With previous test, we have made a 3*3 grid of cards, coordinates are indicated below
     //We recover below the current cards because the set in board stores copies of the cards we have added :
 
     struct card * cur_c0 = b->first_card;                   //SC
-    struct card * cur_c1 = saved_c1;                        //C
+    struct card * cur_c1 = set__retrieve(b->cards_set, c1); //C
     struct card * cur_c2 = set__retrieve(b->cards_set, c2); //NC
     struct card * cur_c3 = set__retrieve(b->cards_set, c3); //NW
     struct card * cur_c4 = set__retrieve(b->cards_set, c4); //CW
@@ -228,7 +334,6 @@ int test_board__add_card()
     card__free(c7);
     card__free(c8);
     board__free(b);
-    stack__free(s);
 
     return test_result;
 }
@@ -248,9 +353,15 @@ int main()
     int nb_tests = 0;
 
     print_test_result(test_board__empty(), &nb_success, &nb_tests);
+    print_test_result(test_board__init_first_card(), &nb_success, &nb_tests);
     print_test_result(test_board__is_valid_card(), &nb_success, &nb_tests);
-    print_test_result(test_board__add_card(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card___empty_set(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__non_empty_set_no_match(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__non_empty_set_with_match(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__non_empty_set_with_match_twice(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__non_empty_set(), &nb_success, &nb_tests);
     print_test_result(test_board__add_meeple(), &nb_success, &nb_tests);
+    //TODO: verify that card can and can't be added in middle of 8 other cards depending on side areas
 
     print_test_summary(nb_success, nb_tests);
 
