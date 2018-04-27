@@ -2,9 +2,6 @@
 #include "client.h"
 #include <stdio.h>
 
-/////////////////////////////////////////////////////////
-/// Structures
-/////////////////////////////////////////////////////////
 
 
 
@@ -14,7 +11,7 @@
 
 char const* get_player_name()
 {
-    return client.name;
+    return("client4410-1");
 }
 
 void initialize(unsigned int id, unsigned int n_players)

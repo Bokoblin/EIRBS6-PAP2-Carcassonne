@@ -12,7 +12,6 @@ int test_queue__empty()
         queue__free(q);
         return !TEST_SUCCESS;
     }
-
     queue__free(q);
 
     return TEST_SUCCESS;
