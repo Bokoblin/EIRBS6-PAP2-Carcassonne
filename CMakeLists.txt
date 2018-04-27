@@ -40,7 +40,7 @@ file(GLOB CLIENT1_SOURCE_FILES
         "src/common/*.c"
         "src/client/client_4410_1.c"
         "src/client/client.h"
-        "src/client/client_functions.c.h"
+        "src/client/aux_functions.c"
         )
 
 file(GLOB CLIENT2_SOURCE_FILES
@@ -48,7 +48,7 @@ file(GLOB CLIENT2_SOURCE_FILES
         "src/common/*.c"
         "src/client/client_4410_2.c"
         "src/client/client.h"
-        "src/client/client_functions.c.h"
+        "src/client/aux_functions.c"
         )
 
 

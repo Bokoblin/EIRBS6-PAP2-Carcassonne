@@ -76,7 +76,7 @@ build: prebuild $(SERVER_EXEC)
 
 $(SERVER_EXEC): $(SERVER_OBJ)
 	@echo building server...
-	$(CC) $(CPPFLAGS) $(SERVER_OBJ) -o $@ $(LFFLAGS)
+	$(CC) $(CPPFLAGS) $(SERVER_OBJ) -o $@ $(LFFLAGS) -rdynamic
 
 
 #######################################################

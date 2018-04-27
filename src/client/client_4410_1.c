@@ -15,11 +15,7 @@ char const* get_player_name()
 
 void initialize(unsigned int id, unsigned int n_players)
 {
-    client.id = id;
-    client.nb_players = n_players;
-    client.nb_meeples = MAX_MEEPLES;
-    //TODO : initialise the first card
-    //TODO: Implement client "initialize"
+    client__init(&client, id, n_players);
     printf("\x1B[35m[CLIENT] Executing placeholder %s::initialize()...\x1B[0m\n", get_player_name());
 }
 
@@ -28,6 +24,8 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     (void) card;
     (void) previous_moves;
     (void) n_moves;
+
+    client.nb_players = n_moves;
 
     //TODO: Implement client "play"
     printf("\x1B[35m[CLIENT] Executing placeholder %s::play()...\x1B[0m\n", get_player_name());
@@ -38,6 +36,6 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
 
 void finalize()
 {
-    //TODO: Implement client "finalize"
+    client__free(&client);
     printf("\x1B[35m[CLIENT] Executing placeholder %s::finalize()...\x1B[0m\n", get_player_name());
 }
