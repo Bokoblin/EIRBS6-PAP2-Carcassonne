@@ -4,9 +4,6 @@
 #include "../server/board.h"
 
 /////////////////////////////////////////////////////////
-/// Implementation of client usefull functions
+/// Implementation of client useful functions
 /////////////////////////////////////////////////////////
 
-int ask_for_player_name(struct client *client){
-  client->name = "client_4410_1";
-}

@@ -2,8 +2,7 @@
 #include "client.h"
 #include <stdio.h>
 
-
-
+struct client client;
 
 /////////////////////////////////////////////////////////
 /// Implementation of interface functions
@@ -16,9 +15,10 @@ char const* get_player_name()
 
 void initialize(unsigned int id, unsigned int n_players)
 {
-    ask_for_player_name(&client);
     client.id = id;
-    (void) n_players;
+    client.nb_players = n_players;
+    client.nb_meeples = MAX_MEEPLES;
+    //TODO : initialise the first card
     //TODO: Implement client "initialize"
     printf("\x1B[35m[CLIENT] Executing placeholder %s::initialize()...\x1B[0m\n", get_player_name());
 }
