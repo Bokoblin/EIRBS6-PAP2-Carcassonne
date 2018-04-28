@@ -81,8 +81,14 @@ int board__add_card(struct board *b, struct card *c)
     for (unsigned int i = 0; i < 4; i++) {
         search_helper_card->pos = p_array[i]; //Supposed position of searched card following direction chosen
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
-        if (neighbour != NULL && card__are_matching_direction(c, neighbour, (enum direction) i))
-            nb_possible_neighbours++;
+        if (neighbour != NULL) {
+            if (card__are_matching_direction(c, neighbour, (enum direction) i) != 0)
+                nb_possible_neighbours++;
+            else if (nb_possible_neighbours != 0) {
+                card__free(search_helper_card);
+                return !SUCCESS; //All or nothing match
+            }
+        }
     }
 
     if (nb_possible_neighbours == 0) {

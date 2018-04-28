@@ -353,20 +353,86 @@ int test_board__add_card__non_empty_set()
     return test_result;
 }
 
-int test_board__add_card__middle_success()
+int test_board__add_card__middle()
 {
-    //TODO: verify that card can be added in middle of 8 other cards
     printf("%s... ", __func__);
-    printf("NOT DONE YET - ");
-    return !TEST_SUCCESS;
-}
 
-int test_board__add_card__middle_failure()
-{
-    //TODO: verify that card can't be added in middle of 8 other cards
-    printf("%s... ", __func__);
-    printf("NOT DONE YET - ");
-    return !TEST_SUCCESS;
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    struct card* c1 = card__init(CARD_CITY_ALL_SIDES);
+    c1->pos.x = 5;
+    c1->pos.y = 5;
+    set__add(b->cards_set, c1);
+    b->first_card = set__get_umpteenth_no_copy(b->cards_set, 0);
+
+    int test_result = TEST_SUCCESS;
+    struct card *c2 = NULL, *c3 = NULL, *c4 = NULL, *c5 = NULL, *c6 = NULL, *c7 = NULL, *c8 = NULL, *c9 = NULL;
+
+    c2 = card__init(CARD_CITY_TUNNEL);
+    c2->pos.x = 6;
+    c2->pos.y = 5;
+    c2->orientation = NORTH_IS_WEST_SIDE;
+    if (board__add_card(b, c2) == SUCCESS) {
+        c3 = card__init(CARD_ROAD_TURN_LEFT_CITY);
+        c3->pos.x = 7;
+        c3->pos.y = 5;
+        c3->orientation = NORTH_IS_SOUTH_SIDE;
+        if (board__add_card(b, c3) == SUCCESS) {
+            c4 = card__init(CARD_JUNCTION_FOUR);
+            c4->pos.x = 7;
+            c4->pos.y = 4;
+            c4->orientation = NORTH_IS_NORTH_SIDE;
+            if (board__add_card(b, c4) == SUCCESS) {
+                c5 = card__init(CARD_MONASTERY_ROAD);
+                c5->pos.x = 7;
+                c5->pos.y = 3;
+                c5->orientation = NORTH_IS_SOUTH_SIDE;
+                if (board__add_card(b, c5) == SUCCESS) {
+                    c6 = card__init(CARD_ROAD_STRAIGHT);
+                    c6->pos.x = 6;
+                    c6->pos.y = 3;
+                    c6->orientation = NORTH_IS_NORTH_SIDE;
+                    if (board__add_card(b, c6) == SUCCESS) {
+                        c7 = card__init(CARD_PLAIN_CITY);
+                        c7->pos.x = 5;
+                        c7->pos.y = 3;
+                        c7->orientation = NORTH_IS_NORTH_SIDE;
+                        if (board__add_card(b, c7) == SUCCESS) {
+                            c8 = card__init(CARD_CITY_THREE_ROAD);
+                            c8->pos.x = 5;
+                            c8->pos.y = 4;
+                            c8->orientation = NORTH_IS_EAST_SIDE;
+                            if (board__add_card(b, c8) == SUCCESS) {
+                                c9 = card__init(CARD_MONASTERY_ROAD);
+                                c9->pos.x = 6;
+                                c9->pos.y = 4;
+                                c9->orientation = NORTH_IS_NORTH_SIDE;
+                                if (board__add_card(b, c9) == SUCCESS)
+                                    test_result = !TEST_SUCCESS;
+                                c9->type = card__id_to_type(CARD_JUNCTION_THREE);
+                                if (board__add_card(b, c9) != SUCCESS)
+                                    test_result = !TEST_SUCCESS;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    card__free(c1);
+    card__free(c2);
+    card__free(c3);
+    card__free(c4);
+    card__free(c5);
+    card__free(c6);
+    card__free(c7);
+    card__free(c8);
+    card__free(c9);
+    board__free(b);
+
+    return test_result;
 }
 
 int test_board__add_meeple()
@@ -391,8 +457,7 @@ int main()
     print_test_result(test_board__add_card__non_empty_set_with_match(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_with_match_twice(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set(), &nb_success, &nb_tests);
-    print_test_result(test_board__add_card__middle_success(), &nb_success, &nb_tests);
-    print_test_result(test_board__add_card__middle_failure(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__middle(), &nb_success, &nb_tests);
     print_test_result(test_board__add_meeple(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
