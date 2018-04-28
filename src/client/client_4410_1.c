@@ -15,27 +15,31 @@ char const* get_player_name()
 
 void initialize(unsigned int id, unsigned int n_players)
 {
+    printf("\x1B[35m[CLIENT] Initializing client named: %s...\x1B[0m\n", get_player_name());
     client__init(&client, id, n_players);
-    printf("\x1B[35m[CLIENT] Executing placeholder %s::initialize()...\x1B[0m\n", get_player_name());
 }
 
 struct move play(enum card_id card, struct move const previous_moves[], size_t n_moves)
 {
-    (void) card;
-    (void) previous_moves;
-    (void) n_moves;
+    printf("\x1B[35m[CLIENT] Executing player turn of client named: %s...\x1B[0m\n", get_player_name());
 
+    //Updating player number
     client.nb_players = (int) n_moves;
 
-    //TODO: Implement client "play"
-    printf("\x1B[35m[CLIENT] Executing placeholder %s::play()...\x1B[0m\n", get_player_name());
+    //Updating client own board
+    //TODO : update board
 
+    //Choosing next move following board and drawn card
+    //TODO: choose next move
+
+    (void) card;
+    (void) previous_moves;
     struct move move_placeholder = { VALID, 0, card, { 3, 4 }, NORTH, NO_MEEPLE};
     return move_placeholder;
 }
 
 void finalize()
 {
+    printf("\x1B[35m[CLIENT] Finalizing client named: %s...\x1B[0m\n", get_player_name());
     client__free(&client);
-    printf("\x1B[35m[CLIENT] Executing placeholder %s::finalize()...\x1B[0m\n", get_player_name());
 }

@@ -57,7 +57,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
         printf("\tThe move is valid.\n");
         m->check = VALID;
     } else {
-        printf("\tThe move is invalid...\n");
+        printf("\tThe move is invalid.\n");
     }
 
     card__free(card);
@@ -145,6 +145,7 @@ void game_main(struct queue *players, unsigned int nb_player)
             queue__enqueue(board->moves_queue, &m);
             board__check_sub_completion(board);
         } else {
+            printf("\tThe player named %s was expelled.\n", p->get_player_name());
             nb_player--;
             p->finalize();
             free_player_resources(p);

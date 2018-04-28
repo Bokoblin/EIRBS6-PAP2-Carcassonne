@@ -1,5 +1,6 @@
 #include <string.h>
 #include <dlfcn.h>
+#include <unistd.h>
 #include "utils.h"
 
 void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *clients_count)
@@ -18,9 +19,17 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
         }
     }
 
-    for (int i = 0; i < argc; i++)
-        if (strstr(argv[i], ".so") != NULL)
-            (*clients_count)++;
+    for (int i = 0; i < argc; i++) {
+        if (strstr(argv[i], ".so")) {
+            if (access(argv[i], F_OK) != -1)
+                (*clients_count)++;
+            else
+                printf("\x1B[36m[SERVER] The client %s does not exist\x1B[0m\n", argv[i]);
+        }
+    }
+
+    if (*clients_count == 0)
+        printf("\x1B[36m[SERVER] No clients were found. Now exiting...\x1B[0m\n");
 }
 
 void assert_no_dlerror()
