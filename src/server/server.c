@@ -82,14 +82,23 @@ struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_mov
 
     struct move *moves_array = safe_malloc(sizeof(struct move) * nb_moves);
 
-    if (!queue__is_empty(moves)) {
-        for (unsigned int i = 0; i < nb_moves; i++) {
-            struct move *m = queue__front(moves);
-            queue__dequeue(moves);
-            moves_array[i] = *m;
-            queue__enqueue(moves, m);
-            free(m);
+    unsigned int cpt = 0;
+
+    while (cpt < nb_moves && !queue__is_empty(moves)) {
+        struct move *m = queue__front(moves);
+        queue__dequeue(moves);
+        if (m->check == VALID) {
+            moves_array[cpt] = *m;
+            cpt++;
+        } else {
+            if (queue__is_empty(moves)) { //to avoid infinite loop
+                queue__enqueue(moves, m);
+                free(m);
+                break;
+            }
         }
+        queue__enqueue(moves, m);
+        free(m);
     }
 
     return moves_array;
@@ -142,7 +151,6 @@ void game_main(struct queue *players, unsigned int nb_player)
 
         if (is_valid_play(board, p, &m)) {
             queue__enqueue(players, p);
-            queue__enqueue(board->moves_queue, &m);
             board__check_sub_completion(board);
         } else {
             printf("\tThe player named %s was expelled.\n", p->get_player_name());
