@@ -63,9 +63,24 @@ int test_board__is_valid_card()
         return !TEST_SUCCESS;
     }
 
-    //TODO: to continue : test_board__is_valid_card
+    struct card* c1 = card__init(CARD_ROAD_TURN);
+
+    set__add(b->cards_set, c1);
+
+    if (!board__is_valid_card(b, CARD_MONASTERY_ALONE)) {
+        board__free(b);
+        card__free(c1);
+        return !TEST_SUCCESS;
+    }
+
+    if (board__is_valid_card(b, CARD_CITY_ALL_SIDES)) {
+        board__free(b);
+        card__free(c1);
+        return !TEST_SUCCESS;
+    }
 
     board__free(b);
+    card__free(c1);
 
     return TEST_SUCCESS;
 }
@@ -338,6 +353,22 @@ int test_board__add_card__non_empty_set()
     return test_result;
 }
 
+int test_board__add_card__middle_success()
+{
+    //TODO: verify that card can be added in middle of 8 other cards
+    printf("%s... ", __func__);
+    printf("NOT DONE YET - ");
+    return !TEST_SUCCESS;
+}
+
+int test_board__add_card__middle_failure()
+{
+    //TODO: verify that card can't be added in middle of 8 other cards
+    printf("%s... ", __func__);
+    printf("NOT DONE YET - ");
+    return !TEST_SUCCESS;
+}
+
 int test_board__add_meeple()
 {
     printf("%s... ", __func__);
@@ -360,8 +391,9 @@ int main()
     print_test_result(test_board__add_card__non_empty_set_with_match(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_with_match_twice(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__middle_success(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__middle_failure(), &nb_success, &nb_tests);
     print_test_result(test_board__add_meeple(), &nb_success, &nb_tests);
-    //TODO: verify that card can and can't be added in middle of 8 other cards depending on side areas
 
     print_test_summary(nb_success, nb_tests);
 

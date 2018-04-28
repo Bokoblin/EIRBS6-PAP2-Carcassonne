@@ -18,6 +18,8 @@ CC			= gcc
 CFLAGS		= -Wall -Wextra -std=c99 -g -O0
 CPPFLAGS	= -I ${SRC_DIR} -I ${TST_DIR} -I ${INS_DIR}
 LFFLAGS		= -lm -ldl
+SRVFLAGS	=  -rdynamic
+#-I/usr/local/include -L/usr/local/lib -lncurses -lSDLmain -lSDL -lSDL_image
 
 SERVER_SRC 	= $(wildcard $(SRC_DIR)/server/*.c $(SRC_DIR)/common/*.c $(SRC_DIR)/common/ADT/*.c)
 CLIENT_SRC 	= $(wildcard $(SRC_DIR)/client/*.c)
@@ -76,7 +78,7 @@ build: prebuild $(SERVER_EXEC)
 
 $(SERVER_EXEC): $(SERVER_OBJ)
 	@echo building server...
-	$(CC) $(CPPFLAGS) $(SERVER_OBJ) -o $@ $(LFFLAGS) -rdynamic
+	$(CC) $(CPPFLAGS) $(SERVER_OBJ) -o $@ $(LFFLAGS) $(SRVFLAGS)
 
 
 #######################################################
