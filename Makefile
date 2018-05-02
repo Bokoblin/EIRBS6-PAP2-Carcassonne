@@ -15,14 +15,13 @@ ADT_DIR = $(COM_DIR)/ADT
 SRV_DIR = $(SRC_DIR)/server
 
 CC			= gcc
-CFLAGS		= -Wall -Wextra -std=c99 -g -O0
+CFLAGS		= -Wall -Wextra -std=c99 -g -O0 -fPIC
 CPPFLAGS	= -I ${SRC_DIR} -I ${TST_DIR} -I ${INS_DIR}
 LFFLAGS		= -lm -ldl
-SRVFLAGS	=  -rdynamic
-#-I/usr/local/include -L/usr/local/lib -lncurses -lSDLmain -lSDL -lSDL_image
+SRVFLAGS	= -rdynamic
 
-SERVER_SRC 	= $(wildcard $(SRC_DIR)/server/*.c $(SRC_DIR)/common/*.c $(SRC_DIR)/common/ADT/*.c)
-CLIENT_SRC 	= $(wildcard $(SRC_DIR)/client/*.c)
+SERVER_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(SRV_DIR)/*.c)
+CLIENT_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(CLI_DIR)/aux_functions.c $(SRV_DIR)/board.c)
 
 SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
 CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
@@ -66,13 +65,12 @@ help:
 prebuild:
 	@echo Starting building...
 
-build: prebuild $(SERVER_EXEC)
+build: prebuild $(SERVER_EXEC) $(CLIENT_OBJ)
 	@echo building clients...
 	@for client in `find $(CLI_DIR) -name "client*.c" | sed -e "s/\.c$$//" `; do \
 		echo building $${client}.c; \
-		$(CC) $(CFLAGS) -c -fPIC $${client}.c -o $${client}.o; \
-		$(CC) $(CFLAGS) -c -fPIC $(CLI_DIR)/aux_functions.c -o $(CLI_DIR)/aux_functions.o; \
-		$(CC) -shared -o $${client}.so $${client}.o $(CLI_DIR)/aux_functions.o $(LFFLAGS); \
+		$(CC) $(CFLAGS) -c $${client}.c -o $${client}.o; \
+		$(CC) -shared -o $${client}.so $${client}.o $(CLIENT_OBJ); \
 	done
 	@echo Building complete.
 
@@ -192,7 +190,7 @@ run:
 ###				MAKE RUN WITH VALGRING
 #######################################################
 
-vrun: install
+vrun:
 	@echo Running program...
 	@valgrind ./$(INS_DIR)/$(SERVER_EXEC) ./$(INS_DIR)/*.so
 
@@ -216,6 +214,11 @@ test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/u
 
 test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
 			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
+
+test_client: $(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(CLI_DIR)/aux_functions.o \
+			$(COM_DIR)/card.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(SRV_DIR)/board.o \
+            $(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(COM_DIR)/deck.o \
