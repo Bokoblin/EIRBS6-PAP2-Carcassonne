@@ -28,7 +28,7 @@ SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
 CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
 
 SERVER_EXEC	= server
-TESTS_EXEC 	= test_board test_card test_deck test_meeple test_queue test_set test_stack
+TESTS_EXEC 	= test_board test_card test_deck test_meeple test_queue test_set test_stack test_client
 
 
 #######################################################
@@ -192,7 +192,7 @@ run:
 ###				MAKE RUN WITH VALGRING
 #######################################################
 
-vrun:
+vrun: install
 	@echo Running program...
 	@valgrind ./$(INS_DIR)/$(SERVER_EXEC) ./$(INS_DIR)/*.so
 

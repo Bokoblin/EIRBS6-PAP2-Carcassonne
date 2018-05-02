@@ -8,9 +8,9 @@
 /////////////////////////////////////////////////////////////
 
 struct client{
-    int id;
-    int nb_players;
-    int nb_meeples;
+    unsigned int id;
+    unsigned int nb_players;
+    unsigned int nb_meeples;
     struct board *client_board;
 };
 

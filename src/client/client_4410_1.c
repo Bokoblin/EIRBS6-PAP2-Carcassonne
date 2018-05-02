@@ -24,17 +24,15 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     printf("\x1B[35m[CLIENT] Executing player turn of client named: %s...\x1B[0m\n", get_player_name());
 
     //Updating player number
-    client.nb_players = (int) n_moves;
+    client.nb_players = (unsigned int) n_moves;
 
     //Updating client own board
-    //TODO : update board
+    //TODO : test update board
+    update_board(&client, previous_moves, n_moves);
 
     //Choosing next move following board and drawn card
     //TODO: choose next move
-
-    (void) card;
-    (void) previous_moves;
-    struct move move_placeholder = { VALID, 0, card, { 3, 4 }, NORTH, NO_MEEPLE};
+    struct move move_placeholder = play_card(&client, card);
     return move_placeholder;
 }
 
