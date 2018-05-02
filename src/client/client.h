@@ -2,12 +2,14 @@
 #define CLIENT_H
 
 #include "../server/board.h"
+#include "../common/utils.h"
 
 /////////////////////////////////////////////////////////////
 /// STRUCTURE
 /////////////////////////////////////////////////////////////
 
-struct client{
+struct client
+{
     unsigned int id;
     unsigned int nb_players;
     unsigned int nb_meeples;

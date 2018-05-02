@@ -8,6 +8,9 @@
 #define SUCCESS 0
 #define true 1
 #define false 0
+#define SRV_PREF "\x1B[36m[SERVER] "
+#define CLI_PREF "\x1B[35m[CLIENT] "
+#define CLR "\x1B[0m"
 
 /**
  * Function for parsing the options of the program

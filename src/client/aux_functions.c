@@ -1,6 +1,5 @@
 #include "../common/common_interface.h"
 #include "client.h"
-#include "../common/utils.h"
 #include "../server/board.h"
 #include "../common/meeple.h"
 
@@ -46,8 +45,9 @@ int update_board(struct client *client, struct move const previous_moves[], size
 
 struct move play_card(struct client *client, enum card_id card)
 {
-    struct move played_move = { VALID, 0, card, { 3, 4 }, NORTH, NO_MEEPLE};
+    struct move played_move = { VALID, client->id, card, { 3, 4 }, NORTH, NO_MEEPLE};
     (void) client;
+    //TODO: play_card: choose a valid card
 
     return played_move;
 }

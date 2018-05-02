@@ -15,13 +15,13 @@ char const* get_player_name()
 
 void initialize(unsigned int id, unsigned int n_players)
 {
-    printf("\x1B[35m[CLIENT] Initializing client named: %s...\x1B[0m\n", get_player_name());
+    printf(CLI_PREF"Initializing client named: %s..."CLR"\n", get_player_name());
     client__init(&client, id, n_players);
 }
 
 struct move play(enum card_id card, struct move const previous_moves[], size_t n_moves)
 {
-    printf("\x1B[35m[CLIENT] Executing player turn of client named: %s...\x1B[0m\n", get_player_name());
+    printf(CLI_PREF"Executing player turn of client named: %s..."CLR"\n", get_player_name());
 
     //Updating player number
     client.nb_players = (unsigned int) n_moves;
@@ -32,12 +32,12 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
 
     //Choosing next move following board and drawn card
     //TODO: choose next move
-    struct move move_placeholder = play_card(&client, card);
-    return move_placeholder;
+    struct move chosen_move = play_card(&client, card);
+    return chosen_move;
 }
 
 void finalize()
 {
-    printf("\x1B[35m[CLIENT] Finalizing client named: %s...\x1B[0m\n", get_player_name());
+    printf(CLI_PREF"Finalizing client named: %s..."CLR"\n", get_player_name());
     client__free(&client);
 }

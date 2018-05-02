@@ -9,7 +9,7 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
     while ((opt = getopt(argc, argv, ":g:h:")) != -1) {
         switch (opt) {
             case 'g':
-                *is_graphic = 1;
+                *is_graphic = true;
                 break;
             case 'h':
                 printf("Usage: ./install/server [-g] ./install/*.so\n");
@@ -24,12 +24,14 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
             if (access(argv[i], F_OK) != -1)
                 (*clients_count)++;
             else
-                printf("\x1B[36m[SERVER] The client %s does not exist\x1B[0m\n", argv[i]);
+                printf(SRV_PREF"The client %s does not exist."CLR"\n", argv[i]);
         }
     }
 
-    if (*clients_count == 0)
-        printf("\x1B[36m[SERVER] No clients were found. Now exiting...\x1B[0m\n");
+    if (*clients_count == 0) {
+        printf(SRV_PREF"No clients were found. Now exiting..."CLR"\n");
+        exit(EXIT_SUCCESS);
+    }
 }
 
 void assert_no_dlerror()

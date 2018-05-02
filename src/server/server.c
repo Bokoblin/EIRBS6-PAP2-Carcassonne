@@ -11,7 +11,7 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
     while (nb_players_registered < nb_players && args_index < argc) {
         const char* current_arg = argv[args_index];
         if (strstr(current_arg, ".so") != NULL) {
-            printf("Registering: %s ...", current_arg);
+            printf(SRV_PREF"Registering: %s..."CLR"\n", current_arg);
 
             void* player_lib_ptr = dlopen(current_arg, RTLD_NOW);
             assert_no_dlerror();
@@ -24,7 +24,7 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 
             queue__enqueue(players, p);
             nb_players_registered++;
-            printf("\tPLAYER#%d: %s was registered\n", p->id, p->get_player_name());
+            printf("\tPLAYER#%d: %s was registered.\n", p->id, p->get_player_name());
             player__free(p);
         }
         args_index++;
@@ -33,7 +33,7 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 
 int is_valid_play(struct board *b, struct player *p, struct move *m)
 {
-    printf("\x1B[36m[SERVER] Validating move...\x1B[0m\n");
+    printf(SRV_PREF"Validating move..."CLR"\n");
 
     m->check = FAILED; //By default
     printf("\tPlayer %d has sent the following move :\n\t", p->id);
@@ -70,7 +70,7 @@ enum card_id draw_until_valid(struct board* b, struct stack *s)
     enum card_id ci;
     do {
         ci = card__draw(s);
-        printf("\x1B[36m[SERVER] Drawing a new card (card: %d)...\x1B[0m\n", ci);
+        printf(SRV_PREF"Drawing a new card (card: %d)..."CLR"\n", ci);
     } while (!board__is_valid_card(b, ci));
 
     return ci;
@@ -81,6 +81,11 @@ struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_mov
     assert_not_null(moves, __func__, "moves parameter");
 
     struct move *moves_array = safe_malloc(sizeof(struct move) * nb_moves);
+
+    for (unsigned int i = 0; i < nb_moves; i++) {
+        struct move m = { FAILED, 99, LAST_CARD, { -1, -1}, NORTH, NO_MEEPLE };
+        moves_array[i] = m;
+    }
 
     unsigned int cpt = 0;
 
