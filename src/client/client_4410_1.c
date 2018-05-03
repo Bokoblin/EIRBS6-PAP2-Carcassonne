@@ -27,13 +27,11 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     client.nb_players = (unsigned int) n_moves;
 
     //Updating client own board
-    //TODO : test update board
+    //TODO : fix update board
     client__update_board(&client, previous_moves, n_moves);
 
     //Choosing next move following board and drawn card
-    //TODO: choose next move
-    struct move chosen_move = play_card(&client, card);
-    return chosen_move;
+    return client__play_card(&client, card);
 }
 
 void finalize()

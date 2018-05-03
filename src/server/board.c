@@ -48,7 +48,7 @@ int board__is_valid_card(struct board *b, enum card_id ci)
 
     struct card *c = card__init(ci);
     for (size_t i = 0; i < set__size(b->cards_set); i++) {
-        if (card__are_matching(c, set__get_umpteenth_no_copy(b->cards_set, i))) {
+        if (card__are_matching_free_side(c, set__get_umpteenth_no_copy(b->cards_set, i))) {
             card__free(c);
             return true;
         }
@@ -57,36 +57,41 @@ int board__is_valid_card(struct board *b, enum card_id ci)
     return false;
 }
 
-int board__add_card(struct board *b, struct card *c)
+int board__add_card(struct board *b, struct card *card_to_add)
 {
-    if (b == NULL || c == NULL)
+    if (b == NULL || card_to_add == NULL)
         return !SUCCESS;
 
-    if (set__retrieve(b->cards_set, c) != NULL) //a card of same position is already there
+    if (set__retrieve(b->cards_set, card_to_add) != NULL) //a card of same position is already there
         return !SUCCESS;
 
     enum card_id ci = LAST_CARD;
     struct card *search_helper_card = card__init(ci);
     struct position p_array[4]  = {
-            //We consider North > South and East > West
-            { c->pos.x, c->pos.y + 1 }, //North
-            { c->pos.x - 1, c->pos.y }, //West
-            { c->pos.x, c->pos.y - 1 }, //South
-            { c->pos.x + 1, c->pos.y }  //East
+            //We consider growing y is going North and growing x going toward East
+            { card_to_add->pos.x, card_to_add->pos.y + 1 }, //North neighbour
+            { card_to_add->pos.x - 1, card_to_add->pos.y }, //West neighbour
+            { card_to_add->pos.x, card_to_add->pos.y - 1 }, //South neighbour
+            { card_to_add->pos.x + 1, card_to_add->pos.y }  //East neighbour
     };
 
-    //=== Checking if card can be linked to another already on the board
+
+    //=== Checking if the card to add can be linked to another already on the board
 
     int nb_possible_neighbours = 0;
-    for (unsigned int i = 0; i < 4; i++) {
+    for (unsigned int i = 0; i < DIRECTION_NUMBER; i++) {
         search_helper_card->pos = p_array[i]; //Supposed position of searched card following direction chosen
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
         if (neighbour != NULL) {
-            if (card__are_matching_direction(c, neighbour, (enum direction) i) != 0)
-                nb_possible_neighbours++;
-            else if (nb_possible_neighbours != 0) {
-                card__free(search_helper_card);
-                return !SUCCESS; //All or nothing match
+            for (unsigned int j = 0; j < DIRECTION_NUMBER; j++) {
+                if (card__are_matching_directions(card_to_add, neighbour, (enum direction) i, (enum direction) j)) {
+                    nb_possible_neighbours++;
+                    break;
+                }
+                else if (nb_possible_neighbours != 0) {
+                    card__free(search_helper_card);
+                    return !SUCCESS; //All or nothing match
+                }
             }
         }
     }
@@ -98,21 +103,29 @@ int board__add_card(struct board *b, struct card *c)
 
     //=== Adding card to the board (to avoid linking copies)
 
-    if(set__add(b->cards_set, c) != SUCCESS) {
+    if(set__add(b->cards_set, card_to_add) != SUCCESS) {
         card__free(search_helper_card);
         return !SUCCESS;
     }
-    struct card* c_in_set = set__retrieve(b->cards_set, c);
+    struct card* c_in_set = set__retrieve(b->cards_set, card_to_add);
 
     //=== Linking cards
 
     for (unsigned int i = 0; i < 4; i++) {
-        enum direction d = (enum direction) i; //c's direction to link
+        enum direction d = (enum direction) i; //card's direction to link
         search_helper_card->pos = p_array[i];
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
-        if (neighbour != NULL && card__are_matching_direction(c_in_set, neighbour, d))
-            if (card__link_at_direction(c_in_set, neighbour, d) != SUCCESS)
-                return !SUCCESS;
+        if (neighbour != NULL) {
+            for (unsigned int j = 0; j < DIRECTION_NUMBER; j++) {
+                if (card__are_matching_directions(c_in_set, neighbour, d, (enum direction) j)) {
+                    if (card__link_at_directions(c_in_set, neighbour, d, (enum direction) j) != SUCCESS) {
+                        card__free(search_helper_card);
+                        return !SUCCESS;
+                    }
+                    else break;
+                }
+            }
+        }
     }
 
     card__free(search_helper_card);

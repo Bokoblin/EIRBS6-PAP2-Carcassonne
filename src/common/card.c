@@ -48,15 +48,27 @@ unsigned int card__get_neighbour_number(struct card *card)
     return cpt;
 }
 
-int card__are_matching(struct card *c1, struct card *c2)
+struct position card__get_position_at_direction(struct card *card, enum direction direction)
+{
+    assert_not_null(card, __func__, "card parameter");
+
+    if (card->neighbors[direction] == NULL)
+        return (struct position){ -1, -1};
+
+    return  card->neighbors[direction]->pos;
+}
+
+int card__are_matching_free_side(struct card *c1, struct card *c2)
 {
     assert_not_null(c1, __func__, "c1 parameter");
     assert_not_null(c2, __func__, "c2 parameter");
 
-    return card__are_matching_direction(c1, c2, NORTH)
-            || card__are_matching_direction(c1, c2, SOUTH)
-            || card__are_matching_direction(c1, c2, WEST)
-            || card__are_matching_direction(c1, c2, EAST);
+    for (int i = 0; i < DIRECTION_NUMBER; i++)
+        for (int j = 0; j < DIRECTION_NUMBER; j++)
+            if (card__are_matching_directions(c1, c2, (enum direction) i, (enum direction) j)
+                    && c1->neighbors[i] == NULL && c2->neighbors[j] == NULL)
+                return true;
+    return false;
 }
 
 int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction)
@@ -85,6 +97,34 @@ int card__are_matching_direction(struct card *c1, struct card *c2, enum directio
     return true;
 }
 
+int card__are_matching_directions(struct card *c1, struct card *c2, enum direction d1, enum direction d2)
+{
+    assert_not_null(c1, __func__, "c1 parameter");
+    assert_not_null(c2, __func__, "c2 parameter");
+
+    if (c1 == c2)
+        return false;
+
+    if (d1 < 0 || d2 < 0 || d1 > DIRECTION_NUMBER || d2 > DIRECTION_NUMBER)
+        return false;
+
+    for (int i = 0; i < 3; i++) {
+        int c1_area_index = (3 * d1 + 3 * c1->orientation + i) % 12;
+        int c2_area_index = (3 * d2 + 3 * c2->orientation + 2 - i) % 12;
+
+        if (c1_area_index > LAST_POS || c2_area_index > LAST_POS)
+            return false;
+
+        enum area_type c1_a = c1->type.areas[c1_area_index];
+        enum area_type c2_a = c2->type.areas[c2_area_index];
+
+        if (c1_a != c2_a)
+            return false; //on matching failure
+    }
+
+    return true;
+}
+
 int card__link_at_direction(struct card *c1, struct card *c2, enum direction direction)
 {
     assert_not_null(c1, __func__, "c1 parameter");
@@ -98,6 +138,26 @@ int card__link_at_direction(struct card *c1, struct card *c2, enum direction dir
 
     c1->neighbors[direction] = c2;
     c2->neighbors[(direction + 2) % DIRECTION_NUMBER] = c1;
+
+    return SUCCESS;
+}
+
+int card__link_at_directions(struct card *c1, struct card *c2, enum direction d1, enum direction d2)
+{
+    assert_not_null(c1, __func__, "c1 parameter");
+    assert_not_null(c2, __func__, "c2 parameter");
+
+    if (c1 == c2)
+        return !SUCCESS;
+
+    if (d1 < 0 || d2 < 0 || d1 > DIRECTION_NUMBER || d2 > DIRECTION_NUMBER)
+        return !SUCCESS;
+
+    if (c1->neighbors[d1] != NULL || c2->neighbors[d2] != NULL)
+        return !SUCCESS;
+
+    c1->neighbors[d1] = c2;
+    c2->neighbors[d2] = c1;
 
     return SUCCESS;
 }

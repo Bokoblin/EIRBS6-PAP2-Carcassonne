@@ -77,48 +77,23 @@ int test_card__get_neighbour_number()
 }
 
 
-int test_card__are_matching_direction_success_case1()
+int test_card__are_matching_direction_success()
 {
     printf("%s... ", __func__);
 
     struct card *c1 = card__init(CARD_CITY_THREE_SHLD);
     struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
 
-    if (card__are_matching_direction(c1, c2, WEST)) {
+    if (!card__are_matching_directions(c1, c2, WEST, EAST)) {
         card__free(c1);
         card__free(c2);
-        return TEST_SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     card__free(c1);
     card__free(c2);
 
-    return !TEST_SUCCESS;
-}
-
-int test_card__are_matching_direction_success_case2()
-{
-    printf("%s... ", __func__);
-
-    struct card *c1 = card__init(CARD_CITY_THREE_SHLD);
-    struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
-
-    printf("\n %d %d %d\n", card__get_area(c1, POS_EAST_NORTH), card__get_area(c1, POS_EAST), card__get_area(c1, POS_SOUTH_EAST));
-    printf("\n %d %d %d\n", card__get_area(c1, POS_SOUTH_EAST), card__get_area(c1, POS_SOUTH), card__get_area(c1, POS_SOUTH_WEST));
-    printf("\n %d %d %d\n", card__get_area(c1, POS_WEST_SOUTH), card__get_area(c1, POS_WEST), card__get_area(c1, POS_WEST_NORTH));
-    printf("\n %d %d %d\n", card__get_area(c1, POS_NORTH_WEST), card__get_area(c1, POS_NORTH), card__get_area(c1, POS_NORTH_EAST));
-
-
-    if (card__are_matching_direction(c1, c2, WEST)) {
-        card__free(c1);
-        card__free(c2);
-        return TEST_SUCCESS;
-    }
-
-    card__free(c1);
-    card__free(c2);
-
-    return !TEST_SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_card__are_matching_direction_failure_case()
@@ -126,24 +101,24 @@ int test_card__are_matching_direction_failure_case()
     printf("%s... ", __func__);
 
     struct card *c1 = card__init(CARD_MONASTERY_ALONE);
-    struct card *c2 = card__init(CARD_PLAIN_CITY_ROAD);
+    struct card *c2 = card__init(CARD_JUNCTION_THREE);
 
-    if (!card__are_matching_direction(c1, c2, EAST)) {
+    if (card__are_matching_directions(c1, c1, EAST, WEST)) {
         card__free(c1);
         card__free(c2);
-        return TEST_SUCCESS;
+        return !TEST_SUCCESS;
     }
 
-    if (!card__are_matching_direction(c1, c1, EAST)) {
+    if (card__are_matching_directions(c1, c2, EAST, SOUTH)) {
         card__free(c1);
         card__free(c2);
-        return TEST_SUCCESS;
+        return !TEST_SUCCESS;
     }
 
     card__free(c1);
     card__free(c2);
 
-    return !TEST_SUCCESS;
+    return TEST_SUCCESS;
 }
 
 int test_card__link_at_direction()
@@ -151,21 +126,21 @@ int test_card__link_at_direction()
     printf("%s... ", __func__);
 
     struct card *c1 = card__init(CARD_MONASTERY_ALONE);
-    struct card *c2 = card__init(CARD_MONASTERY_ROAD);
+    struct card *c2 = card__init(CARD_JUNCTION_THREE);
 
-    if (card__link_at_direction(c1, c2, EAST) != SUCCESS) {
+    if (card__are_matching_directions(c1, c2, NORTH, EAST) != SUCCESS) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
     }
 
-    if (c1->neighbors[EAST] != c2 || c2->neighbors[WEST] != c1) {
+    if (card__link_at_directions(c1, c1, EAST, WEST) == SUCCESS) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
     }
 
-    if (card__link_at_direction(c1, c1, EAST) == SUCCESS) {
+    if (card__link_at_directions(c1, c2, EAST, SOUTH)) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
@@ -230,8 +205,7 @@ int main()
     print_test_result(test_card__init(), &nb_success, &nb_tests);
     print_test_result(test_card__get_area(), &nb_success, &nb_tests);
     print_test_result(test_card__get_neighbour_number(), &nb_success, &nb_tests);
-    print_test_result(test_card__are_matching_direction_success_case1(), &nb_success, &nb_tests);
-    print_test_result(test_card__are_matching_direction_success_case2(), &nb_success, &nb_tests);
+    print_test_result(test_card__are_matching_direction_success(), &nb_success, &nb_tests);
     print_test_result(test_card__are_matching_direction_failure_case(), &nb_success, &nb_tests);
     print_test_result(test_card__link_at_direction(), &nb_success, &nb_tests);
     print_test_result(test_card__draw(), &nb_success, &nb_tests);

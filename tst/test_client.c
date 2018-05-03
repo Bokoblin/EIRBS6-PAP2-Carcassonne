@@ -39,7 +39,12 @@ int test_client__client_update_board()
     struct move const mv2 = {VALID, 2, CARD_PLAIN_TWO_CITIES, {0, -1}, NORTH, NO_MEEPLE};
     struct move const previous_moves[] = {mv1, mv2};
 
-    int a = client__update_board(cl, previous_moves, 2);
+    if (!client__update_board(cl, previous_moves, 2)) {
+        client__free(cl);
+        card__free(c);
+        board__free(b);
+        return !TEST_SUCCESS;
+    }
 
     if (b->first_card->type.id != CARD_CITY_ALL_SIDES) {
         client__free(cl);
@@ -69,7 +74,7 @@ int test_client__client_play_card_success_case()
     stack__push(b->drawing_stack, &ci);
     board__init_first_card(b);
 
-    struct move mv = play_card(cl, CARD_ROAD_TURN_LEFT_CITY);
+    struct move mv = client__play_card(cl, CARD_ROAD_TURN_LEFT_CITY);
 
     if (mv.check == VALID) {
         client__free(cl);

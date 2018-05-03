@@ -60,10 +60,10 @@ int board__is_valid_card(struct board *b, enum card_id ci);
 /**
  * @brief Add a card to the board (if possible)
  * @param b the board
- * @param c a card
+ * @param card_to_add a card
  * @return 0 on success, 1 otherwise
  */
-int board__add_card(struct board *b, struct card* c);
+int board__add_card(struct board *b, struct card* card_to_add);
 
 
 /**

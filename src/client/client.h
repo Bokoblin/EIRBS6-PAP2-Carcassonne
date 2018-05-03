@@ -46,13 +46,12 @@ void client__free(struct client *client);
 int client__update_board(struct client *client, struct move const previous_moves[], size_t n_moves);
 
 
-//TODO: Implement the functions underneath
 /**
 * @brief search for a playable position for a card on the client's gameboard
 * @param client the client
 * @param card_id the id of the card to play
 * @return struct_move
 */
-struct move play_card(struct client *client, enum card_id);
+struct move client__play_card(struct client *client, enum card_id);
 
 #endif

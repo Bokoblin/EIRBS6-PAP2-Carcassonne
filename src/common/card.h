@@ -76,32 +76,64 @@ unsigned int card__get_neighbour_number(struct card *card);
 
 
 /**
+ * @brief Get the position at the given direction of the given card
+ * @param card a card
+ * @param direction a direction
+ * @return a position
+ */
+struct position card__get_position_at_direction(struct card *card, enum direction direction);
+
+
+/**
  * @brief Decide if two cards are matching in at least one direction
  * @param c1 a card
  * @param c2 a card
  * @return 1 if matching, 0 otherwise
  */
-int card__are_matching(struct card *c1, struct card *c2);
+int card__are_matching_free_side(struct card *c1, struct card *c2);
 
 
 /**
+ * !!!!!!!!!!!!!! DEPRECATED !!!!!!!!!!!!!!
  * @brief Decide if two cards are matching at first card direction
  * @param c1 a card
  * @param c2 a card
  * @param direction the direction in which the first card coincide with the second
  * @return 1 if the cards match, 0 otherwise
  */
-int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction);
+//int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction);
 
 
 /**
+ * @brief Decide if two cards following given directions
+ * @param c1 a card
+ * @param c2 a card
+ * @param d1 the direction in which the first card coincide with the second
+ * @param d2 the direction in which the second card coincide with the first
+ * @return 1 if the cards match, 0 otherwise
+ */
+int card__are_matching_directions(struct card *c1, struct card *c2, enum direction d1, enum direction d2);
+
+
+/**
+ * !!!!!!!!!!!!!! DEPRECATED !!!!!!!!!!!!!!
  * @brief link two cards to each other in a certain direction
  * @param c1 a card
  * @param c2 a card
  * @param direction the direction in which the cards match (relative to card_1)
  * @return 0 if the cards link, 1 otherwise
  */
-int card__link_at_direction(struct card *c1, struct card *c2, enum direction direction);
+//int card__link_at_direction(struct card *c1, struct card *c2, enum direction direction);
+
+/**
+ * @brief link two cards to each other at specific directions
+ * @param c1 a card
+ * @param c2 a card
+ * @param d1 the direction in which the card 1 matches the card 2
+ * @param d2 the direction in which the card 2 matches the card 1
+ * @return 0 if the cards link, 1 otherwise
+ */
+int card__link_at_directions(struct card *c1, struct card *c2, enum direction d1, enum direction d2);
 
 
 /**
