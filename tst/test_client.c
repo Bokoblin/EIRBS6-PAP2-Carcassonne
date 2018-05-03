@@ -86,7 +86,7 @@ int test_client__client_play_card_success_case()
 
 int main()
 {
-    printf("----------- TEST CARD -----------\n");
+    printf("----------- TEST CLIENT -----------\n");
 
     int nb_success = 0;
     int nb_tests = 0;

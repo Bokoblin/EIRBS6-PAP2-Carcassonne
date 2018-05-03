@@ -216,7 +216,7 @@ test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/ut
 			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
-test_client: $(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(CLI_DIR)/aux_functions.o \
+test_client: $(TST_DIR)/test_client.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(CLI_DIR)/aux_functions.o \
 			$(COM_DIR)/card.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(SRV_DIR)/board.o \
             $(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
