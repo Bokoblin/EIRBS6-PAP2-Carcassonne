@@ -20,7 +20,7 @@ void client__free(struct client *client)
   board__free(client->client_board);
 }
 
-int update_board(struct client *client, struct move const previous_moves[], size_t n_moves)
+int client__update_board(struct client *client, struct move const previous_moves[], size_t n_moves)
 {
     assert_not_null(previous_moves, __func__, "moves parameter");
 

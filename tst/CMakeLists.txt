@@ -144,8 +144,8 @@ file(GLOB TEST_CLIENT_SOURCE_FILES
         "../src/common/deck.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
-        "../src/common/client/client.h"
-        "../src/common/client/aux_functions.c.c"
+        "../src/client/client.h"
+        "../src/client/aux_functions.c"
         )
 
 #----------------------------

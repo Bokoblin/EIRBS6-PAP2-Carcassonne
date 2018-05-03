@@ -43,7 +43,7 @@ void client__free(struct client *client);
  * @param n_moves size of previous_moves
  * @return 0 if done successfully, 1 otherwise
  */
-int update_board(struct client *client, struct move const previous_moves[], size_t n_moves);
+int client__update_board(struct client *client, struct move const previous_moves[], size_t n_moves);
 
 
 //TODO: Implement the functions underneath
