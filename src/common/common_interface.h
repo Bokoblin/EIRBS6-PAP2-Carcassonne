@@ -43,9 +43,9 @@ enum place
 	POS_SOUTH_WEST, // {SW}
 	POS_SOUTH,      // S
 	POS_SOUTH_EAST, // {SE}
-	POS_EAST_NORTH, // {EN}
-	POS_EAST,       // E
 	POS_EAST_SOUTH, // {ES}
+	POS_EAST,       // E
+	POS_EAST_NORTH, // {EN}
 	POS_CENTER,     // C
 	LAST_POS,
 };
