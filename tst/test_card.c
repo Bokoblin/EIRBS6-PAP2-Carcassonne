@@ -181,7 +181,7 @@ int test_card__set_orientation()
     printf("%s... ", __func__);
 
     struct card *c = card__init(CARD_JUNCTION_CITY);
-    card__set_orientation(c, NORTH_IS_WEST_SIDE);
+    c->orientation = NORTH_IS_WEST_SIDE;
 
     if (c->orientation == NORTH_IS_WEST_SIDE) {
         card__free(c);

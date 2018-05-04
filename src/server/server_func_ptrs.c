@@ -46,5 +46,5 @@ void player_debug_op(const struct player *p)
     if (p == NULL)
         printf("NULL");
     else
-        printf("Player (id: %d, name: %s)\n", p->id, p->get_player_name());
+        printf("Player (id: %d, name: %s)", p->id, p->get_player_name());
 }
