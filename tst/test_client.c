@@ -9,10 +9,16 @@ int test_client__client_init()
     printf("%s... ", __func__);
 
     struct client *cl = safe_malloc(sizeof(struct client));
-
     client__init(cl, 4, 2);
 
-    if ((cl->id == 4) && (cl->nb_players == 2) && (cl->nb_meeples == MAX_MEEPLES)) {
+    if ((cl->id == 4)
+     && (cl->nb_players == 2)
+     && (cl->nb_meeples == MAX_MEEPLES)
+     && (cl->client_board->moves_queue == NULL)
+     && (cl->client_board->drawing_stack == NULL)
+     && (set__size(cl->client_board->cards_set) == 1)
+     && (cl->client_board->first_card != NULL)
+     && (cl->client_board->first_card->type.id == CARD_JUNCTION_CITY) ) {
         free(cl);
         return TEST_SUCCESS;
     }
@@ -28,6 +34,7 @@ int test_client__client_update_board()
     printf("%s... ", __func__);
 
     struct client *cl = safe_malloc(sizeof(struct client));
+    client__init(cl, 4, 2);
 
     struct board *b = board__init();
     struct card *c = card__init(CARD_CITY_ALL_SIDES);
@@ -54,6 +61,13 @@ int test_client__client_update_board()
     }
 
     //TODO : to finish --> check if neighbors card(mv1) and card(mv2) have been added to neighbors to c
+    //set__debug_data(cl->client_board->cards_set, 0);
+    if (set__size(cl->client_board->cards_set) != 3) { //FIXME: Only one card have been added
+        client__free(cl);
+        card__free(c);
+        board__free(b);
+        return !TEST_SUCCESS;
+    }
 
     client__free(cl);
     card__free(c);
@@ -68,22 +82,16 @@ int test_client__client_play_card_success_case()
     printf("%s... ", __func__);
 
     struct client *cl = safe_malloc(sizeof(struct client));
-
-    struct board *b = board__init();
-    enum card_id ci = CARD_CITY_ALL_SIDES;
-    stack__push(b->drawing_stack, &ci);
-    board__init_first_card(b);
+    client__init(cl, 4, 2);
 
     struct move mv = client__play_card(cl, CARD_ROAD_TURN_LEFT_CITY);
 
     if (mv.check == VALID) {
         client__free(cl);
-        board__free(b);
         return TEST_SUCCESS;
     }
 
     client__free(cl);
-    board__free(b);
 
     return !TEST_SUCCESS;
 }

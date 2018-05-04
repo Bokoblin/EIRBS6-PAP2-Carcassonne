@@ -70,6 +70,21 @@ void client__init(struct client *client, unsigned int id, unsigned int n_players
     client->nb_players = n_players;
     client->nb_meeples = MAX_MEEPLES;
     client->client_board = board__init();
+
+    //Initilization of the first card of the board
+    enum card_id card_CARD_JUNCTION_CITY = CARD_JUNCTION_CITY;
+    struct card *c = card__init(card_CARD_JUNCTION_CITY);
+    c->pos.x = 0;
+    c->pos.y = 0;
+    set__add(client->client_board->cards_set, c);
+    client->client_board->first_card = set__get_umpteenth_no_copy(client->client_board->cards_set, 0);
+
+    //Deleting useless variables
+    stack__free(client->client_board->drawing_stack);
+    queue__free(client->client_board->moves_queue);
+    card__free(c);
+    client->client_board->drawing_stack = NULL;
+    client->client_board->moves_queue = NULL;
 }
 
 void client__free(struct client *client)
@@ -79,6 +94,8 @@ void client__free(struct client *client)
 
 int client__update_board(struct client *client, struct move const previous_moves[], size_t n_moves)
 {
+    assert_not_null(client, __func__, "client");
+    assert_not_null(client->client_board, __func__, "client->client_board");
     assert_not_null(previous_moves, __func__, "moves parameter");
 
     for (size_t i = 0 ;i < n_moves; i++){
@@ -107,7 +124,12 @@ struct move client__play_card(struct client *client, enum card_id card)
     //This is done for each card of the set, for each orientation of drawn card, for each side of card1 and card2
     // => 4*4*4*number of cards already in the board with less than 4 neighbours
 
-    for (size_t i = 0; i < set__size(client->client_board->cards_set); i++) {
+    assert_not_null(client, __func__ , "client == NULL");
+    assert_not_null(client->client_board, __func__ , "client->client_board == NULL");
+    assert_not_null(client->client_board->cards_set, __func__ , "client->client_board->cards_set == NULL");
+
+    unsigned int length = set__size(client->client_board->cards_set);
+    for (size_t i = 0; i < length; i++) {
         struct card *umpteenth_card = set__get_umpteenth_no_copy(client->client_board->cards_set, i);
         if (card__get_neighbour_number(umpteenth_card) < 4) {
             for (int j = 0; j < DIRECTION_NUMBER; j++) {
@@ -120,7 +142,8 @@ struct move client__play_card(struct client *client, enum card_id card)
                             tcd->card_in_board = umpteenth_card;
                             tcd->card_in_board_direction = (enum direction) k;
                             tcd->drawn_card_orientation = (enum orientation) l;
-                            set__add(client->client_board->cards_set, tcd);
+                            set__add(possible_cards, tcd);
+                        //    set__add(client->client_board->cards_set, tcd);
                         }
                     }
                 }
@@ -130,7 +153,7 @@ struct move client__play_card(struct client *client, enum card_id card)
 
 
     //=== Choose a card among possible ones
-
+   // set__debug_data(client->client_board->cards_set, 0);
     if (set__size(possible_cards) == 0)
         exit_on_error("It's impossible to obtain no valid cards as server must send valid cards");
 
@@ -139,10 +162,16 @@ struct move client__play_card(struct client *client, enum card_id card)
 
     //=== Build move with chosen card in board, orientation and direction
 
+    assert_not_null(chosen_tcd->card_in_board, __func__ , "chosen_tcd->card_in_board");
+ 
+ //FIXME: gdb output:
+//0x00000000004019ea in client__play_card (client=0x60c630, card=CARD_ROAD_TURN_LEFT_CITY) at src/client/aux_functions.c:165
+//165	    assert_not_null(chosen_tcd->card_in_board, __func__ , "chosen_tcd->card_in_board");
+
     struct move played_move;
     played_move.player = client->id;
     played_move.card = card;
-    played_move.onto = card__get_position_at_direction(chosen_tcd->card_in_board, chosen_tcd->card_in_board_direction);
+    played_move.onto = card__get_position_at_direction(chosen_tcd->card_in_board, chosen_tcd->card_in_board_direction); //FIXME: Segfault here (and chosen_tcd->card_in_board != NULL)
     played_move.dir = (enum direction) chosen_tcd->drawn_card_orientation;
     played_move.place = NO_MEEPLE;
 
