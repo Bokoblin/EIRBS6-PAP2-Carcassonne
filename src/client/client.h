@@ -41,9 +41,8 @@ void client__free(struct client *client);
  * @param client the client who wants to change his gameboard
  * @param previous_moves array of the moves that should be added to the gameboard
  * @param n_moves size of previous_moves
- * @return 0 if done successfully, 1 otherwise
  */
-int client__update_board(struct client *client, struct move const previous_moves[], size_t n_moves);
+void client__update_board(struct client *client, struct move const previous_moves[], size_t n_moves);
 
 
 /**

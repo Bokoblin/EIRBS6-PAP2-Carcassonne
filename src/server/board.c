@@ -67,20 +67,12 @@ int board__add_card(struct board *b, struct card *card_to_add)
 
     enum card_id ci = LAST_CARD;
     struct card *search_helper_card = card__init(ci);
-    struct position p_array[4]  = {
-            //We consider growing y is going North and growing x going toward East
-            { card_to_add->pos.x, card_to_add->pos.y + 1 }, //North neighbour
-            { card_to_add->pos.x - 1, card_to_add->pos.y }, //West neighbour
-            { card_to_add->pos.x, card_to_add->pos.y - 1 }, //South neighbour
-            { card_to_add->pos.x + 1, card_to_add->pos.y }  //East neighbour
-    };
-
 
     //=== Checking if the card to add can be linked to another already on the board
 
     int nb_possible_neighbours = 0;
     for (unsigned int i = 0; i < DIRECTION_NUMBER; i++) {
-        search_helper_card->pos = p_array[i]; //Supposed position of searched card following direction chosen
+        search_helper_card->pos = card__get_position_at_direction(card_to_add, (enum direction) i);
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
         if (neighbour != NULL) {
             for (unsigned int j = 0; j < DIRECTION_NUMBER; j++) {
@@ -102,6 +94,7 @@ int board__add_card(struct board *b, struct card *card_to_add)
     }
 
     //=== Adding card to the board (to avoid linking copies)
+    //TODO: Optimize! A possible solution could be to make a copy_operator correctly handling neighbours ptr linking
 
     if(set__add(b->cards_set, card_to_add) != SUCCESS) {
         card__free(search_helper_card);
@@ -111,9 +104,9 @@ int board__add_card(struct board *b, struct card *card_to_add)
 
     //=== Linking cards
 
-    for (unsigned int i = 0; i < 4; i++) {
+    for (unsigned int i = 0; i < DIRECTION_NUMBER; i++) {
         enum direction d = (enum direction) i; //card's direction to link
-        search_helper_card->pos = p_array[i];
+        search_helper_card->pos = card__get_position_at_direction(card_to_add, d);
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, search_helper_card);
         if (neighbour != NULL) {
             for (unsigned int j = 0; j < DIRECTION_NUMBER; j++) {
@@ -130,7 +123,7 @@ int board__add_card(struct board *b, struct card *card_to_add)
 
     card__free(search_helper_card);
 
-    return card__get_neighbour_number(c_in_set) == 0; //0 -> SUCCESS
+    return card__get_neighbour_number(c_in_set) == 0; //false -> SUCCESS
 }
 
 int board__add_meeple(struct board *b, struct meeple *m)

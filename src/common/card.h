@@ -15,6 +15,7 @@
 ////////////////////////////////////////////////////////////////////
 
 /**
+ * TODO: Use teacher provided direction as orientation and forward below to "concerned side"
  * @brief orientation
  * Lists all the cards orientations indicating where is the north
  */
@@ -142,14 +143,6 @@ int card__link_at_directions(struct card *c1, struct card *c2, enum direction d1
  * @return the card dealt
  */
 enum card_id card__draw(struct stack *s);
-
-
-/**
- * @brief Sets the orientation of the card
- * @param card the card oriented
- * @param orientation the orientation wanted
- */
-void card__set_orientation(struct card *card, enum orientation orientation);
 
 
 #endif

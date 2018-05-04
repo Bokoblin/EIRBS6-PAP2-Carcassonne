@@ -145,7 +145,7 @@ void game_main(struct queue *players, unsigned int nb_player)
 
     //=== Game loop
 
-    while (!stack__is_empty(board->drawing_stack) && nb_player > 0) {
+    while (!stack__is_empty(board->drawing_stack) && nb_player > 1) {
         struct move *moves_array = build_previous_moves_array(board->moves_queue, nb_player);
         enum card_id c = draw_until_valid(board, board->drawing_stack);
         struct player *p = queue__front(players);

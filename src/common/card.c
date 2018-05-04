@@ -52,10 +52,18 @@ struct position card__get_position_at_direction(struct card *card, enum directio
 {
     assert_not_null(card, __func__, "card parameter");
 
-    if (card->neighbors[direction] == NULL)
-        return (struct position){ -1, -1};
-
-    return  card->neighbors[direction]->pos;
+    if (card->neighbors[direction] != NULL)
+        return card->neighbors[direction]->pos;
+    else {
+        struct position p_array[4]  = {
+                //We consider growing y is going North and growing x going toward East
+                { card->pos.x,      card->pos.y + 1 }, //North neighbour
+                { card->pos.x - 1,  card->pos.y     }, //West neighbour
+                { card->pos.x,      card->pos.y - 1 }, //South neighbour
+                { card->pos.x + 1,  card->pos.y     }  //East neighbour
+        };
+        return p_array[direction];
+    }
 }
 
 int card__are_matching_free_side(struct card *c1, struct card *c2)
@@ -71,6 +79,7 @@ int card__are_matching_free_side(struct card *c1, struct card *c2)
     return false;
 }
 
+//NOTE: This function is deprecated
 int card__are_matching_direction(struct card *c1, struct card *c2, enum direction direction)
 {
     assert_not_null(c1, __func__, "c1 parameter");
@@ -125,6 +134,7 @@ int card__are_matching_directions(struct card *c1, struct card *c2, enum directi
     return true;
 }
 
+//NOTE: This function is deprecated
 int card__link_at_direction(struct card *c1, struct card *c2, enum direction direction)
 {
     assert_not_null(c1, __func__, "c1 parameter");
@@ -168,10 +178,4 @@ enum card_id card__draw(struct stack *s)
     enum card_id returned = *popped_card;
     free(popped_card);
     return returned;
-}
-
-void card__set_orientation(struct card *card, enum orientation orientation)
-{
-    assert_not_null(card, __func__, "card parameter");
-    card->orientation = orientation;
 }
