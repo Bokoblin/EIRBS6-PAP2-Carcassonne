@@ -91,22 +91,23 @@ int queue__dequeue(struct queue *q)
     q->array[q->front] = NULL;
     q->front = (q->front + 1) %q->capacity;
 
-    if (queue__length(q) < q->capacity / 2 && q->capacity > 2) {
-        size_t new_pos = 0;
-        for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
-            q->array[new_pos] = q->array[i];
-            q->array[i] = NULL;
-            new_pos++;
-        }
-        q->front = 0;
-        q->back = positive_modulo((int) (new_pos), (int) q->capacity);
-
-        q->array = realloc(q->array, sizeof(void *) * q->capacity / 2);
-        if (q->array == NULL)
-            return !SUCCESS;
-        else
-            q->capacity /= 2;
-    }
+    //FIXME: Was causing player queue failure, further investigation are needed (hence commenting it for May 4th goal)
+    //if (queue__length(q) < q->capacity / 2 && q->capacity > 2) {
+    //    size_t new_pos = 0;
+    //    for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+    //        q->array[new_pos] = q->array[i];
+    //        q->array[i] = NULL;
+    //        new_pos++;
+    //    }
+    //    q->front = 0;
+    //    q->back = positive_modulo((int) (new_pos), (int) q->capacity);
+    //
+    //    q->array = realloc(q->array, sizeof(void *) * q->capacity / 2);
+    //    if (q->array == NULL)
+    //        return !SUCCESS;
+    //    else
+    //        q->capacity /= 2;
+    //}
 
     return SUCCESS;
 }
@@ -116,6 +117,9 @@ void* queue__front(struct queue *q)
     assert_not_null(q, __func__, "queue parameter");
 
     if (queue__is_empty(q))
+        return NULL;
+
+    if (q->array[q->front] == NULL)
         return NULL;
 
     return q->operator_copy(q->array[q->front]);
@@ -165,13 +169,17 @@ void queue__debug(struct queue *q, int is_compact)
     else {
         if (!is_compact) {
             printf("Queue (capacity: %zu, size: %zu, content: \n", q->capacity, queue__length(q));
-            printf("\t in queue order: { ");
+            printf("\t in queue order: { \n");
             for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+                printf("\t");
                 q->operator_debug(q->array[i]);
+                printf("\n");
             }
-            printf("}\n\t in array order: { ");
+            printf("}\n\t in array order: { \n");
             for (size_t i = 0; i < q->capacity; i++) {
+                printf("\t");
                 q->operator_debug(q->array[i]);
+                printf("\n");
             }
             printf("}\n)\n");
         } else {

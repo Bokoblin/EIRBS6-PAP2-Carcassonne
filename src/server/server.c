@@ -224,3 +224,26 @@ int main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
+
+/* Acknowledgement :
+ * FIXME : Remaining issues breaking "May the 4th..." goal :
+ * - Player may be NULL sometimes
+ *      -> Issue is identified ? YES
+ *      -> Concerned issues areas: realloc in queue to decrease size after a dequeue (or realloc in enqueue ?)
+ *      -> Temporary workaround : Disabling faulty code
+ *
+ * - Board update is not always done for client causing them placing invalid already placed moves
+ *      -> Issue is identified ? NO
+ *      -> Concerned issues areas: client__update_board() or add_card_to_board() ?
+ *      -> Temporary workaround : NO
+ *
+ * - Moves are sometimes invalid while they shouldn't :
+ *      -> Issue is identified ? NO
+ *      -> Concerned issues areas:  client__play_card() or add_card_to_board() ?
+ *      -> Temporary workaround : NO
+ *
+ * - Invalid given card to the player : or client considering it invalid
+ *      -> Issue is identified ? NO
+ *      -> Concerned issues areas:  client__play_card() or board__is_valid_card() ?
+ *      -> Temporary workaround : NO
+ */
