@@ -54,7 +54,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
 
     //=== Checking sum
 
-    if (was_card_added && was_meeple_added != false) {
+    if (was_card_added && was_meeple_added) {
         printf("\tThe move is valid.\n");
         m->check = VALID;
     } else {
@@ -64,7 +64,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
 
     card__free(card);
     meeple__free(meeple);
-    return m->check == VALID ? true : false;
+    return m->check == VALID;
 }
 
 enum card_id draw_until_valid(struct board* b, struct stack *s)
@@ -144,7 +144,7 @@ void game_main(struct queue *players, unsigned int nb_player)
         queue__dequeue(players);
         if (queue__length(board->moves_queue) == nb_player)
             queue__dequeue(board->moves_queue);
-
+        
         if (is_valid_play(board, p, &m)) {
             queue__enqueue(players, p);
             board__check_sub_completion(board);
