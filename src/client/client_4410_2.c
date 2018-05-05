@@ -1,5 +1,8 @@
 #include "../common/common_interface.h"
+#include "client.h"
 #include <stdio.h>
+
+struct client client;
 
 /////////////////////////////////////////////////////////
 /// Implementation of interface functions
@@ -12,24 +15,26 @@ char const* get_player_name()
 
 void initialize(unsigned int id, unsigned int n_players)
 {
-    (void) id;
-    (void) n_players;
-    printf("\x1B[35m[CLIENT] Executing placeholder %s::initialize()...\x1B[0m\n", get_player_name());
+    printf(CLI_PREF"Initializing client named: %s..."CLR"\n", get_player_name());
+    client__init(&client, id, n_players);
 }
 
 struct move play(enum card_id card, struct move const previous_moves[], size_t n_moves)
 {
-    (void) card;
-    (void) previous_moves;
-    (void) n_moves;
-    printf("\x1B[35m[CLIENT] Executing placeholder %s::play()...\x1B[0m\n", get_player_name());
+    printf(CLI_PREF"Executing player turn of client named: %s..."CLR"\n", get_player_name());
 
-    struct move move_placeholder = { FAILED, 1, card, { 0, 1 }, SOUTH, POS_WEST_NORTH}; //small chance to work on first call
-    return move_placeholder;
+    //Updating player number
+    client.nb_players = (unsigned int) n_moves;
+
+    //Updating client own board
+    client__update_board(&client, previous_moves, n_moves);
+
+    //Choosing next move following board and drawn card
+    return client__play_card(&client, card);
 }
-
 
 void finalize()
 {
-    printf("\x1B[35m[CLIENT] Executing placeholder %s::finalize()...\x1B[0m\n", get_player_name());
+    printf(CLI_PREF"Finalizing client named: %s..."CLR"\n", get_player_name());
+    client__free(&client);
 }

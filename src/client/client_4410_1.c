@@ -27,7 +27,6 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     client.nb_players = (unsigned int) n_moves;
 
     //Updating client own board
-    //TODO : fix update board following related test
     client__update_board(&client, previous_moves, n_moves);
 
     //Choosing next move following board and drawn card
