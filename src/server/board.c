@@ -112,6 +112,7 @@ int board__add_card(struct board *b, struct card *card_to_add)
             for (unsigned int j = 0; j < DIRECTION_NUMBER; j++) {
                 if (card__are_matching_directions(c_in_set, neighbour, d, (enum direction) j)) {
                     if (card__link_at_directions(c_in_set, neighbour, d, (enum direction) j) != SUCCESS) {
+                        set__remove(b->cards_set, card_to_add);
                         card__free(search_helper_card);
                         return !SUCCESS;
                     }
