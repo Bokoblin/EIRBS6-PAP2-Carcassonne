@@ -91,23 +91,24 @@ int queue__dequeue(struct queue *q)
     q->array[q->front] = NULL;
     q->front = (q->front + 1) %q->capacity;
 
-    //FIXME: Was causing player queue failure, further investigation are needed (hence commenting it for May 4th goal)
-    //if (queue__length(q) < q->capacity / 2 && q->capacity > 2) {
-    //    size_t new_pos = 0;
-    //    for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
-    //        q->array[new_pos] = q->array[i];
-    //        q->array[i] = NULL;
-    //        new_pos++;
-    //    }
-    //    q->front = 0;
-    //    q->back = positive_modulo((int) (new_pos), (int) q->capacity);
-    //
-    //    q->array = realloc(q->array, sizeof(void *) * q->capacity / 2);
-    //    if (q->array == NULL)
-    //        return !SUCCESS;
-    //    else
-    //        q->capacity /= 2;
-    //}
+    //note: in order to avoid overwriting datas, a new array must be created
+    if (queue__length(q) < q->capacity / 2 && q->capacity >  DEFAULT_QUEUE_CAPACITY) {
+        size_t new_pos = 0;
+        void **new_array = safe_malloc(sizeof(void *) * q->capacity / 2);
+        for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+            new_array[new_pos] = q->array[i];
+            new_pos++;
+        }
+        q->front = 0;
+        q->back = positive_modulo((int) (new_pos), (int) q->capacity);
+        
+        for (size_t i = new_pos; i < q->capacity / 2; i++)
+            new_array[i] = NULL;
+
+        free(q->array);
+        q->array = new_array;
+        q->capacity /= 2;
+    }
 
     return SUCCESS;
 }
