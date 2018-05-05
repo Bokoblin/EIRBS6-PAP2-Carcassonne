@@ -34,8 +34,6 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 int is_valid_play(struct board *b, struct player *p, struct move *m)
 {
     printf(SRV_PREF"Validating move..."CLR"\n");
-
-    m->check = FAILED; //By default
     printf("\tPlayer %d has sent the following move :\n\t", p->id);
     move_debug_op(m);
 
@@ -45,6 +43,9 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
     card->pos = m->onto;
     card->orientation = (enum orientation) m->dir;
     int was_card_added = board__add_card(b, card) == SUCCESS;
+
+    if(!was_card_added)
+        set__debug_data(b->cards_set, false);
 
     //=== Meeple checking
 
@@ -57,6 +58,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
         printf("\tThe move is valid.\n");
         m->check = VALID;
     } else {
+        m->check = FAILED;
         printf("\tThe move is invalid.\n");
     }
 
