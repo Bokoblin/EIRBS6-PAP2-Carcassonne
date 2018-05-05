@@ -23,7 +23,6 @@ int test_card__init()
     return TEST_SUCCESS;
 }
 
-
 int test_card__get_area()
 {
     printf("%s... ", __func__);
@@ -76,6 +75,37 @@ int test_card__get_neighbour_number()
     return TEST_SUCCESS;
 }
 
+int test_card__get_position_at_direction()
+{
+    printf("%s... ", __func__);
+
+    struct card *c = card__init(CARD_MONASTERY_ALONE);
+    c->pos = (struct position){ 5, -9 };
+
+    if (card__get_position_at_direction(c, NORTH).x != 5
+            || card__get_position_at_direction(c, NORTH).y != -8) {
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+    if (card__get_position_at_direction(c, SOUTH).x != 5
+            || card__get_position_at_direction(c, SOUTH).y != -10) {
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+    if (card__get_position_at_direction(c, WEST).x != 4
+            || card__get_position_at_direction(c, WEST).y != -9) {
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+    if (card__get_position_at_direction(c, EAST).x != 6
+            || card__get_position_at_direction(c, EAST).y != -9) {
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+
+    card__free(c);
+    return TEST_SUCCESS;
+}
 
 int test_card__are_matching_direction_success()
 {
@@ -96,7 +126,7 @@ int test_card__are_matching_direction_success()
     return TEST_SUCCESS;
 }
 
-int test_card__are_matching_direction_failure_case()
+int test_card__are_matching_direction_failure()
 {
     printf("%s... ", __func__);
 
@@ -176,25 +206,6 @@ int test_card__draw()
 }
 
 
-int test_card__set_orientation()
-{
-    printf("%s... ", __func__);
-
-    struct card *c = card__init(CARD_JUNCTION_CITY);
-    c->orientation = NORTH_IS_WEST_SIDE;
-
-    if (c->orientation == NORTH_IS_WEST_SIDE) {
-        card__free(c);
-        return TEST_SUCCESS;
-    }
-
-    card__free(c);
-
-    return !TEST_SUCCESS;
-}
-
-
-
 int main()
 {
     printf("----------- TEST CARD -----------\n");
@@ -205,11 +216,11 @@ int main()
     print_test_result(test_card__init(), &nb_success, &nb_tests);
     print_test_result(test_card__get_area(), &nb_success, &nb_tests);
     print_test_result(test_card__get_neighbour_number(), &nb_success, &nb_tests);
+    print_test_result(test_card__get_position_at_direction(), &nb_success, &nb_tests);
     print_test_result(test_card__are_matching_direction_success(), &nb_success, &nb_tests);
-    print_test_result(test_card__are_matching_direction_failure_case(), &nb_success, &nb_tests);
+    print_test_result(test_card__are_matching_direction_failure(), &nb_success, &nb_tests);
     print_test_result(test_card__link_at_direction(), &nb_success, &nb_tests);
     print_test_result(test_card__draw(), &nb_success, &nb_tests);
-    print_test_result(test_card__set_orientation(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
 
