@@ -78,7 +78,7 @@ int board__add_card(struct board *b, struct card *card_to_add)
             for (unsigned int j = 0; j < DIRECTION_NUMBER; j++) {
                 if (card__are_matching_directions(card_to_link, neighbour, d, (enum direction) j)) {
                     if (card__link_at_directions(card_to_link, neighbour, d, (enum direction) j) != SUCCESS) {
-                        set__remove(b->cards_set, card_to_add);
+                        set__remove(b->cards_set, card_to_link);
                         return !SUCCESS;
                     }
                     else break;
@@ -87,7 +87,12 @@ int board__add_card(struct board *b, struct card *card_to_add)
         }
     }
 
-    return card__get_neighbour_number(card_to_link) == 0; //false -> SUCCESS
+    if (card__get_neighbour_number(card_to_link) == 0) {
+        set__remove(b->cards_set, card_to_link);
+        return !SUCCESS;
+    }
+
+    return SUCCESS;
 }
 
 int board__add_meeple(struct board *b, struct meeple *m)
