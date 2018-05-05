@@ -124,7 +124,7 @@ file(GLOB TEST_STACK_SOURCE_FILES
 file(GLOB TEST_CLIENT_SOURCE_FILES
         "common_tests_utils.h"
         "common_tests_utils.c"
-        "test_client.c"
+        "test_client_aux_functions.c"
         "../src/server/board.h"
         "../src/server/board.c"
         "../src/common/ADT/set.h"
@@ -145,7 +145,7 @@ file(GLOB TEST_CLIENT_SOURCE_FILES
         "../src/common/utils.h"
         "../src/common/utils.c"
         "../src/client/client.h"
-        "../src/client/aux_functions.c"
+        "../src/client/auxfunctions.c"
         )
 
 #----------------------------

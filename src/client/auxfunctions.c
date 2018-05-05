@@ -97,6 +97,8 @@ void client__update_board(struct client *client, struct move const previous_move
             c->orientation = (enum orientation) move.dir;
             board__add_card(client->client_board, c);
             card__free(c);
+        } else {
+            client->nb_players--;
         }
     }
 }
@@ -166,4 +168,17 @@ struct move client__play_card(struct client *client, enum card_id card)
     set__free(possible_cards);
 
     return played_move;
+}
+
+void client__debug(struct client *client)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    printf("=== Player Debug ===\n");
+    printf("Client: client id: %d, player number: %d, meeple number: %d\n",
+           client->id, client->nb_players, client->nb_meeples);
+    printf("Board: first card: %d, sets and queue: \n", client->client_board->first_card->type.id);
+    printf("Card set: ");
+    set__debug_data(client->client_board->cards_set, false);
+    printf("Meeple set: ");
+    set__debug_data(client->client_board->meeples_set, false);
 }

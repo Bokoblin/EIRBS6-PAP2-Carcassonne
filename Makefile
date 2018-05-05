@@ -21,13 +21,13 @@ LFFLAGS		= -lm -ldl
 SRVFLAGS	= -rdynamic
 
 SERVER_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(SRV_DIR)/*.c)
-CLIENT_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(CLI_DIR)/aux_functions.c $(SRV_DIR)/board.c)
+CLIENT_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(CLI_DIR)/auxfunctions.c $(SRV_DIR)/board.c)
 
 SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
 CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
 
 SERVER_EXEC	= server
-TESTS_EXEC 	= test_board test_card test_deck test_meeple test_queue test_set test_stack test_client
+TESTS_EXEC 	= test_board test_card test_deck test_meeple test_queue test_set test_stack test_auxfunctions
 
 
 #######################################################
@@ -207,6 +207,11 @@ docs:
 ###				TEST EXECUTABLES
 #######################################################
 
+test_auxfunctions: $(TST_DIR)/test_client_aux_functions.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
+			$(COM_DIR)/card.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(SRV_DIR)/board.o \
+			$(CLI_DIR)/auxfunctions.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
+
 test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(SRV_DIR)/board.o \
 			$(COM_DIR)/card.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o \
 			$(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
@@ -214,11 +219,6 @@ test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/u
 
 test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
 			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
-	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
-
-test_client: $(TST_DIR)/test_client.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(CLI_DIR)/aux_functions.o \
-			$(COM_DIR)/card.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(SRV_DIR)/board.o \
-            $(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(COM_DIR)/deck.o \

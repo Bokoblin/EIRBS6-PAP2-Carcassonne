@@ -264,14 +264,14 @@ void set__debug_data(const struct set *set, int is_compact)
         printf("Set (NULL)\n");
     else {
         if (!is_compact) {
-            printf("Set (capacity: %zu, size: %zu, content: \n", set->capacity, set->size);
-            printf("\t{ ");
+            printf("Set (capacity: %zu, size: %zu, content: {\n", set->capacity, set->size);
             size_t i = 0;
             while (i < set->size) {
+                printf("\t");
                 set->debug(set->s[i]);
                 i++;
             }
-            printf("}\n)\n");
+            printf("})\n");
         } else {
             printf("{ ");
             size_t i = 0;

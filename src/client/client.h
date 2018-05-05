@@ -53,4 +53,11 @@ void client__update_board(struct client *client, struct move const previous_move
 */
 struct move client__play_card(struct client *client, enum card_id);
 
+
+/**
+ * @brief Display debug information on client
+ * @param client the client
+ */
+void client__debug(struct client *client);
+
 #endif

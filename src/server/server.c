@@ -76,32 +76,20 @@ enum card_id draw_until_valid(struct board* b, struct stack *s)
     return ci;
 }
 
-struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves)
+struct move *build_previous_moves_array(struct queue *moves)
 {
     assert_not_null(moves, __func__, "moves parameter");
 
-    struct move *moves_array = safe_malloc(sizeof(struct move) * nb_moves);
+    size_t n_moves = queue__length(moves);
+    struct move *moves_array = safe_malloc(sizeof(struct move) * n_moves);
 
-    for (unsigned int i = 0; i < nb_moves; i++) {
-        struct move m = { FAILED, 99, LAST_CARD, { -1, -1}, NORTH, NO_MEEPLE };
-        moves_array[i] = m;
-    }
+    size_t cpt = 0;
 
-    unsigned int cpt = 0;
-
-    while (cpt < nb_moves && !queue__is_empty(moves)) {
+    while (cpt < n_moves && !queue__is_empty(moves)) {
         struct move *m = queue__front(moves);
         queue__dequeue(moves);
-        if (m->check == VALID) {
-            moves_array[cpt] = *m;
-            cpt++;
-        } else {
-            if (queue__is_empty(moves)) { //to avoid infinite loop
-                queue__enqueue(moves, m);
-                free(m);
-                break;
-            }
-        }
+        moves_array[cpt] = *m;
+        cpt++;
         queue__enqueue(moves, m);
         free(m);
     }
@@ -146,13 +134,14 @@ void game_main(struct queue *players, unsigned int nb_player)
     //=== Game loop
 
     while (!stack__is_empty(board->drawing_stack) && nb_player > 1) {
-        struct move *moves_array = build_previous_moves_array(board->moves_queue, nb_player);
+        struct move *moves_array = build_previous_moves_array(board->moves_queue); //FIXME
         enum card_id c = draw_until_valid(board, board->drawing_stack);
         struct player *p = queue__front(players);
-        struct move m = p->play(c, moves_array, nb_player);
+        struct move m = p->play(c, moves_array, queue__length(board->moves_queue));
 
         queue__dequeue(players);
-        queue__dequeue(board->moves_queue);
+        if (queue__length(board->moves_queue) == nb_player)
+            queue__dequeue(board->moves_queue);
 
         if (is_valid_play(board, p, &m)) {
             queue__enqueue(players, p);
@@ -227,23 +216,10 @@ int main(int argc, char** argv)
 
 /* Acknowledgement :
  * FIXME : Remaining issues breaking "May the 4th..." goal :
- * - Player may be NULL sometimes
- *      -> Issue is identified ? YES
- *      -> Concerned issues areas: realloc in queue to decrease size after a dequeue (or realloc in enqueue ?)
- *      -> Temporary workaround : Disabling faulty code
- *
- * - Board update is not always done for client causing them placing invalid already placed moves
- *      -> Issue is identified ? NO
- *      -> Concerned issues areas: client__update_board() or add_card_to_board() ?
- *      -> Temporary workaround : NO
  *
  * - Moves are sometimes invalid while they shouldn't :
  *      -> Issue is identified ? NO
+ *      -> Rarity: very common
  *      -> Concerned issues areas:  client__play_card() or add_card_to_board() ?
- *      -> Temporary workaround : NO
- *
- * - Invalid given card to the player : or client considering it invalid
- *      -> Issue is identified ? NO
- *      -> Concerned issues areas:  client__play_card() or board__is_valid_card() ?
  *      -> Temporary workaround : NO
  */

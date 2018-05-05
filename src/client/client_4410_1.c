@@ -23,9 +23,6 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
 {
     printf(CLI_PREF"Executing player turn of client named: %s..."CLR"\n", get_player_name());
 
-    //Updating player number
-    client.nb_players = (unsigned int) n_moves;
-
     //Updating client own board
     client__update_board(&client, previous_moves, n_moves);
 

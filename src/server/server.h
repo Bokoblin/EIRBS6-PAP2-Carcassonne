@@ -48,10 +48,9 @@ enum card_id draw_until_valid(struct board* b, struct stack *s);
 /**
  * @brief Convert a move queue into an array for communication with the client
  * @param moves the moves queue
- * @param nb_moves the number of moves to consider
  * @return a move array
  */
-struct move *build_previous_moves_array(struct queue *moves, unsigned int nb_moves);
+struct move *build_previous_moves_array(struct queue *moves);
 
 
 /**
