@@ -105,7 +105,7 @@ void* card_copy_op(struct card *c)
 
     struct card *new_card = safe_malloc(sizeof(struct card));
     new_card->type = c->type;
-    new_card->orientation = c->orientation;
+    new_card->direction = c->direction;
     new_card->pos = c->pos;
 
     for (int i = 0; i < DIRECTION_NUMBER; i++)
@@ -163,7 +163,7 @@ void card_debug_op(const struct card *c)
             }
         }
 
-        printf("}, orientation: %d)\n", c->orientation);
+        printf("}, direction: %d)\n", c->direction);
     }
 }
 

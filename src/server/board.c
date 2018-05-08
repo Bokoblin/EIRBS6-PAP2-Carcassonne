@@ -62,22 +62,23 @@ int board__add_card(struct board *b, struct card *card_to_add)
     if (b == NULL || card_to_add == NULL)
         return !SUCCESS;
 
-    if (set__retrieve(b->cards_set, card_to_add) != NULL) //a card of same position is already there
+    if (set__retrieve(b->cards_set, card_to_add) != NULL) //check if a card of same position was already in the set
         return !SUCCESS;
 
     if(set__add(b->cards_set, card_to_add) != SUCCESS) //added card to set, to avoid linking copies if applicable
         return !SUCCESS;
 
     struct card* card_to_link = set__retrieve(b->cards_set, card_to_add);
-    for (unsigned int i = 0; i < DIRECTION_NUMBER; i++) {
-        enum direction d = (enum direction) i; //card's direction to link
+
+    for (unsigned int i = 0; i < SIDES_NUMBER; i++) {
         struct card search_helper_card;
-        search_helper_card.pos = card__get_position_at_direction(card_to_add, d);
+        search_helper_card.pos = card__get_position_at_side(card_to_add, (enum card_side) i);
         struct card *neighbour = (struct card *) set__retrieve(b->cards_set, &search_helper_card);
-        if (neighbour != NULL) {
-            for (unsigned int j = 0; j < DIRECTION_NUMBER; j++) {
-                if (card__are_matching_directions(card_to_link, neighbour, d, (enum direction) j)) {
-                    if (card__link_at_directions(card_to_link, neighbour, d, (enum direction) j) != SUCCESS) {
+
+        if (neighbour != NULL && card__get_neighbour_number(neighbour) < SIDES_NUMBER) {
+            for (unsigned int j = 0; j < SIDES_NUMBER; j++) {
+                if (card__are_matching_sides(card_to_link, neighbour, (enum card_side) i, (enum card_side) j)) {
+                    if (!card__link_at_sides(card_to_link, neighbour, (enum card_side) i, (enum card_side) j)) {
                         set__remove(b->cards_set, card_to_link);
                         return !SUCCESS;
                     }

@@ -20,14 +20,14 @@ int test_meeple__init_not_null()
     return TEST_SUCCESS;
 }
 
-int test_meeple__init_valid_card_default_orientation()
+int test_meeple__init_valid_card_default_direction()
 {
     printf("%s... ", __func__);
 
     int test_res = TEST_SUCCESS;
 
     struct card *c = card__init(CARD_MONASTERY_ROAD);
-    c->orientation = NORTH_IS_NORTH_SIDE;
+    c->direction = NORTH;
 
     enum place p1 = POS_CENTER;
     struct meeple* m = meeple__init(0, c, p1);
@@ -58,14 +58,14 @@ int test_meeple__init_valid_card_default_orientation()
     return test_res;
 }
 
-int test_meeple__init_valid_card_other_orientation()
+int test_meeple__init_valid_card_other_direction()
 {
     printf("%s... ", __func__);
 
     int test_res = TEST_SUCCESS;
 
     struct card *c = card__init(CARD_ROAD_TURN_RIGHT_CITY);
-    c->orientation = NORTH_IS_WEST_SIDE;
+    c->direction = WEST;
 
     enum place p1 = POS_CENTER;
     struct meeple* m = meeple__init(0, c, p1);
@@ -162,8 +162,8 @@ int main()
     int nb_tests = 0;
 
     print_test_result(test_meeple__init_not_null(), &nb_success, &nb_tests);
-    print_test_result(test_meeple__init_valid_card_default_orientation(), &nb_success, &nb_tests);
-    print_test_result(test_meeple__init_valid_card_other_orientation(), &nb_success, &nb_tests);
+    print_test_result(test_meeple__init_valid_card_default_direction(), &nb_success, &nb_tests);
+    print_test_result(test_meeple__init_valid_card_other_direction(), &nb_success, &nb_tests);
     print_test_result(test_meeple__init_valid_card_invalid_place(), &nb_success, &nb_tests);
     print_test_result(test_meeple__init_fail_no_needed(), &nb_success, &nb_tests);
 

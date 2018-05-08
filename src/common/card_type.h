@@ -5,6 +5,7 @@
 #include "area_type.h"
 
 #define MAX_ZONES 13
+#define MAX_SIDE_ZONES 12
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURES
@@ -17,7 +18,7 @@
 struct card_type
 {
     enum card_id id;
-    enum area_type areas[MAX_ZONES]; // indexed by enum place
+    enum area_type areas[MAX_ZONES];
 };
 
 
@@ -28,4 +29,4 @@ struct card_type
 struct card_type card__id_to_type(enum card_id id);
 
 
-#endif // CARD_TYPE_DEF_H
+#endif

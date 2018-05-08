@@ -150,7 +150,7 @@ int test_board__add_card__non_empty_set_with_match()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->orientation = NORTH_IS_EAST_SIDE;
+    b->first_card->direction = EAST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -180,7 +180,7 @@ int test_board__add_card__non_empty_set_with_match_twice()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->orientation = NORTH_IS_EAST_SIDE;
+    b->first_card->direction = EAST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -209,7 +209,7 @@ int test_board__add_card__non_empty_set()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->orientation = NORTH_IS_EAST_SIDE;
+    b->first_card->direction = EAST;
 
     //=== Adding until having a full surrounding for CARD_CITY_TUNNEL
 
@@ -223,37 +223,37 @@ int test_board__add_card__non_empty_set()
         c2 = card__init(CARD_CITY_THREE);
         c2->pos.x = 0;
         c2->pos.y = 2;
-        c2->orientation = NORTH_IS_NORTH_SIDE;
+        c2->direction = NORTH;
         if (board__add_card(b, c2) == SUCCESS) {
             c3 = card__init(CARD_ROAD_TURN_RIGHT_CITY);
             c3->pos.x = -1;
             c3->pos.y = 2;
-            c3->orientation = NORTH_IS_WEST_SIDE;
+            c3->direction = WEST;
             if (board__add_card(b, c3) == SUCCESS) {
                 c4 = card__init(CARD_ROAD_STRAIGHT);
                 c4->pos.x = -1;
                 c4->pos.y = 1;
-                c4->orientation = NORTH_IS_NORTH_SIDE;
+                c4->direction = NORTH;
                 if (board__add_card(b, c4) == SUCCESS) {
                     c5 = card__init(CARD_JUNCTION_FOUR);
                     c5->pos.x = -1;
                     c5->pos.y = 0;
-                    c5->orientation = NORTH_IS_NORTH_SIDE;
+                    c5->direction = NORTH;
                     if (board__add_card(b, c5) == SUCCESS) {
                         c6 = card__init(CARD_PLAIN_CITY_ROAD);
                         c6->pos.x = 1;
                         c6->pos.y = 2;
-                        c6->orientation = NORTH_IS_NORTH_SIDE;
+                        c6->direction = NORTH;
                         if (board__add_card(b, c6) == SUCCESS) {
                             c7 = card__init(CARD_MONASTERY_ROAD);
                             c7->pos.x = 1;
                             c7->pos.y = 1;
-                            c7->orientation = NORTH_IS_SOUTH_SIDE;
+                            c7->direction = SOUTH;
                             if (board__add_card(b, c7) == SUCCESS) {
                                 c8 = card__init(CARD_JUNCTION_THREE);
                                 c8->pos.x = 1;
                                 c8->pos.y = 0;
-                                c8->orientation = NORTH_IS_NORTH_SIDE;
+                                c8->direction = NORTH;
                                 if (board__add_card(b, c8) == SUCCESS)
                                     test_result = TEST_SUCCESS;
                             }
@@ -364,42 +364,42 @@ int test_board__add_card__middle()
     c2 = card__init(CARD_CITY_TUNNEL);
     c2->pos.x = 6;
     c2->pos.y = 5;
-    c2->orientation = NORTH_IS_WEST_SIDE;
+    c2->direction = WEST;
     if (board__add_card(b, c2) == SUCCESS) {
         c3 = card__init(CARD_ROAD_TURN_LEFT_CITY);
         c3->pos.x = 7;
         c3->pos.y = 5;
-        c3->orientation = NORTH_IS_SOUTH_SIDE;
+        c3->direction = SOUTH;
         if (board__add_card(b, c3) == SUCCESS) {
             c4 = card__init(CARD_JUNCTION_FOUR);
             c4->pos.x = 7;
             c4->pos.y = 4;
-            c4->orientation = NORTH_IS_NORTH_SIDE;
+            c4->direction = NORTH;
             if (board__add_card(b, c4) == SUCCESS) {
                 c5 = card__init(CARD_MONASTERY_ROAD);
                 c5->pos.x = 7;
                 c5->pos.y = 3;
-                c5->orientation = NORTH_IS_SOUTH_SIDE;
+                c5->direction = SOUTH;
                 if (board__add_card(b, c5) == SUCCESS) {
                     c6 = card__init(CARD_ROAD_STRAIGHT);
                     c6->pos.x = 6;
                     c6->pos.y = 3;
-                    c6->orientation = NORTH_IS_NORTH_SIDE;
+                    c6->direction = NORTH;
                     if (board__add_card(b, c6) == SUCCESS) {
                         c7 = card__init(CARD_PLAIN_CITY);
                         c7->pos.x = 5;
                         c7->pos.y = 3;
-                        c7->orientation = NORTH_IS_NORTH_SIDE;
+                        c7->direction = NORTH;
                         if (board__add_card(b, c7) == SUCCESS) {
                             c8 = card__init(CARD_CITY_THREE_ROAD);
                             c8->pos.x = 5;
                             c8->pos.y = 4;
-                            c8->orientation = NORTH_IS_EAST_SIDE;
+                            c8->direction = EAST;
                             if (board__add_card(b, c8) == SUCCESS) {
                                 c9 = card__init(CARD_MONASTERY_ROAD);
                                 c9->pos.x = 6;
                                 c9->pos.y = 4;
-                                c9->orientation = NORTH_IS_NORTH_SIDE;
+                                c9->direction = NORTH;
                                 if (board__add_card(b, c9) == SUCCESS)
                                     test_result = !TEST_SUCCESS;
                                 c9->type = card__id_to_type(CARD_JUNCTION_THREE);

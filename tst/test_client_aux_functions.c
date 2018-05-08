@@ -16,7 +16,7 @@ int test_client__client_init()
      && (cli.nb_meeples == MAX_MEEPLES)
      && (set__size(cli.client_board->cards_set) == 1)
      && (cli.client_board->first_card != NULL)
-     && (cli.client_board->first_card->type.id == CARD_JUNCTION_CITY)) {
+     && (cli.client_board->first_card->type.id == CARD_ROAD_STRAIGHT_CITY)) {
         client__free(&cli);
         return TEST_SUCCESS;
     }

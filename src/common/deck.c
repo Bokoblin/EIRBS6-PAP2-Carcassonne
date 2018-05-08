@@ -44,7 +44,6 @@ void init_deck(struct stack* s)
         stack__push(s, &card_CARD_PLAIN_CITY_SHLD);
         stack__push(s, &card_CARD_PLAIN_CITY_ROAD_SHLD);
         stack__push(s, &card_CARD_CITY_THREE_ROAD_SHLD);
-        stack__push(s, &card_CARD_JUNCTION_CITY);
     }
 
     for (size_t i = 0; i < 3; i++) {
@@ -54,12 +53,13 @@ void init_deck(struct stack* s)
         stack__push(s, &card_CARD_PLAIN_CITY);
         stack__push(s, &card_CARD_PLAIN_CITY_ROAD);
         stack__push(s, &card_CARD_CITY_THREE);
+        stack__push(s, &card_CARD_JUNCTION_CITY);
+        stack__push(s, &card_CARD_ROAD_STRAIGHT_CITY);
     }
 
     for (size_t i = 0; i < 4; i++) {
         stack__push(s, &card_CARD_MONASTERY_ALONE);
         stack__push(s, &card_CARD_JUNCTION_THREE);
-        stack__push(s, &card_CARD_ROAD_STRAIGHT_CITY);
     }
 
     for (size_t i = 0; i < 5; i++) {
@@ -75,5 +75,5 @@ void init_deck(struct stack* s)
     }
 
     stack__mix(s);
-    stack__push(s, &card_CARD_JUNCTION_CITY); //First card to always place at top
+    stack__push(s, &card_CARD_ROAD_STRAIGHT_CITY); //First card to always place at top
 }

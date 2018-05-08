@@ -41,7 +41,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
 
     struct card *card = card__init(m->card);
     card->pos = m->onto;
-    card->orientation = (enum orientation) m->dir;
+    card->direction = m->dir;
     int was_card_added = board__add_card(b, card) == SUCCESS;
 
     if(!was_card_added)
@@ -51,6 +51,9 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
 
     struct meeple *meeple = meeple__init(m->player, card, m->place);
     int was_meeple_added = meeple == NULL ? NOT_APPLICABLE : board__add_meeple(b, meeple) == SUCCESS;
+
+    if(!was_meeple_added)
+        set__debug_data(b->meeples_set, false); //FIXME remove for push
 
     //=== Checking sum
 
