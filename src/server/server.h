@@ -9,7 +9,7 @@
 #include "../common/utils.h"
 #include "../server/board.h"
 #include "../server/player.h"
-#include "server_func_ptrs.h"
+#include "../server/server_func_ptrs.h"
 
 #define DEFAULT_GRAPHIC_MODE_FLAG 0
 #define DEFAULT_CLIENT_COUNT 0

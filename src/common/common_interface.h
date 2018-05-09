@@ -33,20 +33,20 @@ enum direction
  */
 enum place
 {
-	NO_MEEPLE,      // special place for not placing a meeple
-	POS_NORTH_EAST, // {NE}
-	POS_NORTH,      // N
-	POS_NORTH_WEST, // {NW}
-	POS_WEST_NORTH, // {WN}
-	POS_WEST,       // W
-	POS_WEST_SOUTH, // {WS}
-	POS_SOUTH_WEST, // {SW}
-	POS_SOUTH,      // S
-	POS_SOUTH_EAST, // {SE}
-	POS_EAST_SOUTH, // {ES}
-	POS_EAST,       // E
-	POS_EAST_NORTH, // {EN}
-	POS_CENTER,     // C
+	NO_MEEPLE,      //  0 - special place for not placing a meeple
+	POS_NORTH_EAST, //  1 - {NE}
+	POS_NORTH,      //  2 - N
+	POS_NORTH_WEST, //  3 - {NW}
+	POS_WEST_NORTH, //  4 - {WN}
+	POS_WEST,       //  5 - W
+	POS_WEST_SOUTH, //  6 - {WS}
+	POS_SOUTH_WEST, //  7 - {SW}
+	POS_SOUTH,      //  8 - S
+	POS_SOUTH_EAST, //  9 - {SE}
+	POS_EAST_SOUTH, // 10 - {ES}
+	POS_EAST,       // 11 - E
+	POS_EAST_NORTH, // 12 - {EN}
+	POS_CENTER,     // 13 - C
 	LAST_POS,
 };
 
