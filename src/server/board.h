@@ -58,6 +58,16 @@ int board__is_valid_card(struct board *b, enum card_id ci);
 
 
 /**
+ * @brief Retrieves a card in a set following its position.
+ * @warning The set must have been initialized with a compare operator based on the position
+ * @param set the set
+ * @param pos the position of the searched card
+ * @return the card or NULL if not found
+ */
+struct card* board__retrieve_card_by_position(struct set *set, struct position pos); //TODO: test
+
+
+/**
  * @brief Add a card to the board (if possible)
  * @param b the board
  * @param card_to_add a card

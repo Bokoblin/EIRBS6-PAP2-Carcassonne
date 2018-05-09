@@ -209,7 +209,8 @@ int test_board__add_card__non_empty_set()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;
+    b->first_card->direction = EAST;    //OLD
+    //b->first_card->direction = WEST;  //NEW
 
     //=== Adding until having a full surrounding for CARD_CITY_TUNNEL
 
@@ -223,12 +224,14 @@ int test_board__add_card__non_empty_set()
         c2 = card__init(CARD_CITY_THREE);
         c2->pos.x = 0;
         c2->pos.y = 2;
-        c2->direction = NORTH;
+        c2->direction = NORTH;      //OLD
+        //c2->direction = SOUTH;    //NEW
         if (board__add_card(b, c2) == SUCCESS) {
             c3 = card__init(CARD_ROAD_TURN_RIGHT_CITY);
             c3->pos.x = -1;
             c3->pos.y = 2;
-            c3->direction = WEST;
+            c3->direction = WEST;   //OLD
+            //c3->direction = EAST; //NEW
             if (board__add_card(b, c3) == SUCCESS) {
                 c4 = card__init(CARD_ROAD_STRAIGHT);
                 c4->pos.x = -1;
@@ -264,70 +267,73 @@ int test_board__add_card__non_empty_set()
         }
     }
 
-    //=== Card link verification
+    if (test_result == TEST_SUCCESS) {
 
-    //With previous test, we have made a 3*3 grid of cards, coordinates are indicated below
-    //We recover below the current cards because the set in board stores copies of the cards we have added :
+        //=== Card link verification
 
-    struct card * cur_c0 = b->first_card;                   //SC
-    struct card * cur_c1 = set__retrieve(b->cards_set, c1); //C
-    struct card * cur_c2 = set__retrieve(b->cards_set, c2); //NC
-    struct card * cur_c3 = set__retrieve(b->cards_set, c3); //NW
-    struct card * cur_c4 = set__retrieve(b->cards_set, c4); //CW
-    struct card * cur_c5 = set__retrieve(b->cards_set, c5); //SW
-    struct card * cur_c6 = set__retrieve(b->cards_set, c6); //NE
-    struct card * cur_c7 = set__retrieve(b->cards_set, c7); //CE
-    struct card * cur_c8 = set__retrieve(b->cards_set, c8); //SE
+        //With previous test, we have made a 3*3 grid of cards, coordinates are indicated below
+        //We recover below the current cards because the set in board stores copies of the cards we have added :
 
-    //Neighbours count test :
+        struct card * cur_c0 = b->first_card;                   //SC
+        struct card * cur_c1 = set__retrieve(b->cards_set, c1); //C
+        struct card * cur_c2 = set__retrieve(b->cards_set, c2); //NC
+        struct card * cur_c3 = set__retrieve(b->cards_set, c3); //NW
+        struct card * cur_c4 = set__retrieve(b->cards_set, c4); //CW
+        struct card * cur_c5 = set__retrieve(b->cards_set, c5); //SW
+        struct card * cur_c6 = set__retrieve(b->cards_set, c6); //NE
+        struct card * cur_c7 = set__retrieve(b->cards_set, c7); //CE
+        struct card * cur_c8 = set__retrieve(b->cards_set, c8); //SE
 
-    if (card__get_neighbour_number(cur_c0) != 3) test_result = !TEST_SUCCESS;
-    if (card__get_neighbour_number(cur_c1) != 4) test_result = !TEST_SUCCESS;
-    if (card__get_neighbour_number(cur_c2) != 3) test_result = !TEST_SUCCESS;
-    if (card__get_neighbour_number(cur_c3) != 2) test_result = !TEST_SUCCESS;
-    if (card__get_neighbour_number(cur_c4) != 3) test_result = !TEST_SUCCESS;
-    if (card__get_neighbour_number(cur_c5) != 2) test_result = !TEST_SUCCESS;
-    if (card__get_neighbour_number(cur_c6) != 2) test_result = !TEST_SUCCESS;
-    if (card__get_neighbour_number(cur_c7) != 3) test_result = !TEST_SUCCESS;
-    if (card__get_neighbour_number(cur_c8) != 2) test_result = !TEST_SUCCESS;
+        //Neighbours count test :
 
-    //Linking test :
+        if (card__get_neighbour_number(cur_c0) != 3) test_result = !TEST_SUCCESS;
+        if (card__get_neighbour_number(cur_c1) != 4) test_result = !TEST_SUCCESS;
+        if (card__get_neighbour_number(cur_c2) != 3) test_result = !TEST_SUCCESS;
+        if (card__get_neighbour_number(cur_c3) != 2) test_result = !TEST_SUCCESS;
+        if (card__get_neighbour_number(cur_c4) != 3) test_result = !TEST_SUCCESS;
+        if (card__get_neighbour_number(cur_c5) != 2) test_result = !TEST_SUCCESS;
+        if (card__get_neighbour_number(cur_c6) != 2) test_result = !TEST_SUCCESS;
+        if (card__get_neighbour_number(cur_c7) != 3) test_result = !TEST_SUCCESS;
+        if (card__get_neighbour_number(cur_c8) != 2) test_result = !TEST_SUCCESS;
 
-    if (cur_c0->neighbors[NORTH] != cur_c1 || cur_c0->neighbors[WEST] != cur_c5
-            || cur_c0->neighbors[SOUTH] != NULL || cur_c0->neighbors[EAST] != cur_c8)
-        test_result = !TEST_SUCCESS;
+        //Linking test :
 
-    if (cur_c1->neighbors[NORTH] != cur_c2 || cur_c1->neighbors[WEST] != cur_c4
-            || cur_c1->neighbors[SOUTH] != cur_c0 || cur_c1->neighbors[EAST] != cur_c7)
-        test_result = !TEST_SUCCESS;
+        if (cur_c0->neighbors[NORTH] != cur_c1 || cur_c0->neighbors[WEST] != cur_c5
+                || cur_c0->neighbors[SOUTH] != NULL || cur_c0->neighbors[EAST] != cur_c8)
+            test_result = !TEST_SUCCESS;
 
-    if (cur_c2->neighbors[NORTH] != NULL || cur_c2->neighbors[WEST] != cur_c3
-            || cur_c2->neighbors[SOUTH] != cur_c1 || cur_c2->neighbors[EAST] != cur_c6)
-        test_result = !TEST_SUCCESS;
+        if (cur_c1->neighbors[NORTH] != cur_c2 || cur_c1->neighbors[WEST] != cur_c4
+                || cur_c1->neighbors[SOUTH] != cur_c0 || cur_c1->neighbors[EAST] != cur_c7)
+            test_result = !TEST_SUCCESS;
 
-    if (cur_c3->neighbors[NORTH] != NULL || cur_c3->neighbors[WEST] != NULL
-            || cur_c3->neighbors[SOUTH] != cur_c4 || cur_c3->neighbors[EAST] != cur_c2)
-        test_result = !TEST_SUCCESS;
+        if (cur_c2->neighbors[NORTH] != NULL || cur_c2->neighbors[WEST] != cur_c3
+                || cur_c2->neighbors[SOUTH] != cur_c1 || cur_c2->neighbors[EAST] != cur_c6)
+            test_result = !TEST_SUCCESS;
 
-    if (cur_c4->neighbors[NORTH] != cur_c3 || cur_c4->neighbors[WEST] != NULL
-            || cur_c4->neighbors[SOUTH] != cur_c5 || cur_c4->neighbors[EAST] != cur_c1)
-        test_result = !TEST_SUCCESS;
+        if (cur_c3->neighbors[NORTH] != NULL || cur_c3->neighbors[WEST] != NULL
+                || cur_c3->neighbors[SOUTH] != cur_c4 || cur_c3->neighbors[EAST] != cur_c2)
+            test_result = !TEST_SUCCESS;
 
-    if (cur_c5->neighbors[NORTH] != cur_c4 || cur_c5->neighbors[WEST] != NULL
-            || cur_c5->neighbors[SOUTH] != NULL || cur_c5->neighbors[EAST] != cur_c0)
-        test_result = !TEST_SUCCESS;
+        if (cur_c4->neighbors[NORTH] != cur_c3 || cur_c4->neighbors[WEST] != NULL
+                || cur_c4->neighbors[SOUTH] != cur_c5 || cur_c4->neighbors[EAST] != cur_c1)
+            test_result = !TEST_SUCCESS;
 
-    if (cur_c6->neighbors[NORTH] != NULL || cur_c6->neighbors[WEST] != cur_c2
-            || cur_c6->neighbors[SOUTH] != cur_c7 || cur_c6->neighbors[EAST] != NULL)
-        test_result = !TEST_SUCCESS;
+        if (cur_c5->neighbors[NORTH] != cur_c4 || cur_c5->neighbors[WEST] != NULL
+                || cur_c5->neighbors[SOUTH] != NULL || cur_c5->neighbors[EAST] != cur_c0)
+            test_result = !TEST_SUCCESS;
 
-    if (cur_c7->neighbors[NORTH] != cur_c6 || cur_c7->neighbors[WEST] != cur_c1
-            || cur_c7->neighbors[SOUTH] != cur_c8 || cur_c7->neighbors[EAST] != NULL)
-        test_result = !TEST_SUCCESS;
+        if (cur_c6->neighbors[NORTH] != NULL || cur_c6->neighbors[WEST] != cur_c2
+                || cur_c6->neighbors[SOUTH] != cur_c7 || cur_c6->neighbors[EAST] != NULL)
+            test_result = !TEST_SUCCESS;
 
-    if (cur_c8->neighbors[NORTH] != cur_c7 || cur_c8->neighbors[WEST] != cur_c0
-            || cur_c8->neighbors[SOUTH] != NULL || cur_c8->neighbors[EAST] != NULL)
-        test_result = !TEST_SUCCESS;
+        if (cur_c7->neighbors[NORTH] != cur_c6 || cur_c7->neighbors[WEST] != cur_c1
+                || cur_c7->neighbors[SOUTH] != cur_c8 || cur_c7->neighbors[EAST] != NULL)
+            test_result = !TEST_SUCCESS;
+
+        if (cur_c8->neighbors[NORTH] != cur_c7 || cur_c8->neighbors[WEST] != cur_c0
+                || cur_c8->neighbors[SOUTH] != NULL || cur_c8->neighbors[EAST] != NULL)
+            test_result = !TEST_SUCCESS;
+    }
 
 
     //== Freeing resources
@@ -448,10 +454,9 @@ int main()
     print_test_result(test_board__add_card__non_empty_set_no_match(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_with_match(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_with_match_twice(), &nb_success, &nb_tests);
-    //FIXME: deprecated for now due to unknown adding location behaviour
-    //print_test_result(test_board__add_card__non_empty_set(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__non_empty_set(), &nb_success, &nb_tests);   //FIXME: test_board__add_card__non_empty_set
     print_test_result(test_board__add_card__middle(), &nb_success, &nb_tests);
-    print_test_result(test_board__add_meeple(), &nb_success, &nb_tests);
+    //print_test_result(test_board__add_meeple(), &nb_success, &nb_tests);              //TODO: test_board__add_meeple
 
     print_test_summary(nb_success, nb_tests);
 

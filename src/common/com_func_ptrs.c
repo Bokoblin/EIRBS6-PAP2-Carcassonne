@@ -108,7 +108,7 @@ void* card_copy_op(struct card *c)
     new_card->direction = c->direction;
     new_card->pos = c->pos;
 
-    for (int i = 0; i < DIRECTION_NUMBER; i++)
+    for (int i = 0; i < NB_DIRECTIONS; i++)
         new_card->neighbors[i] = c->neighbors[i];
 
     return new_card;
@@ -147,23 +147,23 @@ void card_debug_op(const struct card *c)
             else
                 printf("%d", c->type.areas[i]);
         }
-        printf("}, pos: { %d, %d }, neighbours: {", c->pos.x, c->pos.y);
+        printf("}, direction: %d, pos: { %d, %d }, neighbours: {", c->direction, c->pos.x, c->pos.y);
 
-        for (int i = 0; i < DIRECTION_NUMBER; i++) {
+        for (int i = 0; i < NB_DIRECTIONS; i++) {
             if (c->neighbors[i] != NULL) {
-                if (i < DIRECTION_NUMBER-1)
+                if (i < NB_DIRECTIONS-1)
                     printf("\x1B[33m%p (%d)\x1B[0m, ", c->neighbors[i], c->neighbors[i]->type.id);
                 else
                     printf("\x1B[33m%p (%d)\x1B[0m", c->neighbors[i], c->neighbors[i]->type.id);
             } else {
-                if (i < DIRECTION_NUMBER-1)
+                if (i < NB_DIRECTIONS-1)
                     printf("\x1B[32mNULL\x1B[0m, ");
                 else
                     printf("\x1B[32mNULL\x1B[0m");
             }
         }
 
-        printf("}, direction: %d)\n", c->direction);
+        printf("})\n");
     }
 }
 

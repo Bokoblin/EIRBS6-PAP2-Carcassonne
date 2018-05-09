@@ -44,16 +44,22 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
     card->direction = m->dir;
     int was_card_added = board__add_card(b, card) == SUCCESS;
 
-    if(!was_card_added)
+    if(!was_card_added) {
         set__debug_data(b->cards_set, false);
+        printf("\t[SERVER] The card sent by the client isn't valid.");
+        //exit(EXIT_FAILURE);
+    }
 
     //=== Meeple checking
 
     struct meeple *meeple = meeple__init(m->player, card, m->place);
     int was_meeple_added = meeple == NULL ? NOT_APPLICABLE : board__add_meeple(b, meeple) == SUCCESS;
 
-    if(!was_meeple_added)
-        set__debug_data(b->meeples_set, false); //FIXME remove for push
+    if(!was_meeple_added) {
+        set__debug_data(b->meeples_set, false);
+        printf("\t[SERVER] The meeple position sent by the client isn't valid.");
+        //exit(EXIT_FAILURE);
+    }
 
     //=== Checking sum
 
@@ -74,7 +80,9 @@ enum card_id draw_until_valid(struct board* b, struct stack *s)
 {
     enum card_id ci;
     do {
-        ci = card__draw(s);
+        enum card_id *p_popped_ci = stack__pop(s);
+        ci = *p_popped_ci;
+        free(p_popped_ci);
         printf(SRV_PREF"Drawing a new card (card: %d)..."CLR"\n", ci);
     } while (!board__is_valid_card(b, ci));
 
@@ -172,6 +180,12 @@ void game_main(struct queue *players, unsigned int nb_player)
 
     for (size_t i = 0; i < nb_player; i++)
         finalize_next_player(players);
+
+    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    if (!stack__is_empty(board->drawing_stack))
+        printf("\x1B[31mInvalid game stopping, the drawing card stack still contains %zu cards! \x1B[0m\n",
+                   stack__length(board->drawing_stack));
+    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     //=== Board memory release
 

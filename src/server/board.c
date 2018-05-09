@@ -48,7 +48,7 @@ int board__is_valid_card(struct board *b, enum card_id ci)
 
     struct card *c = card__init(ci);
     for (size_t i = 0; i < set__size(b->cards_set); i++) {
-        if (card__are_matching_free_side(c, set__get_umpteenth_no_copy(b->cards_set, i))) {
+        if (card__are_matching_free_direction(c, set__get_umpteenth_no_copy(b->cards_set, i))) {
             card__free(c);
             return true;
         }
@@ -57,32 +57,43 @@ int board__is_valid_card(struct board *b, enum card_id ci)
     return false;
 }
 
+struct card* board__retrieve_card_by_position(struct set *set, struct position pos)
+{
+    struct card card_to_search;
+    card_to_search.pos = pos;
+    return set__retrieve(set, &card_to_search);
+}
+
 int board__add_card(struct board *b, struct card *card_to_add)
 {
     if (b == NULL || card_to_add == NULL)
         return !SUCCESS;
 
-    if (set__retrieve(b->cards_set, card_to_add) != NULL) //check if a card of same position was already in the set
+    if (board__retrieve_card_by_position(b->cards_set, card_to_add->pos) != NULL) //check if the position is free
         return !SUCCESS;
 
     if(set__add(b->cards_set, card_to_add) != SUCCESS) //added card to set, to avoid linking copies if applicable
         return !SUCCESS;
 
-    struct card* card_to_link = set__retrieve(b->cards_set, card_to_add);
+    struct card* card_to_link = board__retrieve_card_by_position(b->cards_set, card_to_add->pos);
 
-    for (unsigned int i = 0; i < SIDES_NUMBER; i++) {
-        struct card search_helper_card;
-        search_helper_card.pos = card__get_position_at_side(card_to_add, (enum card_side) i);
-        struct card *neighbour = (struct card *) set__retrieve(b->cards_set, &search_helper_card);
+    for (enum direction i_card_to_link_dir = NORTH; i_card_to_link_dir < NB_DIRECTIONS; i_card_to_link_dir++) {
+        struct position neighbour_pos = card__get_position_at_direction(card_to_add, i_card_to_link_dir);
+        struct card *neighbour = board__retrieve_card_by_position(b->cards_set, neighbour_pos);
 
-        if (neighbour != NULL && card__get_neighbour_number(neighbour) < SIDES_NUMBER) {
-            for (unsigned int j = 0; j < SIDES_NUMBER; j++) {
-                if (card__are_matching_sides(card_to_link, neighbour, (enum card_side) i, (enum card_side) j)) {
-                    if (!card__link_at_sides(card_to_link, neighbour, (enum card_side) i, (enum card_side) j)) {
-                        set__remove(b->cards_set, card_to_link);
-                        return !SUCCESS;
-                    }
-                    else break;
+        if (neighbour != NULL && card__get_neighbour_number(neighbour) < NB_DIRECTIONS) {
+            enum direction i_umpteenth_dir = (i_card_to_link_dir + 2) % NB_DIRECTIONS;
+
+            if (card__are_matching_directions(card_to_link, neighbour, i_card_to_link_dir, i_umpteenth_dir)) {
+                if (!card__link_at_directions(card_to_link, neighbour, i_card_to_link_dir, i_umpteenth_dir)) {
+                    set__remove(b->cards_set, card_to_link);
+                    return !SUCCESS;
+                }
+            } else { //Full matching or nothing
+                if (card__get_neighbour_number(card_to_link) != 0) {
+                    card__unlink_neighbours(card_to_link);
+                    set__remove(b->cards_set, card_to_link);
+                    return !SUCCESS;
                 }
             }
         }

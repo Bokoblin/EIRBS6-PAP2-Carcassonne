@@ -29,19 +29,19 @@ int test_card__get_area()
 
     struct card *c = card__init(CARD_MONASTERY_ALONE);
   
-    for (int i = 0 ; i <= POS_NORTH_EAST ; i++) {
-        if (card__get_area(c, (enum place) i) != FIELD) {
+    for (enum place p = POS_NORTH_EAST; p <= POS_EAST_NORTH ; p++) {
+        if (card__get_relative_area(c, p) != FIELD) {
             card__free(c);
             return !TEST_SUCCESS;
         }
     }
 
-    if (card__get_area(c, POS_CENTER) != ABBEY) {
+    if (card__get_relative_area(c, POS_CENTER) != ABBEY) {
         card__free(c);
         return !TEST_SUCCESS;
     }
 
-    if (card__get_area(c, (enum place) 50) != INVALID_AREA) {
+    if (card__get_relative_area(c, (enum place) 50) != INVALID_AREA) {
         card__free(c);
         return !TEST_SUCCESS;
     }
@@ -82,23 +82,23 @@ int test_card__get_position_at_side()
     struct card *c = card__init(CARD_MONASTERY_ALONE);
     c->pos = (struct position){ 5, -9 };
 
-    if (card__get_position_at_side(c, NORTH_SIDE).x != 5
-            || card__get_position_at_side(c, NORTH_SIDE).y != -8) {
+    if (card__get_position_at_direction(c, NORTH).x != 5
+            || card__get_position_at_direction(c, NORTH).y != -8) {
         card__free(c);
         return !TEST_SUCCESS;
     }
-    if (card__get_position_at_side(c, SOUTH_SIDE).x != 5
-            || card__get_position_at_side(c, SOUTH_SIDE).y != -10) {
+    if (card__get_position_at_direction(c, SOUTH).x != 5
+            || card__get_position_at_direction(c, SOUTH).y != -10) {
         card__free(c);
         return !TEST_SUCCESS;
     }
-    if (card__get_position_at_side(c, WEST_SIDE).x != 4
-            || card__get_position_at_side(c, WEST_SIDE).y != -9) {
+    if (card__get_position_at_direction(c, WEST).x != 4
+            || card__get_position_at_direction(c, WEST).y != -9) {
         card__free(c);
         return !TEST_SUCCESS;
     }
-    if (card__get_position_at_side(c, EAST_SIDE).x != 6
-            || card__get_position_at_side(c, EAST_SIDE).y != -9) {
+    if (card__get_position_at_direction(c, EAST).x != 6
+            || card__get_position_at_direction(c, EAST).y != -9) {
         card__free(c);
         return !TEST_SUCCESS;
     }
@@ -114,7 +114,7 @@ int test_card__are_matching_sides_success()
     struct card *c1 = card__init(CARD_CITY_THREE_SHLD);
     struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
 
-    if (!card__are_matching_sides(c1, c2, WEST_SIDE, EAST_SIDE)) {
+    if (!card__are_matching_directions(c1, c2, WEST, EAST)) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
@@ -133,13 +133,13 @@ int test_card__are_matching_sides_failure()
     struct card *c1 = card__init(CARD_MONASTERY_ALONE);
     struct card *c2 = card__init(CARD_JUNCTION_THREE);
 
-    if (card__are_matching_sides(c1, c1, EAST_SIDE, WEST_SIDE)) {
+    if (card__are_matching_directions(c1, c1, EAST, WEST)) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
     }
 
-    if (card__are_matching_sides(c1, c2, EAST_SIDE, SOUTH_SIDE)) {
+    if (card__are_matching_directions(c1, c2, EAST, SOUTH)) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
@@ -158,27 +158,27 @@ int test_card__link_at_side()
     struct card *c1 = card__init(CARD_MONASTERY_ROAD);
     struct card *c2 = card__init(CARD_JUNCTION_THREE);
 
-    if (card__link_at_sides(c1, c2, SOUTH_SIDE, EAST_SIDE)
-            && (c1->neighbors[SOUTH_SIDE] != c2
-            ||c2->neighbors[EAST_SIDE] != c1)) {
+    if (card__link_at_directions(c1, c2, SOUTH, EAST)
+            && (c1->neighbors[SOUTH] != c2
+            ||c2->neighbors[EAST] != c1)) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
     }
 
-    if (card__link_at_sides(c1, c2, SOUTH_SIDE, EAST_SIDE)) {
+    if (card__link_at_directions(c1, c2, SOUTH, EAST)) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
     }
 
-    if (card__link_at_sides(c1, c1, EAST_SIDE, WEST_SIDE)) {
+    if (card__link_at_directions(c1, c1, EAST, WEST)) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
     }
 
-    if (card__link_at_sides(c1, c2, EAST_SIDE + 1, EAST_SIDE)) {
+    if (card__link_at_directions(c1, c2, EAST + 1, EAST)) {
         card__free(c1);
         card__free(c2);
         return !TEST_SUCCESS;
@@ -186,29 +186,6 @@ int test_card__link_at_side()
 
     card__free(c1);
     card__free(c2);
-
-    return TEST_SUCCESS;
-}
-
-
-int test_card__draw()
-{
-    printf("%s... ", __func__);
-
-    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
-
-    enum card_id id =  CARD_JUNCTION_CITY;
-
-    stack__push(s, &id);
-
-    enum card_id cid = card__draw(s);
-
-    if (cid != CARD_JUNCTION_CITY) {
-        stack__free(s);
-        return !TEST_SUCCESS;
-    }
-
-    stack__free(s);
 
     return TEST_SUCCESS;
 }
@@ -228,7 +205,6 @@ int main()
     print_test_result(test_card__are_matching_sides_success(), &nb_success, &nb_tests);
     print_test_result(test_card__are_matching_sides_failure(), &nb_success, &nb_tests);
     print_test_result(test_card__link_at_side(), &nb_success, &nb_tests);
-    print_test_result(test_card__draw(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
 

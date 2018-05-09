@@ -36,7 +36,7 @@ int test_client__client_update_board_valid_moves()
     client__init(&cl, 4, nb_players);
 
     struct move const mv1 = {VALID, 1, CARD_CITY_TUNNEL, {1, 0}, WEST, NO_MEEPLE};
-    struct move const mv2 = {VALID, 2, CARD_PLAIN_TWO_CITIES, {2, 0}, NORTH, NO_MEEPLE};
+    struct move const mv2 = {VALID, 2, CARD_PLAIN_TWO_CITIES, {1, -1}, NORTH, NO_MEEPLE};
     struct move const mv3 = {VALID, 3, CARD_ROAD_STRAIGHT, {0, -1}, NORTH, NO_MEEPLE};
     struct move const previous_moves[] = {mv1, mv2, mv3};
 
