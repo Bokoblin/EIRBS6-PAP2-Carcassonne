@@ -130,6 +130,9 @@ void finalize_next_player(struct queue *players_queue)
 
 void game_main(struct queue *players, unsigned int nb_player)
 {
+    if (nb_player == 0)
+        return;
+
     //=== Board initialization
 
     struct board* board = board__init();
@@ -200,6 +203,9 @@ void free_player_resources(struct player *p)
 
 void free_resources(struct queue *players_queue)
 {
+    if (players_queue == NULL)
+        return;
+
     while(!queue__is_empty(players_queue)) {
         struct player *p = queue__front(players_queue);
         queue__dequeue(players_queue);

@@ -6,7 +6,7 @@
 void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *clients_count)
 {
     int opt;
-    while ((opt = getopt(argc, argv, ":g:h:")) != -1) {
+    while ((opt = getopt(argc, argv, "gh")) != -1) {
         switch (opt) {
             case 'g':
                 *is_graphic = true;
@@ -14,21 +14,26 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
             case 'h':
                 printf("Usage: ./install/server [-g] ./install/*.so\n");
                 exit(EXIT_SUCCESS);
+            case '?':
+                fprintf(stderr, "%s: option '-%c' is invalid: try '-h'\n", argv[0], optopt);
+                exit(EXIT_SUCCESS);
             default:
                 break;
         }
     }
 
-    for (int i = 0; i < argc; i++) {
+    for (int i = optind; i < argc; i++) {
         if (strstr(argv[i], ".so")) {
             if (access(argv[i], F_OK) != -1)
                 (*clients_count)++;
             else
                 printf(SRV_PREF"The client %s does not exist."CLR"\n", argv[i]);
+        } else {
+            exit_on_error("The argument is invalid. It must be a '.so' file");
         }
     }
 
-    if (*clients_count == 0) {
+    if (*clients_count == 0 && !is_graphic) {
         printf(SRV_PREF"No clients were found. Now exiting..."CLR"\n");
         exit(EXIT_SUCCESS);
     }
