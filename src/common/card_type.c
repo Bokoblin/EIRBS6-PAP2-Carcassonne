@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////
 
 /* Example of definition
- * { CARD_ID, { NE, N, NW, WN, W, WS, SW, S, SE, EN, E, ES, CENTER }}
+ * { CARD_ID, { NE, N, NW, WN, W, WS, SW, S, SE, ES, E, EN, CENTER }}
  */
 
 static struct card_type ct_CARD_MONASTERY_ROAD = {CARD_MONASTERY_ROAD,

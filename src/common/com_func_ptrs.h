@@ -45,4 +45,14 @@ void meeple_delete_op(struct meeple *m);
 int meeple_compare_op(struct meeple *m1, struct meeple *m2);
 void meeple_debug_op(const struct meeple *m);
 
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS FOR AREA_TYPE ENUM
+////////////////////////////////////////////////////////////////////
+
+void* area_type_enum_copy_op(const enum area_type *area);
+void area_type_enum_delete_op(enum area_type *area);
+int area_type_enum_compare_op(const enum area_type *area1, const enum area_type *area2);
+void area_type_enum_debug_op(const enum area_type *area);
+
 #endif

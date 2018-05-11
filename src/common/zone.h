@@ -5,6 +5,8 @@
 #include "card.h"
 #include "meeple.h"
 #include "area_type.h"
+#include "utils.h"
+#include "com_func_ptrs.h"
 
 /**
  * @brief A structure containg every zones (roads, cities etc..)
@@ -14,7 +16,7 @@ struct zone
 {
 struct set *area_set;
 struct set *meeple_set;
-enum area_type;
+enum area_type area;
 unsigned int score;
 unsigned int holes;
 };
@@ -25,7 +27,7 @@ unsigned int holes;
  * @param area_type Is the area type of the zone
  * @return struct zone* 
  */
-struct zone *empty_zone(enum area_type);
+struct zone *zone__empty(enum area_type area);
 
 
 /**

@@ -237,8 +237,8 @@ int test_board__add_card__non_empty_set()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;    //OLD
-    //b->first_card->direction = WEST;  //NEW
+    //b->first_card->direction = EAST;    //OLD
+    b->first_card->direction = WEST;  //NEW
 
     //=== Adding until having a full surrounding for CARD_CITY_TUNNEL
 
@@ -248,6 +248,7 @@ int test_board__add_card__non_empty_set()
     c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
     c1->pos.y = 1;
+    c1->direction = NORTH;
     if (board__add_card(b, c1) == SUCCESS) {
         c2 = card__init(CARD_CITY_THREE);
         c2->pos.x = 0;
