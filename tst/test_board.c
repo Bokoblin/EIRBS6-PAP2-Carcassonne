@@ -85,7 +85,35 @@ int test_board__is_valid_card()
     return TEST_SUCCESS;
 }
 
-int test_board__add_card___empty_set()
+int test_board__retrieve_card_by_position()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_MONASTERY_ALONE;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    struct card *c1 = card__init(CARD_JUNCTION_THREE);
+    c1->pos.x = 0;
+    c1->pos.y = -1;
+    board__add_card(b, c1);
+
+    struct card *retrieved = board__retrieve_card_by_position(b->cards_set, c1->pos);
+
+    if (retrieved == NULL || retrieved->type.id != CARD_JUNCTION_THREE) {
+        card__free(c1);
+        board__free(b);
+
+        return !TEST_SUCCESS;
+    }
+
+    card__free(c1);
+    board__free(b);
+
+    return TEST_SUCCESS;
+}
+
+int test_board__add_card__empty_set()
 {
     printf("%s... ", __func__);
 
@@ -433,11 +461,184 @@ int test_board__add_card__middle()
     return test_result;
 }
 
-int test_board__add_meeple()
+int test_board__add_meeple_success()
 {
     printf("%s... ", __func__);
-    printf("NOT DONE YET - ");
-    return !TEST_SUCCESS;
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->direction = EAST;
+
+    struct card *c1 = card__init(CARD_CITY_TUNNEL);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
+    board__add_card(b, c1);
+
+    struct meeple *m = meeple__init(0, c1, POS_CENTER);
+
+
+    if (board__add_meeple(b, m) != SUCCESS) {
+        board__free(b);
+        card__free(c1);
+        meeple__free(m);
+        return !TEST_SUCCESS;
+    }
+
+    board__free(b);
+    card__free(c1);
+    meeple__free(m);
+
+    return TEST_SUCCESS;
+}
+
+int test_board__add_meeple_unlinked_card_failure()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->direction = EAST;
+
+    struct card *c1 = card__init(CARD_CITY_TUNNEL);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
+    //We don't add the card to the set
+
+    struct meeple *m = meeple__init(0, c1, POS_CENTER);
+
+
+    if (board__add_meeple(b, m) == SUCCESS) {
+        board__free(b);
+        card__free(c1);
+        meeple__free(m);
+        return !TEST_SUCCESS;
+    }
+
+    board__free(b);
+    card__free(c1);
+    meeple__free(m);
+
+    return TEST_SUCCESS;
+}
+
+int test_board__add_meeple_twice_on_card_failure()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->direction = EAST;
+
+    struct card *c1 = card__init(CARD_CITY_TUNNEL);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
+    board__add_card(b, c1);
+
+    struct meeple *m = meeple__init(0, c1, POS_CENTER);
+
+    board__add_meeple(b, m); //first adding which succeed
+    if (board__add_meeple(b, m) == SUCCESS) { //second adding which shall fail
+        board__free(b);
+        card__free(c1);
+        meeple__free(m);
+        return !TEST_SUCCESS;
+    }
+
+    board__free(b);
+    card__free(c1);
+    meeple__free(m);
+
+    return TEST_SUCCESS;
+}
+
+int test_board__add_meeple_twice_on_zone_failure()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->direction = EAST;
+
+    struct card *c1 = card__init(CARD_CITY_TUNNEL);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
+    board__add_card(b, c1);
+
+    struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
+    c1->pos.x = 0;
+    c1->pos.y = 2;
+    board__add_card(b, c2);
+
+    struct meeple *m1 = meeple__init(0, c1, POS_CENTER);
+    struct meeple *m2 = meeple__init(1, c2, POS_WEST_NORTH);
+
+    board__add_meeple(b, m1); //first adding which succeed
+    if (board__add_meeple(b, m2) == SUCCESS) { //adding on another card of same zone which shall fail
+        board__free(b);
+        card__free(c1);
+        card__free(c2);
+        meeple__free(m1);
+        meeple__free(m2);
+        return !TEST_SUCCESS;
+    }
+
+    board__free(b);
+    card__free(c1);
+    card__free(c2);
+    meeple__free(m1);
+    meeple__free(m2);
+
+    return TEST_SUCCESS;
+}
+
+int test_board__add_meeple_on_other_zone_success()
+{
+    printf("%s... ", __func__);
+
+    struct board *b = board__init();
+    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
+    stack__push(b->drawing_stack, &ci_first);
+    board__init_first_card(b);
+    b->first_card->direction = EAST;
+
+    struct card *c1 = card__init(CARD_CITY_TUNNEL);
+    c1->pos.x = 0;
+    c1->pos.y = 1;
+    board__add_card(b, c1);
+
+    struct card *c2 = card__init(CARD_CITY_ALL_SIDES);
+    c1->pos.x = 0;
+    c1->pos.y = 2;
+    board__add_card(b, c2);
+
+    struct meeple *m1 = meeple__init(0, c1, POS_WEST);
+    struct meeple *m2 = meeple__init(1, c2, POS_WEST_NORTH);
+
+    board__add_meeple(b, m1); //Adding on a plain which succeed
+    if (board__add_meeple(b, m2) != SUCCESS) { //adding on another card on another zone (CITY) which shall succeed
+        board__free(b);
+        card__free(c1);
+        card__free(c2);
+        meeple__free(m1);
+        meeple__free(m2);
+        return !TEST_SUCCESS;
+    }
+
+    board__free(b);
+    card__free(c1);
+    card__free(c2);
+    meeple__free(m1);
+    meeple__free(m2);
+
+    return TEST_SUCCESS;
 }
 
 int main()
@@ -450,13 +651,18 @@ int main()
     print_test_result(test_board__empty(), &nb_success, &nb_tests);
     print_test_result(test_board__init_first_card(), &nb_success, &nb_tests);
     print_test_result(test_board__is_valid_card(), &nb_success, &nb_tests);
-    print_test_result(test_board__add_card___empty_set(), &nb_success, &nb_tests);
+    print_test_result(test_board__retrieve_card_by_position(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_card__empty_set(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_no_match(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_with_match(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_with_match_twice(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set(), &nb_success, &nb_tests);   //FIXME: test_board__add_card__non_empty_set
     print_test_result(test_board__add_card__middle(), &nb_success, &nb_tests);
-    //print_test_result(test_board__add_meeple(), &nb_success, &nb_tests);              //TODO: test_board__add_meeple
+    print_test_result(test_board__add_meeple_success(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_meeple_unlinked_card_failure(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_meeple_twice_on_card_failure(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_meeple_twice_on_zone_failure(), &nb_success, &nb_tests);
+    print_test_result(test_board__add_meeple_on_other_zone_success(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
 

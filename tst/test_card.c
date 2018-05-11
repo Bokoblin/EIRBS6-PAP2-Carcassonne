@@ -145,6 +145,12 @@ int test_card__are_matching_sides_failure()
         return !TEST_SUCCESS;
     }
 
+    if (card__are_matching_directions(c1, c2, EAST, (enum direction) 99)) {
+        card__free(c1);
+        card__free(c2);
+        return !TEST_SUCCESS;
+    }
+
     card__free(c1);
     card__free(c2);
 
@@ -190,6 +196,40 @@ int test_card__link_at_side()
     return TEST_SUCCESS;
 }
 
+int test_card__unlink_neighbours()
+{
+    printf("%s... ", __func__);
+
+    int result = TEST_SUCCESS;
+
+    struct card *c_up = card__init(CARD_MONASTERY_ALONE);
+    struct card *c_center = card__init(CARD_JUNCTION_FOUR);
+    struct card *c_right = card__init(CARD_ROAD_TURN);
+    struct card *c_down = card__init(CARD_ROAD_STRAIGHT);
+    struct card *c_left = card__init(CARD_ROAD_STRAIGHT);
+    c_left->direction = EAST;
+
+    if (!card__link_at_directions(c_center, c_up, NORTH, SOUTH)) result = !TEST_SUCCESS;
+    if (!card__link_at_directions(c_center, c_right, EAST, WEST)) result = !TEST_SUCCESS;
+    if (!card__link_at_directions(c_center, c_down, SOUTH, NORTH)) result = !TEST_SUCCESS;
+    if (!card__link_at_directions(c_center, c_left, WEST, EAST)) result = !TEST_SUCCESS;
+
+    card__unlink_neighbours(c_center);
+
+    if (c_center->neighbors[NORTH] != NULL || c_up->neighbors[SOUTH] != NULL) result = !TEST_SUCCESS;
+    if (c_center->neighbors[EAST] != NULL || c_right->neighbors[WEST] != NULL) result = !TEST_SUCCESS;
+    if (c_center->neighbors[SOUTH] != NULL || c_down->neighbors[NORTH] != NULL) result = !TEST_SUCCESS;
+    if (c_center->neighbors[WEST] != NULL || c_left->neighbors[EAST] != NULL) result = !TEST_SUCCESS;
+
+    card__free(c_center);
+    card__free(c_up);
+    card__free(c_right);
+    card__free(c_down);
+    card__free(c_left);
+
+    return result;
+}
+
 
 int main()
 {
@@ -205,6 +245,7 @@ int main()
     print_test_result(test_card__are_matching_sides_success(), &nb_success, &nb_tests);
     print_test_result(test_card__are_matching_sides_failure(), &nb_success, &nb_tests);
     print_test_result(test_card__link_at_side(), &nb_success, &nb_tests);
+    print_test_result(test_card__unlink_neighbours(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
 

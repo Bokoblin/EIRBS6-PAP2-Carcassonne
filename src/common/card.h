@@ -115,6 +115,6 @@ int card__link_at_directions(struct card *c1, struct card *c2, enum direction d1
  * @brief Unlink all neighbours of a card
  * @param c the card
  */
-void card__unlink_neighbours(struct card* c); //TODO: test
+void card__unlink_neighbours(struct card* c);
 
 #endif
