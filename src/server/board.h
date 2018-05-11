@@ -64,7 +64,7 @@ int board__is_valid_card(struct board *b, enum card_id ci);
  * @param pos the position of the searched card
  * @return the card or NULL if not found
  */
-struct card* board__retrieve_card_by_position(struct set *set, struct position pos); //TODO: test
+struct card* board__retrieve_card_by_position(struct set *set, struct position pos);
 
 
 /**
