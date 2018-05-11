@@ -36,6 +36,8 @@ file(GLOB TEST_BOARD_SOURCE_FILES
         "../src/common/common_interface.h"
         "../src/common/deck.h"
         "../src/common/deck.c"
+        "../src/common/meeple.c"
+        "../src/common/meeple.h"
         "../src/common/utils.h"
         "../src/common/utils.c"
         )

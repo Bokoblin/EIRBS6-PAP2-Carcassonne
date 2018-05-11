@@ -231,16 +231,13 @@ int test_board__add_card__non_empty_set_with_match_twice()
 
 int test_board__add_card__non_empty_set()
 {
-    //FIXME: test_board__add_card__non_empty_set
-
     printf("%s... ", __func__);
 
     struct board *b = board__init();
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    //b->first_card->direction = EAST;    //OLD
-    b->first_card->direction = WEST;  //NEW
+    b->first_card->direction = WEST;
 
     //=== Adding until having a full surrounding for CARD_CITY_TUNNEL
 
@@ -255,14 +252,12 @@ int test_board__add_card__non_empty_set()
         c2 = card__init(CARD_CITY_THREE);
         c2->pos.x = 0;
         c2->pos.y = 2;
-        c2->direction = NORTH;      //OLD
-        //c2->direction = SOUTH;    //NEW
+        c2->direction = SOUTH;
         if (board__add_card(b, c2) == SUCCESS) {
             c3 = card__init(CARD_ROAD_TURN_RIGHT_CITY);
             c3->pos.x = -1;
             c3->pos.y = 2;
-            c3->direction = WEST;   //OLD
-            //c3->direction = EAST; //NEW
+            c3->direction = EAST;
             if (board__add_card(b, c3) == SUCCESS) {
                 c4 = card__init(CARD_ROAD_STRAIGHT);
                 c4->pos.x = -1;
