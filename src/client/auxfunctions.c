@@ -126,15 +126,24 @@ struct move client__play_card(struct client *client, enum card_id ci)
         struct card *umpteenth_card = set__get_umpteenth_no_copy(client->client_board->cards_set, set_it);
 
         if (card__get_neighbour_number(umpteenth_card) < NB_DIRECTIONS) {
-            for (enum direction i_drawn_dir = NORTH; i_drawn_dir < NB_DIRECTIONS; i_drawn_dir++) {
-                enum direction i_umpteenth_dir = (i_drawn_dir + 2) % NB_DIRECTIONS;
-                for (enum direction i_north_dir = NORTH; i_north_dir < NB_DIRECTIONS; i_north_dir++) {
-                    drawn_card->direction = i_north_dir;
+            //Foreach orientation chosen for the drawn card, we look for matches
+            for (enum direction i_north_dir = NORTH; i_north_dir < NB_DIRECTIONS; i_north_dir++) {
+                drawn_card->direction = i_north_dir;
+                //Foreach directions around umpteenth, we look for matches
+                for (enum direction i_drawn_dir = NORTH; i_drawn_dir < NB_DIRECTIONS; i_drawn_dir++) {
+                    enum direction i_umpteenth_dir = (i_drawn_dir + 2) % NB_DIRECTIONS;
 
-                    //if (i_north_dir == NORTH || i_north_dir == SOUTH) //NOTE: little test - check if 90°/240° causes failure
-                    //{
-                        if (card__are_matching_directions(drawn_card, umpteenth_card, i_drawn_dir, i_umpteenth_dir)
-                                && umpteenth_card->neighbors[i_umpteenth_dir] == NULL) {
+                    if (card__are_matching_directions(drawn_card, umpteenth_card, i_drawn_dir, i_umpteenth_dir)
+                            && umpteenth_card->neighbors[i_umpteenth_dir] == NULL) {
+                        drawn_card->pos = card__get_position_at_direction(umpteenth_card, i_umpteenth_dir);
+
+                        //We check for a full match
+                        if (board__add_card(client->client_board, drawn_card) == SUCCESS) {
+                            //It was just a check so we remove the card from the board
+                            card__unlink_neighbours(set__retrieve(client->client_board->cards_set, drawn_card));
+                            set__remove(client->client_board->cards_set, drawn_card);
+
+                            //Now, we add the following elements to the possible set
                             struct triplet_card_direction tcd;
                             tcd.umpteenth = umpteenth_card;
                             tcd.umpteenth_chosen_direction = i_umpteenth_dir;
@@ -142,14 +151,11 @@ struct move client__play_card(struct client *client, enum card_id ci)
                             if (set__add(possible_cards, &tcd) != SUCCESS)
                                 exit_on_error("possible_cards set adding failure");
                         }
-                    //}
-                    //TODO : Find why the matching fails even with a 0°/90° degree check
+                    }
                 }
             }
         }
     }
-
-    //printf("\t[DEBUG] eligible cards:\n"); set__debug_data(possible_cards, false);
 
     //=== Choose a card among possible ones
 
@@ -172,8 +178,7 @@ struct move client__play_card(struct client *client, enum card_id ci)
     played_move.dir = chosen_tcd->drawn_card_north_direction;
     played_move.place = NO_MEEPLE;
 
-    printf("\t[DEBUG] Chosen tcd is: "); tcd_debug_op(chosen_tcd);
-    printf("\t[DEBUG] Chosen move is so : "); move_debug_op(&played_move);
+    //printf("\t[DEBUG] Chosen move is: "); move_debug_op(&played_move);
 
     card__free(drawn_card);
     set__free(possible_cards);

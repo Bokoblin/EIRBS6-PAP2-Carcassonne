@@ -38,6 +38,9 @@ int board__init_first_card(struct board *b)
     b->first_card = set__get_umpteenth_no_copy(b->cards_set, 0);
     card__free(c);
 
+    if (b->first_card == NULL)
+        exit_on_error("Missing first card");
+
     return SUCCESS;
 }
 
@@ -107,15 +110,16 @@ int board__add_card(struct board *b, struct card *card_to_add)
     return SUCCESS;
 }
 
-int board__add_meeple(struct board *b, struct meeple *m)
+int board__add_meeple(struct board *b, struct card *c, struct meeple *m)
 {
     if (b == NULL || m == NULL)
         return !SUCCESS;
 
-    //TODO after May 4th: add meeple to board after verifications
+    //TODO: Add meeple to board after check
     //Check if a meeple is already on the card
     //Graph path-course to check if meeple is authorized to be placed on requested area.
     (void) b;
+    (void) c;
     (void) m;
 
     //return set__add(b->meeples_set, m);
@@ -126,7 +130,7 @@ void board__check_sub_completion(struct board *b)
 {
     if (b == NULL) return;
 
-    //TODO after May 4th: check if new areas were closed in order to calculate sub-score
+    //TODO: Check if new areas were closed in order to calculate sub-score
     //-> mark already closed areas somewhere to avoid recalculation ?
     (void) b;
 }

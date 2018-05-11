@@ -53,7 +53,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
     //=== Meeple checking
 
     struct meeple *meeple = meeple__init(m->player, card, m->place);
-    int was_meeple_added = meeple == NULL ? NOT_APPLICABLE : board__add_meeple(b, meeple) == SUCCESS;
+    int was_meeple_added = meeple == NULL ? NOT_APPLICABLE : board__add_meeple(b, card, meeple) == SUCCESS;
 
     if(!was_meeple_added) {
         set__debug_data(b->meeples_set, false);
@@ -139,9 +139,6 @@ void game_main(struct queue *players, unsigned int nb_player)
     init_deck(board->drawing_stack);
     board__init_first_card(board);
 
-    if (board->first_card == NULL)
-        exit_on_error("Missing first card");
-
     //=== Player initialization
 
     for (unsigned int i = 0; i < nb_player; i++)
@@ -150,7 +147,7 @@ void game_main(struct queue *players, unsigned int nb_player)
     //=== Game loop
 
     while (!stack__is_empty(board->drawing_stack) && nb_player > 1) {
-        struct move *moves_array = build_previous_moves_array(board->moves_queue); //FIXME
+        struct move *moves_array = build_previous_moves_array(board->moves_queue);
         enum card_id c = draw_until_valid(board, board->drawing_stack);
         struct player *p = queue__front(players);
         struct move m = p->play(c, moves_array, queue__length(board->moves_queue));
@@ -177,7 +174,7 @@ void game_main(struct queue *players, unsigned int nb_player)
 
     //=== Final score counting
 
-    //TODO after May 4th: Final score counting
+    //TODO: Final score counting
 
     //=== Players finalization
 
@@ -238,13 +235,3 @@ int main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
-
-/* Acknowledgement :
- * FIXME : Remaining issues breaking "May the 4th..." goal :
- *
- * - Moves are sometimes invalid while they shouldn't :
- *      -> Issue is identified ? NO
- *      -> Rarity: very common
- *      -> Concerned issues areas:  client__play_card() or add_card_to_board() ?
- *      -> Temporary workaround : NO
- */

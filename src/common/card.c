@@ -107,7 +107,7 @@ int card__are_matching_directions(struct card *c1, struct card *c2, enum directi
         return false;
 
     for (int i = 0; i < NB_SUB_DIRECTIONS; i++) {
-        //TODO: check correctness, move validation failure might come from here
+        //TODO: check correctness, it might be reversed (according to the failing board test)
         int c1_area_index = (NB_SUB_DIRECTIONS * d1 + NB_SUB_DIRECTIONS * c1->direction + i) % MAX_SIDE_ZONES;      //NOTE: LEGACY - half working
         int c2_area_index = (NB_SUB_DIRECTIONS * d2 + NB_SUB_DIRECTIONS * c2->direction + 2 - i) % MAX_SIDE_ZONES;  //NOTE: LEGACY - half working
         //int c2_area_index = (NB_SUB_DIRECTIONS * d2 + NB_SUB_DIRECTIONS * (4 - c2->direction) + 2 - i) % MAX_SIDE_ZONES;  //NOTE: NEW - alpha testing

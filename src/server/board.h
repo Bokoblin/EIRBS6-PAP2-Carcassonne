@@ -79,10 +79,11 @@ int board__add_card(struct board *b, struct card* card_to_add);
 /**
  * @brief Add a meeple to the board on a card (if possible)
  * @param b the board
+ * @param c the card where meeple must be placed
  * @param m the meeple to place
  * @return 0 on success, 1 otherwise
  */
-int board__add_meeple(struct board *b, struct meeple *m);
+int board__add_meeple(struct board *b, struct card *c, struct meeple *m);
 
 
 /**
