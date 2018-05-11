@@ -32,7 +32,8 @@ enum area_type card__get_relative_area(struct card *card, enum place place)
     if (place == POS_CENTER)
         return card->type.areas[place-1];
 
-    return card->type.areas[(place - PLACE_SHIFT + (NB_SUB_DIRECTIONS * card->direction)) % MAX_SIDE_ZONES];
+    const int DIRECTION_ROTATION_SHIFT = NB_SUB_DIRECTIONS * (4 - card->direction);
+    return card->type.areas[(place + DIRECTION_ROTATION_SHIFT - PLACE_SHIFT) % MAX_SIDE_ZONES];
 }
 
 //!!! ALPHA FUNCTION !!!
@@ -107,20 +108,14 @@ int card__are_matching_directions(struct card *c1, struct card *c2, enum directi
         return false;
 
     for (int i = 0; i < NB_SUB_DIRECTIONS; i++) {
-        //TODO: check correctness, it might be reversed (according to the failing board test)
-        int c1_area_index = (NB_SUB_DIRECTIONS * d1 + NB_SUB_DIRECTIONS * c1->direction + i) % MAX_SIDE_ZONES;      //NOTE: LEGACY - half working
-        int c2_area_index = (NB_SUB_DIRECTIONS * d2 + NB_SUB_DIRECTIONS * c2->direction + 2 - i) % MAX_SIDE_ZONES;  //NOTE: LEGACY - half working
-        //int c2_area_index = (NB_SUB_DIRECTIONS * d2 + NB_SUB_DIRECTIONS * (4 - c2->direction) + 2 - i) % MAX_SIDE_ZONES;  //NOTE: NEW - alpha testing
-        //enum place c1_area_index = (enum place) (PLACE_SHIFT + (NB_SUB_DIRECTIONS * d1) + i);        //NOTE: NEW - alpha testing
-        //enum place c2_area_index = (enum place) (PLACE_SHIFT + (NB_SUB_DIRECTIONS * d2) + 2 - i);    //NOTE: NEW - alpha testing
+        enum place c1_area_index = (enum place) (PLACE_SHIFT + (NB_SUB_DIRECTIONS * d1) + i);
+        enum place c2_area_index = (enum place) (PLACE_SHIFT + (NB_SUB_DIRECTIONS * d2) + 2 - i);
 
         if (c1_area_index > LAST_POS || c2_area_index > LAST_POS)
             return false;
 
-        enum area_type c1_a = c1->type.areas[c1_area_index];                //NOTE: LEGACY - half working
-        enum area_type c2_a = c2->type.areas[c2_area_index];                //NOTE: LEGACY - half working
-        //enum area_type c1_a = card__get_absolute_area(c1, c1_area_index); //NOTE: NEW - alpha testing
-        //enum area_type c2_a = card__get_absolute_area(c2, c2_area_index); //NOTE: NEW - alpha testing
+        enum area_type c1_a = card__get_relative_area(c1, c1_area_index);
+        enum area_type c2_a = card__get_relative_area(c2, c2_area_index);
 
         //Check sub areas matching
         if (c1_a != c2_a)

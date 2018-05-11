@@ -27,16 +27,20 @@ int test_card__get_area()
 {
     printf("%s... ", __func__);
 
-    struct card *c = card__init(CARD_MONASTERY_ALONE);
-  
-    for (enum place p = POS_NORTH_EAST; p <= POS_EAST_NORTH ; p++) {
-        if (card__get_relative_area(c, p) != FIELD) {
-            card__free(c);
-            return !TEST_SUCCESS;
-        }
+    struct card *c = card__init(CARD_ROAD_STRAIGHT_CITY);
+    c->direction = WEST;
+
+    if (card__get_relative_area(c, POS_NORTH) != CITY) {
+        card__free(c);
+        return !TEST_SUCCESS;
     }
 
-    if (card__get_relative_area(c, POS_CENTER) != ABBEY) {
+    if (card__get_relative_area(c, POS_EAST) != ROAD) {
+        card__free(c);
+        return !TEST_SUCCESS;
+    }
+
+    if (card__get_relative_area(c, POS_CENTER) != ROAD) {
         card__free(c);
         return !TEST_SUCCESS;
     }
@@ -207,7 +211,7 @@ int test_card__unlink_neighbours()
     struct card *c_right = card__init(CARD_ROAD_TURN);
     struct card *c_down = card__init(CARD_ROAD_STRAIGHT);
     struct card *c_left = card__init(CARD_ROAD_STRAIGHT);
-    c_left->direction = EAST;
+    c_left->direction = WEST;
 
     if (!card__link_at_directions(c_center, c_up, NORTH, SOUTH)) result = !TEST_SUCCESS;
     if (!card__link_at_directions(c_center, c_right, EAST, WEST)) result = !TEST_SUCCESS;

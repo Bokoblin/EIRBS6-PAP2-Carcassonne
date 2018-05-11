@@ -178,7 +178,7 @@ int test_board__add_card__non_empty_set_with_match()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;
+    b->first_card->direction = WEST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -208,7 +208,7 @@ int test_board__add_card__non_empty_set_with_match_twice()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;
+    b->first_card->direction = WEST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -231,6 +231,8 @@ int test_board__add_card__non_empty_set_with_match_twice()
 
 int test_board__add_card__non_empty_set()
 {
+    //FIXME: test_board__add_card__non_empty_set
+
     printf("%s... ", __func__);
 
     struct board *b = board__init();
@@ -399,7 +401,7 @@ int test_board__add_card__middle()
     c2 = card__init(CARD_CITY_TUNNEL);
     c2->pos.x = 6;
     c2->pos.y = 5;
-    c2->direction = WEST;
+    c2->direction = EAST;
     if (board__add_card(b, c2) == SUCCESS) {
         c3 = card__init(CARD_ROAD_TURN_LEFT_CITY);
         c3->pos.x = 7;
@@ -429,7 +431,7 @@ int test_board__add_card__middle()
                             c8 = card__init(CARD_CITY_THREE_ROAD);
                             c8->pos.x = 5;
                             c8->pos.y = 4;
-                            c8->direction = EAST;
+                            c8->direction = WEST;
                             if (board__add_card(b, c8) == SUCCESS) {
                                 c9 = card__init(CARD_MONASTERY_ROAD);
                                 c9->pos.x = 6;
@@ -470,7 +472,7 @@ int test_board__add_meeple_success()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;
+    b->first_card->direction = WEST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -502,7 +504,7 @@ int test_board__add_meeple_unlinked_card_failure()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;
+    b->first_card->direction = WEST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -534,7 +536,7 @@ int test_board__add_meeple_twice_on_card_failure()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;
+    b->first_card->direction = WEST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -566,7 +568,7 @@ int test_board__add_meeple_twice_on_zone_failure()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;
+    b->first_card->direction = WEST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -608,7 +610,7 @@ int test_board__add_meeple_on_other_zone_success()
     enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
     stack__push(b->drawing_stack, &ci_first);
     board__init_first_card(b);
-    b->first_card->direction = EAST;
+    b->first_card->direction = WEST;
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -657,7 +659,7 @@ int main()
     print_test_result(test_board__add_card__non_empty_set_no_match(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_with_match(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__non_empty_set_with_match_twice(), &nb_success, &nb_tests);
-    print_test_result(test_board__add_card__non_empty_set(), &nb_success, &nb_tests);   //FIXME: test_board__add_card__non_empty_set
+    print_test_result(test_board__add_card__non_empty_set(), &nb_success, &nb_tests);
     print_test_result(test_board__add_card__middle(), &nb_success, &nb_tests);
     print_test_result(test_board__add_meeple_success(), &nb_success, &nb_tests);
     print_test_result(test_board__add_meeple_unlinked_card_failure(), &nb_success, &nb_tests);

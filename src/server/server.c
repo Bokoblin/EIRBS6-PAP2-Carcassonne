@@ -174,7 +174,7 @@ void game_main(struct queue *players, unsigned int nb_player)
 
     //=== Final score counting
 
-    //TODO: Final score counting
+    //TODO: [Due for May 18th] Final score counting
 
     //=== Players finalization
 

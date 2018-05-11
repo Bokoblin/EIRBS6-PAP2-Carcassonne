@@ -115,7 +115,7 @@ int board__add_meeple(struct board *b, struct meeple *m)
     if (b == NULL || m == NULL)
         return !SUCCESS;
 
-    //TODO: Add meeple to board after check
+    //TODO: [Due for May 18th] Add meeple to board after check
     //Check if a meeple is already on the card
     //Graph path-course to check if meeple is authorized to be placed on requested area.
     (void) b;
@@ -129,7 +129,7 @@ void board__check_sub_completion(struct board *b)
 {
     if (b == NULL) return;
 
-    //TODO: Check if new areas were closed in order to calculate sub-score
+    //TODO: [Due for May 18th] Check if new areas were closed in order to calculate sub-score
     //-> mark already closed areas somewhere to avoid recalculation ?
     (void) b;
 }

@@ -65,7 +65,7 @@ int test_meeple__init_valid_card_other_direction()
     int test_res = TEST_SUCCESS;
 
     struct card *c = card__init(CARD_ROAD_TURN_RIGHT_CITY);
-    c->direction = WEST;
+    c->direction = EAST;
 
     enum place p1 = POS_CENTER;
     struct meeple* m = meeple__init(0, c, p1);
