@@ -110,7 +110,7 @@ int board__add_card(struct board *b, struct card *card_to_add)
     return SUCCESS;
 }
 
-int board__add_meeple(struct board *b, struct card *c, struct meeple *m)
+int board__add_meeple(struct board *b, struct meeple *m)
 {
     if (b == NULL || m == NULL)
         return !SUCCESS;

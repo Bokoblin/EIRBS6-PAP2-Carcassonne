@@ -53,7 +53,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
     //=== Meeple checking
 
     struct meeple *meeple = meeple__init(m->player, card, m->place);
-    int was_meeple_added = meeple == NULL ? NOT_APPLICABLE : board__add_meeple(b, card, meeple) == SUCCESS;
+    int was_meeple_added = meeple == NULL ? NOT_APPLICABLE : board__add_meeple(b, meeple) == SUCCESS;
 
     if(!was_meeple_added) {
         set__debug_data(b->meeples_set, false);
