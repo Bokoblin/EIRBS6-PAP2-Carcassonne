@@ -302,53 +302,53 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
         queue__enqueue(q, &card);
     }
 
-    printf("Added 60 elements, expected capacity of 64 and size of 60\n");
+    printf("\nAdded 60 elements, expected capacity of 64 and size of 60\n");
 
     if (queue__length(q) < 60) {
         queue__free(q);
         return !TEST_SUCCESS;
     }
 
-    queue__debug(q, false);
+    queue__debug(q, true);
 
     for (unsigned int i = 0; i < 40; i++) {
         queue__dequeue(q);
     }
 
-    printf("Removed 40 elements, expected capacity of 32 and size of 20\n");
+    printf("\nRemoved 40 elements, expected capacity of 32 and size of 20\n");
 
     if (queue__length(q) < 20) {
         queue__free(q);
         return !TEST_SUCCESS;
     }
 
-    queue__debug(q, false);
+    queue__debug(q, true);
 
     for (unsigned int i = 0; i < 20; i++) {
         queue__enqueue(q, &card);
     }
 
-    printf("Added 20 elements, expected capacity of 64 and size of 40\n");
+    printf("\nAdded 20 elements, expected capacity of 64 and size of 40\n");
 
     if (queue__length(q) < 40) {
         queue__free(q);
         return !TEST_SUCCESS;
     }
 
-    queue__debug(q, false);
+    queue__debug(q, true);
 
     for (unsigned int i = 0; i < 30; i++) {
         queue__dequeue(q);
     }
 
-    printf("Removed 30 elements, expected capacity of 16 and size of 10\n");
+    printf("\nRemoved 30 elements, expected capacity of 16 and size of 10\n");
 
     if (queue__length(q) < 10) {
         queue__free(q);
         return !TEST_SUCCESS;
     }
 
-    queue__debug(q, false);
+    queue__debug(q, true);
 
     queue__free(q);
 
