@@ -119,7 +119,6 @@ int board__add_meeple(struct board *b, struct meeple *m)
     //Check if a meeple is already on the card
     //Graph path-course to check if meeple is authorized to be placed on requested area.
     (void) b;
-    (void) c;
     (void) m;
 
     //return set__add(b->meeples_set, m);
