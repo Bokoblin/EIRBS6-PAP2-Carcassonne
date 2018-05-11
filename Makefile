@@ -27,7 +27,7 @@ SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
 CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
 
 SERVER_EXEC	= server
-TESTS_EXEC 	= test_board test_card test_deck test_meeple test_queue test_set test_stack test_auxfunctions
+TESTS_EXEC 	= test_auxfunctions test_board test_card test_deck test_meeple test_queue test_set test_stack test_zone
 
 
 #######################################################
@@ -236,6 +236,10 @@ test_set:	$(TST_DIR)/test_set.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_stack:	$(TST_DIR)/test_stack.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/stack.o
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
+
+test_zone: 	$(TST_DIR)/test_zone.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(COM_DIR)/com_func_ptrs.o \
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/meeple.o $(COM_DIR)/zone.o $(ADT_DIR)/set.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 
