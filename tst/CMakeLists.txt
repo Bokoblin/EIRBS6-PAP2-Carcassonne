@@ -10,7 +10,7 @@ set(TEST_QUEUE test_queue)
 set(TEST_SET test_set)
 set(TEST_STACK test_stack)
 set(TEST_ZONE test_zone)
-set(TEST_CLIENT test_client)
+set(TEST_AUXFUNCTIONS test_auxfunctions)
 
 
 #----------------------------
@@ -145,7 +145,7 @@ file(GLOB TEST_ZONE_SOURCE_FILES
         "../src/common/ADT/set.c"
         )
 
-file(GLOB TEST_CLIENT_SOURCE_FILES
+file(GLOB TEST_AUXFUNCTIONS_SOURCE_FILES
         "common_tests_utils.h"
         "common_tests_utils.c"
         "test_client_aux_functions.c"
@@ -192,8 +192,8 @@ add_executable(${TEST_STACK} ${TEST_STACK_SOURCE_FILES})
 target_link_libraries(${TEST_STACK} ${CMAKE_DL_LIBS})
 add_executable(${TEST_ZONE} ${TEST_ZONE_SOURCE_FILES})
 target_link_libraries(${TEST_ZONE} ${CMAKE_DL_LIBS})
-add_executable(${TEST_CLIENT} ${TEST_CLIENT_SOURCE_FILES})
-target_link_libraries(${TEST_CLIENT} ${CMAKE_DL_LIBS})
+add_executable(${TEST_AUXFUNCTIONS} ${TEST_AUXFUNCTIONS_SOURCE_FILES})
+target_link_libraries(${TEST_AUXFUNCTIONS} ${CMAKE_DL_LIBS})
 
 #----------------------------
 #       CONFIGURE TESTS
@@ -207,4 +207,4 @@ add_test(NAME ${TEST_QUEUE} COMMAND ./${TEST_QUEUE})
 add_test(NAME ${TEST_SET} COMMAND ./${TEST_SET})
 add_test(NAME ${TEST_STACK} COMMAND ./${TEST_STACK})
 add_test(NAME ${TEST_ZONE} COMMAND ./${TEST_ZONE})
-add_test(NAME ${TEST_CLIENT} COMMAND ./${TEST_CLIENT})
+add_test(NAME ${TEST_AUXFUNCTIONS} COMMAND ./${TEST_AUXFUNCTIONS})

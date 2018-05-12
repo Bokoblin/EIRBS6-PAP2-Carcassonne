@@ -38,19 +38,42 @@ file(GLOB SERVER_SOURCE_FILES
 file(GLOB CLIENT1_SOURCE_FILES
         "src/common/*.h"
         "src/common/*.c"
+        "src/server/board.h"
+        "src/server/board.c"
         "src/client/client_4410_1.c"
         "src/client/client.h"
-        "src/client/aux_functions.c"
-        )
+        "src/client/auxfunctions.c"
+)
 
 file(GLOB CLIENT2_SOURCE_FILES
         "src/common/*.h"
         "src/common/*.c"
+        "src/server/board.h"
+        "src/server/board.c"
         "src/client/client_4410_2.c"
         "src/client/client.h"
-        "src/client/aux_functions.c"
-        )
+        "src/client/auxfunctions.c"
+)
 
+file(GLOB CLIENT3_SOURCE_FILES
+        "src/common/*.h"
+        "src/common/*.c"
+        "src/server/board.h"
+        "src/server/board.c"
+        "src/client/client_4410_3.c"
+        "src/client/client.h"
+        "src/client/auxfunctions.c"
+)
+
+file(GLOB CLIENT4_SOURCE_FILES
+        "src/common/*.h"
+        "src/common/*.c"
+        "src/server/board.h"
+        "src/server/board.c"
+        "src/client/client_4410_4.c"
+        "src/client/client.h"
+        "src/client/auxfunctions.c"
+)
 
 #----------------------------
 #       CONFIGURE BUILDING
@@ -59,12 +82,16 @@ file(GLOB CLIENT2_SOURCE_FILES
 # Client
 add_library(client1 SHARED ${CLIENT1_SOURCE_FILES})
 add_library(client2 SHARED ${CLIENT2_SOURCE_FILES})
+add_library(client3 SHARED ${CLIENT3_SOURCE_FILES})
+add_library(client4 SHARED ${CLIENT4_SOURCE_FILES})
 
 # Server
 add_executable(${APP_EXECUTABLE} ${SERVER_SOURCE_FILES})
 target_link_libraries(${APP_EXECUTABLE} ${CMAKE_DL_LIBS})
 target_link_libraries(${APP_EXECUTABLE} client1)
 target_link_libraries(${APP_EXECUTABLE} client2)
+target_link_libraries(${APP_EXECUTABLE} client3)
+target_link_libraries(${APP_EXECUTABLE} client4)
 
 
 if(ENABLE_TESTS)
