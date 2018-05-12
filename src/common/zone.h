@@ -52,7 +52,7 @@ struct set *zone__cards_available_zones(struct card *c);
 
 /**
  * @brief Returns the set containing the given area
- * 
+ *
  * @param area_type is a pointer to the area in the enum area_type areas[MAX_ZONES] in the card
  * @return struct set* containing the area
  */

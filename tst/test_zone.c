@@ -21,16 +21,36 @@ int test_zone__empty()
 
 int test_zone__cards_available_zones()
 {
-    printf("%s... NOT IMPLEMENTED YET - ", __func__);
+    printf("%s... ", __func__);
+    int result = TEST_SUCCESS;
 
-    return !TEST_SUCCESS;
+    struct card *c = card__init(CARD_MONASTERY_ROAD);
+
+    struct set *p_place = zone__cards_available_zones(c);
+
+    //if (!set__find(p_place, &allowed_positions[c->type.id][0])) result = !TEST_SUCCESS;
+    //if (!set__find(p_place, &allowed_positions[c->type.id][1])) result = !TEST_SUCCESS;
+    //if (!set__find(p_place, &allowed_positions[c->type.id][2])) result = !TEST_SUCCESS;
+    if (set__size(p_place) != 3) result = !TEST_SUCCESS;
+    set__free(p_place);
+
+    return result;
 }
 
 int test_zone__matching_area_set()
 {
-    printf("%s... NOT IMPLEMENTED YET - ", __func__);
+    printf("%s... ", __func__);
+    int result = TEST_SUCCESS;
 
-    return !TEST_SUCCESS;
+    enum area_type at = FIELD;
+    struct set *area_set = zone__matching_area_set(&at);
+
+    //if (!set__find(area_set, &at)) result = !TEST_SUCCESS;
+    if (set__size(area_set) != 1) result = !TEST_SUCCESS;
+
+    set__free(area_set);
+
+    return result;
 }
 
 int test_zone__add_areas()

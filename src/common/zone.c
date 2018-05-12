@@ -3,8 +3,7 @@
 struct zone *zone__empty(enum area_type area)
 {
     struct zone *z = safe_malloc(sizeof(struct zone));
-    z->area_set = set__empty(area_type_enum_copy_op, area_type_enum_delete_op,
-            area_type_enum_compare_op, area_type_enum_debug_op);
+    z->area_set = set__empty(area_type_enum_copy_op, area_type_enum_delete_op, area_type_enum_compare_op, area_type_enum_debug_op);
     z->meeple_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op, meeple_debug_op);
     z->area = area;
     z->score = 0;
@@ -29,8 +28,9 @@ struct set *zone__cards_available_zones(struct card *c)
 
 struct set *zone__matching_area_set(enum area_type *area)
 {
-    (void) area;
-    return NULL;
+    struct set *area_set = set__empty(area_type_enum_copy_op, area_type_enum_delete_op, area_type_enum_compare_op, area_type_enum_debug_op);
+    set__add(area_set, area);
+    return area_set;
 }
 
 int zone__add_areas(struct zone *z, struct card *c, enum place p)
