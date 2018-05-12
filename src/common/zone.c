@@ -14,18 +14,21 @@ struct zone *zone__empty(enum area_type area)
 }
 
 struct set *zone__cards_available_zones(struct card *c)
-{
-    //TODO: zone__cards_available_zones
-    (void) c;
-
-    return NULL;
+{   //allowed_positions gives already one enum place per zone
+    struct set *p_place = set__empty(place_enum_copy_op, place_enum_delete_op, place_enum_compare_op, place_enum_debug_op);
+    enum card_id id = c->type.id;
+    int p = 0;
+    while (allowed_positions[id][p] != NO_MEEPLE) {
+        set__add(p_place, &allowed_positions[id][p]);
+        p++;    
+    }
+    
+    return p_place;
 }
 
 struct set *zone__matching_area_set(enum area_type *area)
 {
-    //TODO: zone__matching_area_set
-    (void) area;
-
+  struct set *z = zone__empty(
     return NULL;
 }
 

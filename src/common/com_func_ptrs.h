@@ -55,4 +55,14 @@ void area_type_enum_delete_op(enum area_type *area);
 int area_type_enum_compare_op(const enum area_type *area1, const enum area_type *area2);
 void area_type_enum_debug_op(const enum area_type *area);
 
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS FOR PLACE ENUM
+////////////////////////////////////////////////////////////////////
+
+void* place_enum_copy_op(const enum place *pl);
+void place_enum_delete_op(enum place *pl);
+int place_enum_compare_op(const enum place *pl1, const enum place *pl2);
+void place_enum_debug_op(const enum place *pl);
+
 #endif

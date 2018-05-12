@@ -250,5 +250,47 @@ void area_type_enum_debug_op(const enum area_type *area)
     if (area == NULL)
         printf("NULL");
     else
-        printf("Card id (%d)", *area);
+        printf("area type (%d)", *area);
+}
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS FOR PLACE ENUM
+////////////////////////////////////////////////////////////////////
+
+void* place_enum_copy_op(const enum place *pl)
+{
+    if (pl == NULL)
+        return NULL;
+
+    enum place *new_place = safe_malloc(sizeof(enum place));
+    *new_place = *pl;
+    return new_place;
+}
+
+void place_enum_delete_op(enum place *pl)
+{
+    free(pl);
+}
+
+int place_enum_compare_op(const enum place *pl1, const enum place *pl2)
+{
+    assert_not_null(pl1, __func__, "pl1 parameter");
+    assert_not_null(pl2, __func__, "pl2 parameter");
+
+    if (pl1 < pl2)
+        return -1;
+    else if (pl1 == pl2)
+        return 0;
+    else
+        return 1;
+}
+
+void place_enum_debug_op(const enum place *pl)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (pl == NULL)
+        printf("NULL");
+    else
+        printf("emum place (%d)", *pl);
 }
