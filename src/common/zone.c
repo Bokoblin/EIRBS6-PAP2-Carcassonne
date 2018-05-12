@@ -28,7 +28,7 @@ struct set *zone__cards_available_zones(struct card *c)
 
 struct set *zone__matching_area_set(enum area_type *area)
 {
-  struct set *z = zone__empty(
+    (void*) area;
     return NULL;
 }
 
