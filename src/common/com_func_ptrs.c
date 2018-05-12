@@ -31,15 +31,16 @@ int move_compare_op(struct move* m1, struct move* m2)
     assert_not_null(m1, __func__, "m1 parameter");
     assert_not_null(m2, __func__, "m2 parameter");
 
-    int serial_m1 = m1->card + m1->check + m1->place + m1->player + m1->dir + m1->onto.x + m1->onto.y;
-    int serial_m2 = m2->card + m2->check + m2->place + m2->player + m2->dir + m2->onto.x + m2->onto.y;
-
-    if (serial_m1 < serial_m2)
-        return -1;
-    else if (serial_m1 == serial_m2) //not relevant but unused for now
-        return 0;
+    if ((m1->onto.x == m2->onto.x) && (m1->onto.y == m2->onto.y)) {
+        if (m1->dir == m2->dir)
+            return 0;
+        else
+            return (m1->dir < m2->dir) ? -1 : 1;;
+    }
+    else if (m1->onto.x == m2->onto.x)
+        return (m1->onto.y < m2->onto.y) ? -1 : 1;
     else
-        return 1;
+        return (m1->onto.x < m2->onto.x) ? -1 : 1;
 }
 
 void move_debug_op(struct move *m)

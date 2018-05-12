@@ -10,7 +10,7 @@ set(TEST_QUEUE test_queue)
 set(TEST_SET test_set)
 set(TEST_STACK test_stack)
 set(TEST_ZONE test_zone)
-set(TEST_AUXFUNCTIONS test_auxfunctions)
+set(TEST_CLIENT test_client)
 
 
 #----------------------------
@@ -145,18 +145,12 @@ file(GLOB TEST_ZONE_SOURCE_FILES
         "../src/common/ADT/set.c"
         )
 
-file(GLOB TEST_AUXFUNCTIONS_SOURCE_FILES
+file(GLOB TEST_CLIENT_SOURCE_FILES
         "common_tests_utils.h"
         "common_tests_utils.c"
-        "test_client_aux_functions.c"
-        "../src/server/board.h"
-        "../src/server/board.c"
+        "test_client.c"
         "../src/common/ADT/set.h"
         "../src/common/ADT/set.c"
-        "../src/common/ADT/stack.h"
-        "../src/common/ADT/stack.c"
-        "../src/common/ADT/queue.h"
-        "../src/common/ADT/queue.c"
         "../src/common/card.h"
         "../src/common/card.c"
         "../src/common/card_type.h"
@@ -164,12 +158,12 @@ file(GLOB TEST_AUXFUNCTIONS_SOURCE_FILES
         "../src/common/com_func_ptrs.h"
         "../src/common/com_func_ptrs.c"
         "../src/common/common_interface.h"
-        "../src/common/deck.h"
-        "../src/common/deck.c"
         "../src/common/utils.h"
         "../src/common/utils.c"
-        "../src/client/client.h"
-        "../src/client/auxfunctions.c"
+        "../src/client/common_clients_functions/client.h"
+        "../src/client/common_clients_functions/client.c"
+        "../src/client/common_clients_functions/micro_board.h"
+        "../src/client/common_clients_functions/micro_board.c"
         )
 
 #----------------------------
@@ -192,8 +186,8 @@ add_executable(${TEST_STACK} ${TEST_STACK_SOURCE_FILES})
 target_link_libraries(${TEST_STACK} ${CMAKE_DL_LIBS})
 add_executable(${TEST_ZONE} ${TEST_ZONE_SOURCE_FILES})
 target_link_libraries(${TEST_ZONE} ${CMAKE_DL_LIBS})
-add_executable(${TEST_AUXFUNCTIONS} ${TEST_AUXFUNCTIONS_SOURCE_FILES})
-target_link_libraries(${TEST_AUXFUNCTIONS} ${CMAKE_DL_LIBS})
+add_executable(${TEST_CLIENT} ${TEST_CLIENT_SOURCE_FILES})
+target_link_libraries(${TEST_CLIENT} ${CMAKE_DL_LIBS})
 
 #----------------------------
 #       CONFIGURE TESTS
@@ -201,10 +195,10 @@ target_link_libraries(${TEST_AUXFUNCTIONS} ${CMAKE_DL_LIBS})
 
 add_test(NAME ${TEST_BOARD} COMMAND ./${TEST_BOARD})
 add_test(NAME ${TEST_CARD} COMMAND ./${TEST_CARD})
+add_test(NAME ${TEST_CLIENT} COMMAND ./${TEST_CLIENT})
 add_test(NAME ${TEST_DECK} COMMAND ./${TEST_DECK})
 add_test(NAME ${TEST_MEEPLE} COMMAND ./${TEST_MEEPLE})
 add_test(NAME ${TEST_QUEUE} COMMAND ./${TEST_QUEUE})
 add_test(NAME ${TEST_SET} COMMAND ./${TEST_SET})
 add_test(NAME ${TEST_STACK} COMMAND ./${TEST_STACK})
 add_test(NAME ${TEST_ZONE} COMMAND ./${TEST_ZONE})
-add_test(NAME ${TEST_AUXFUNCTIONS} COMMAND ./${TEST_AUXFUNCTIONS})

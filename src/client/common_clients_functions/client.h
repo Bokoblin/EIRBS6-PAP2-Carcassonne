@@ -1,8 +1,10 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "../server/board.h"
-#include "../common/utils.h"
+#include "../../common/common_interface.h"
+#include "../../common/meeple.h"
+#include "../../common/utils.h"
+#include "micro_board.h"
 
 /////////////////////////////////////////////////////////////
 /// STRUCTURE
@@ -13,7 +15,7 @@ struct client
     unsigned int id;
     unsigned int nb_players;
     unsigned int nb_meeples;
-    struct board *client_board;
+    struct micro_board *board;
 };
 
 /////////////////////////////////////////////////////////////
@@ -46,12 +48,41 @@ void client__update_board(struct client *client, struct move const previous_move
 
 
 /**
+ * @brief Init a move
+ * @param player_id the player id
+ * @param ci the drawn card id
+ * @param onto the position
+ * @param north_dir the north dir of the card
+ * @return a move
+ */
+struct move move__init(unsigned int player_id, enum card_id ci, struct position onto, enum direction north_dir);
+
+
+/**
+ * @brief Populate the list of possible moves
+ * @param c the client
+ * @param possible_moves the list
+ * @param ci the card id drawn by the server
+ */
+void client__populate_possible_moves_list(struct client *c, struct set *possible_moves, enum card_id ci);
+
+
+/**
+ * @brief Handle how the client chooses a move among all possibles
+ * @note This function must be implemented foreach client
+ * @param possible_moves the list of possible moves
+ * @return the chosen move
+ */
+struct move client__chose_move_strategy(struct set *possible_moves);
+
+
+/**
 * @brief search for a playable position for a card on the client's gameboard
 * @param client the client
 * @param ci the id of the card to play
 * @return struct_move
 */
-struct move client__play_card(struct client *client, enum card_id ci);
+//struct move client__play_card(struct client *client, enum card_id ci);
 
 
 /**

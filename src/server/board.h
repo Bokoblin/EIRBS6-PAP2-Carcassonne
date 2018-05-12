@@ -44,7 +44,19 @@ struct board *board__init();
  * @param b the board
  * @return 0 on success, 1 otherwise
  */
-int board__init_first_card(struct board *b);
+int board__init_deck_and_first_card(struct board *b);
+
+
+/**
+ * @brief Add a custom first card to the board
+ * @note The board must be empty for this to work
+ * @param b the board
+ * @param ci the card id
+ * @param pos the initial position
+ * @param north_dir the north direction of the card
+ * @return 0 on success, 1 otherwise
+ */
+int board__add_custom_first_card(struct board *b, enum card_id ci, struct position pos, enum direction north_dir);
 
 
 /**

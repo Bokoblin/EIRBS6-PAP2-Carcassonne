@@ -27,7 +27,7 @@ int test_card__get_area()
 {
     printf("%s... ", __func__);
 
-    struct card *c = card__init(CARD_ROAD_STRAIGHT_CITY);
+    struct card *c = card__init(FIRST_CARD_ID);
     c->direction = WEST;
 
     if (card__get_relative_area(c, POS_NORTH) != CITY) {

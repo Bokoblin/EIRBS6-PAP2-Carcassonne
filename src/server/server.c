@@ -136,8 +136,7 @@ void game_main(struct queue *players, unsigned int nb_player)
     //=== Board initialization
 
     struct board* board = board__init();
-    init_deck(board->drawing_stack);
-    board__init_first_card(board);
+    board__init_deck_and_first_card(board);
 
     //=== Player initialization
 

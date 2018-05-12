@@ -25,19 +25,18 @@ int test_board__init_first_card()
     printf("%s... ", __func__);
 
     struct board* b = board__init();
-    init_deck(b->drawing_stack);
 
     if (b->first_card != NULL || !set__is_empty(b->cards_set)) {
         board__free(b);
         return !TEST_SUCCESS;
     }
 
-    if (board__init_first_card(NULL) == SUCCESS) {
+    if (board__init_deck_and_first_card(NULL) == SUCCESS) {
         board__free(b);
         return !TEST_SUCCESS;
     }
 
-    board__init_first_card(b);
+    board__init_deck_and_first_card(b);
 
 
     if (b->first_card == NULL || set__is_empty(b->cards_set)) {
@@ -90,9 +89,7 @@ int test_board__retrieve_card_by_position()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_MONASTERY_ALONE;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
+    board__add_custom_first_card(b, CARD_MONASTERY_ALONE, (struct position){ 0, 0}, NORTH);
     struct card *c1 = card__init(CARD_JUNCTION_THREE);
     c1->pos.x = 0;
     c1->pos.y = -1;
@@ -151,9 +148,7 @@ int test_board__add_card__non_empty_set_no_match()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_CITY_ALL_SIDES;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
+    board__add_custom_first_card(b, CARD_CITY_ALL_SIDES, (struct position){ 0, 0}, NORTH);
     struct card *c1 = card__init(CARD_MONASTERY_ALONE);
     c1->pos.x = 0;
     c1->pos.y = 1;
@@ -175,10 +170,8 @@ int test_board__add_card__non_empty_set_with_match()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
-    b->first_card->direction = WEST;
+
+    board__add_custom_first_card(b, CARD_ROAD_STRAIGHT_CITY, (struct position){ 0, 0}, WEST);
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -205,10 +198,7 @@ int test_board__add_card__non_empty_set_with_match_twice()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
-    b->first_card->direction = WEST;
+    board__add_custom_first_card(b, CARD_ROAD_STRAIGHT_CITY, (struct position){ 0, 0}, WEST);
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -234,10 +224,7 @@ int test_board__add_card__non_empty_set()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
-    b->first_card->direction = WEST;
+    board__add_custom_first_card(b, CARD_ROAD_STRAIGHT_CITY, (struct position){ 0, 0}, WEST);
 
     //=== Adding until having a full surrounding for CARD_CITY_TUNNEL
 
@@ -382,13 +369,7 @@ int test_board__add_card__middle()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    struct card* c1 = card__init(CARD_CITY_ALL_SIDES);
-    c1->pos.x = 5;
-    c1->pos.y = 5;
-    set__add(b->cards_set, c1);
-    b->first_card = set__get_umpteenth_no_copy(b->cards_set, 0);
+    board__add_custom_first_card(b, CARD_CITY_ALL_SIDES, (struct position){ 5, 5}, WEST);
 
     int test_result = TEST_SUCCESS;
     struct card *c2 = NULL, *c3 = NULL, *c4 = NULL, *c5 = NULL, *c6 = NULL, *c7 = NULL, *c8 = NULL, *c9 = NULL;
@@ -445,7 +426,6 @@ int test_board__add_card__middle()
         }
     }
 
-    card__free(c1);
     card__free(c2);
     card__free(c3);
     card__free(c4);
@@ -464,10 +444,7 @@ int test_board__add_meeple_success()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
-    b->first_card->direction = WEST;
+    board__add_custom_first_card(b, CARD_ROAD_STRAIGHT_CITY, (struct position){ 0, 0}, WEST);
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -496,10 +473,7 @@ int test_board__add_meeple_unlinked_card_failure()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
-    b->first_card->direction = WEST;
+    board__add_custom_first_card(b, CARD_ROAD_STRAIGHT_CITY, (struct position){ 0, 0}, WEST);
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -528,10 +502,7 @@ int test_board__add_meeple_twice_on_card_failure()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
-    b->first_card->direction = WEST;
+    board__add_custom_first_card(b, CARD_ROAD_STRAIGHT_CITY, (struct position){ 0, 0}, WEST);
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -560,10 +531,7 @@ int test_board__add_meeple_twice_on_zone_failure()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
-    b->first_card->direction = WEST;
+    board__add_custom_first_card(b, CARD_ROAD_STRAIGHT_CITY, (struct position){ 0, 0}, WEST);
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;
@@ -602,10 +570,7 @@ int test_board__add_meeple_on_other_zone_success()
     printf("%s... ", __func__);
 
     struct board *b = board__init();
-    enum card_id ci_first = CARD_ROAD_STRAIGHT_CITY;
-    stack__push(b->drawing_stack, &ci_first);
-    board__init_first_card(b);
-    b->first_card->direction = WEST;
+    board__add_custom_first_card(b, CARD_ROAD_STRAIGHT_CITY, (struct position){ 0, 0}, WEST);
 
     struct card *c1 = card__init(CARD_CITY_TUNNEL);
     c1->pos.x = 0;

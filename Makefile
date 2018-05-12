@@ -10,6 +10,7 @@ INS_DIR = install
 COV_DIR = coverage
 
 CLI_DIR = $(SRC_DIR)/client
+CLF_DIR = $(CLI_DIR)/common_clients_functions
 COM_DIR = $(SRC_DIR)/common
 ADT_DIR = $(COM_DIR)/ADT
 SRV_DIR = $(SRC_DIR)/server
@@ -18,16 +19,16 @@ CC			= gcc
 CFLAGS		= -Wall -Wextra -std=c99 -g -O0 -fPIC
 CPPFLAGS	= -I ${SRC_DIR} -I ${TST_DIR} -I ${INS_DIR}
 LFFLAGS		= -lm -ldl
-SRVFLAGS	= -rdynamic
+SRVFLAGS	=
 
 SERVER_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(SRV_DIR)/*.c)
-CLIENT_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(CLI_DIR)/auxfunctions.c $(SRV_DIR)/board.c)
+CLIENT_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(CLF_DIR)/*.c)
 
 SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
 CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
 
 SERVER_EXEC	= server
-TESTS_EXEC 	= test_auxfunctions test_board test_card test_deck test_meeple test_queue test_set test_stack test_zone
+TESTS_EXEC 	= test_board test_card test_client test_deck test_meeple test_queue test_set test_stack test_zone
 
 
 #######################################################
@@ -67,7 +68,7 @@ prebuild:
 
 build: prebuild $(SERVER_EXEC) $(CLIENT_OBJ)
 	@echo building clients...
-	@for client in `find $(CLI_DIR) -name "client*.c" | sed -e "s/\.c$$//" `; do \
+	@for client in `find $(CLI_DIR) -name "client_4410_*.c" | sed -e "s/\.c$$//" `; do \
 		echo building $${client}.c; \
 		$(CC) $(CFLAGS) -c $${client}.c -o $${client}.o; \
 		$(CC) -shared -o $${client}.so $${client}.o $(CLIENT_OBJ); \
@@ -207,11 +208,6 @@ docs:
 ###				TEST EXECUTABLES
 #######################################################
 
-test_auxfunctions: $(TST_DIR)/test_client_aux_functions.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
-			$(COM_DIR)/card.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(SRV_DIR)/board.o \
-			$(CLI_DIR)/auxfunctions.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
-	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
-
 test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(SRV_DIR)/board.o \
 			$(COM_DIR)/card.o $(COM_DIR)/meeple.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o \
 			$(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
@@ -219,6 +215,11 @@ test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/u
 
 test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
 			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
+	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
+
+test_client: $(TST_DIR)/test_client.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(CLF_DIR)/micro_board.o \
+			$(CLF_DIR)/client.o $(ADT_DIR)/set.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(COM_DIR)/deck.o \

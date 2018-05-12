@@ -6,6 +6,7 @@
 
 #define MAX_ZONES 13
 #define MAX_SIDE_ZONES 12
+#define FIRST_CARD_ID CARD_ROAD_STRAIGHT_CITY
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURES

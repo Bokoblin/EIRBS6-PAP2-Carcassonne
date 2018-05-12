@@ -13,16 +13,17 @@ struct board *board__init()
     b->meeples_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op, meeple_debug_op);
     b->moves_queue = queue__empty(move_copy_op, move_delete_op, move_debug_op);
     b->drawing_stack = stack__empty(&cardid_copy_op, &cardid_delete_op, &cardid_debug_op);;
-    //NOTE: Not filling it inside init at least for now because board is also used by clients
     b->first_card = NULL;
 
     return b;
 }
 
-int board__init_first_card(struct board *b)
+int board__init_deck_and_first_card(struct board *b)
 {
     if (b == NULL)
         return !SUCCESS;
+
+    init_deck(b->drawing_stack);
 
     if (stack__is_empty(b->drawing_stack)) {
         printf("[ERROR] : Card drawing stack is empty, please fill it before");
@@ -30,10 +31,20 @@ int board__init_first_card(struct board *b)
     }
 
     enum card_id *ci = stack__pop(b->drawing_stack);
-    struct card *c = card__init(*ci);
-    free(ci);
-    c->pos.x = 0;
-    c->pos.y = 0;
+    int res = board__add_custom_first_card(b, *ci, (struct position){ 0, 0}, NORTH);
+    cardid_delete_op(ci);
+
+    return res;
+}
+
+int board__add_custom_first_card(struct board *b, enum card_id ci, struct position pos, enum direction north_dir)
+{
+    if (b == NULL)
+        return !SUCCESS;
+
+    struct card* c = card__init(ci);
+    c->pos = pos;
+    c->direction = north_dir;
     set__add(b->cards_set, c);
     b->first_card = set__get_umpteenth_no_copy(b->cards_set, 0);
     card__free(c);
