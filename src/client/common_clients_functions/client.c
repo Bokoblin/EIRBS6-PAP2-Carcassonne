@@ -61,7 +61,7 @@ struct move move__init(unsigned int player_id, enum card_id ci, struct position 
 
 void client__populate_possible_moves_list(struct client *c, struct set *possible_moves, enum card_id ci)
 {
-    assert_not_null(c, __func__ , "on b parameter");
+    assert_not_null(c, __func__ , "b parameter");
 
     if (ci == LAST_CARD)
         exit_on_error("Card is invalid");

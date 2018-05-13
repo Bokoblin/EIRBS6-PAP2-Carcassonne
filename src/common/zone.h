@@ -32,7 +32,7 @@ struct zone
 /**
  * @brief Creates and initialise a new zone
  * 
- * @param area_type Is the area type of the zone
+ * @param area Is the area type of the zone
  * @return struct zone* 
  */
 struct zone *zone__empty(enum area_type area);
@@ -52,7 +52,7 @@ struct set *zone__cards_available_zones(struct card *c);
 /**
  * @brief Returns the set containing the given area
  *
- * @param area_type is a pointer to the area in the enum area_type areas[MAX_ZONES] in the card
+ * @param area is a pointer to the area in the enum area_type areas[MAX_ZONES] in the card
  * @return struct set* containing the area
  */
 struct set *zone__matching_area_set(enum area_type *area);
@@ -62,7 +62,7 @@ struct set *zone__matching_area_set(enum area_type *area);
  * @brief Searches a pointer the the area in "allowed_positions" in the same zone as the given area pointer
  * 
  * @param c is the card where the researched is done
- * @param area_type is a pointer to one of the areas on the given card
+ * @param area is a pointer to one of the areas on the given card
  * @return enum area_type* a pointer to the position on the card having to same area as the area parameter,
  * and which is into the "allowed_positions" array according the the given card c
  */

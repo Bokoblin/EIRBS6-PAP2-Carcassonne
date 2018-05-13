@@ -38,14 +38,14 @@ void assert_not_null(const void *ptr, const char *caller_fct, char *object);
 
 
 /**
- * Displays an error message and exits the application
+ * @brief an error message and exits the application
  * @param message the error message to print
  */
 void exit_on_error(char* message);
 
 
 /**
- * @bried Function calculating a positive modulo between two values
+ * @brief Function calculating a positive modulo between two values
  * @param a a value
  * @param b a value
  * @return a modulo

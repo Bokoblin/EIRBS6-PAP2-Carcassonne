@@ -18,6 +18,8 @@
 /**
  * @brief Print if a test succeeded or not, in color
  * @param result the test result
+ * @param nb_success the number of test successes
+ * @param nb_tests the number of test executed
  */
 void print_test_result(int result, int *nb_success, int *nb_tests);
 

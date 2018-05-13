@@ -77,15 +77,6 @@ struct move client__chose_move_strategy(struct set *possible_moves);
 
 
 /**
-* @brief search for a playable position for a card on the client's gameboard
-* @param client the client
-* @param ci the id of the card to play
-* @return struct_move
-*/
-//struct move client__play_card(struct client *client, enum card_id ci);
-
-
-/**
  * @brief Display debug information on client
  * @param client the client
  */

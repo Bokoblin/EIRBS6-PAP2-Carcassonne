@@ -12,7 +12,7 @@ struct move client__chose_move_strategy(struct set *possible_moves)
 {
     //CLIENT 4410 - RANDOM STRATEGY
 
-    assert_not_null(possible_moves, __func__ , "on possible_moves parameter");
+    assert_not_null(possible_moves, __func__ , "possible_moves parameter");
 
     if (set__size(possible_moves) == 0)
         exit_on_error("There are no valid possibilities");

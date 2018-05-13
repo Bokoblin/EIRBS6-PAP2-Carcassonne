@@ -29,7 +29,7 @@ struct card
 
 /**
  * @brief Initialize a card with the type card_type
- * @param card_type pointer towards the type of card wanted
+ * @param card_id the id of the wanted card
  * @return a pointer towards a newly created card
  */
 struct card* card__init(enum card_id card_id);
@@ -44,7 +44,7 @@ void card__free(struct card *card);
 
 /**
  * @brief Get the area type at place relatively to the card (considering the north direction)
- * @example if card direction is WEST and place NW, we thus need relative NW which is EN
+ * @details For example, if card direction is WEST and place NW, we thus need relative NW which is EN
  * @param card a card
  * @param place the zone that we want to get
  * @return the area_type of the area place
@@ -55,12 +55,11 @@ enum area_type card__get_relative_area(struct card *card, enum place place);
 /**
  * @warning !!! ALPHA FUNCTION !!!
  * @brief Get the area type at place relatively of the environment
- * @example if card direction is west and place NW, we thus need absolute/real NW which is EN
  * @param card a card
  * @param place the zone that we want to get
  * @return the area_type of the area place
  */
-enum area_type card__get_absolute_area(struct card *card, enum place place);
+enum area_type card__get_absolute_area(struct card *card, enum place place); //FIXME: remove unused alpha function?
 
 
 /**

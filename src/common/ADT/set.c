@@ -134,33 +134,33 @@ int set__add(struct set *set, void* x)
     return SUCCESS;
 }
 
-int set__add_no_copy(struct set *set, void* x)
+int set__add_no_copy(struct set *s, void* e)
 {
-    assert_not_null(set, __func__, "set parameter");
-    assert_not_null(set->s, __func__, "set array");
+    assert_not_null(s, __func__, "s parameter");
+    assert_not_null(s->s, __func__, "s array");
 
-    if  (x == NULL)
+    if  (e == NULL)
         return !SUCCESS;
 
-    size_t pos = find(set, 0, set->size, x);
-    if  ((pos < set->size) && (set->cmp(set->s[pos], x) == 0))
+    size_t pos = find(s, 0, s->size, e);
+    if  ((pos < s->size) && (s->cmp(s->s[pos], e) == 0))
         return !SUCCESS;
 
     //Increase memory if needed
-    if (set->size == set->capacity - 1) {
-        set->capacity = set->capacity * 2;
-        set->s = realloc(set->s, sizeof(void *) * set->capacity);
-        if (set->s == NULL)
+    if (s->size == s->capacity - 1) {
+        s->capacity = s->capacity * 2;
+        s->s = realloc(s->s, sizeof(void *) * s->capacity);
+        if (s->s == NULL)
             return !SUCCESS;
         else
-            for (size_t i = set->capacity / 2; i < set->capacity; i++)
-                set->s[i] = NULL;
+            for (size_t i = s->capacity / 2; i < s->capacity; i++)
+                s->s[i] = NULL;
     }
 
-    //Add x into the set
-    shift_right(set, pos, set->size);
-    set->s[pos] = x;
-    set->size++;
+    //Add e into the s
+    shift_right(s, pos, s->size);
+    s->s[pos] = e;
+    s->size++;
 
     return SUCCESS;
 }
@@ -227,23 +227,23 @@ size_t set__size(struct set const * set)
     return set->size;
 }
 
-void* set__get_umpteenth(struct set const *set, size_t i)
+void* set__get_umpteenth(struct set const *s, size_t i)
 {
-    assert_not_null(set, __func__, "set parameter");
-    assert_not_null(set->s, __func__, "set array");
-    if (i >= set__size(set))
+    assert_not_null(s, __func__, "s parameter");
+    assert_not_null(s->s, __func__, "s array");
+    if (i >= set__size(s))
         return NULL;
-    return set->copy(set->s[i]);
+    return s->copy(s->s[i]);
 }
 
-void* set__get_umpteenth_no_copy(struct set const *set, size_t i)
+void* set__get_umpteenth_no_copy(struct set const *s, size_t i)
 {
-    assert_not_null(set, __func__, "set parameter");
-    assert_not_null(set->s, __func__, "set array");
+    assert_not_null(s, __func__, "s parameter");
+    assert_not_null(s->s, __func__, "s array");
 
-    if (i >= set__size(set))
+    if (i >= set__size(s))
         return NULL;
-    return set->s[i];
+    return s->s[i];
 }
 
 
@@ -292,26 +292,26 @@ void set__free(struct set *set)
     free(set);
 }
 
-void set__debug(const struct set *set, int is_compact)
+void set__debug(const struct set *s, int is_compact)
 {
     setvbuf (stdout, NULL, _IONBF, 0);
-    if (set == NULL || set->s == NULL)
+    if (s == NULL || s->s == NULL)
         printf("Set (NULL)\n");
     else {
         if (!is_compact) {
-            printf("Set (capacity: %zu, size: %zu, content: {\n", set->capacity, set->size);
+            printf("Set (capacity: %zu, size: %zu, content: {\n", s->capacity, s->size);
             size_t i = 0;
-            while (i < set->size) {
+            while (i < s->size) {
                 printf("\t");
-                set->debug(set->s[i]);
+                s->debug(s->s[i]);
                 i++;
             }
             printf("})\n");
         } else {
             printf("{ ");
             size_t i = 0;
-            while (i < set->size) {
-                set->debug(set->s[i]);
+            while (i < s->size) {
+                s->debug(s->s[i]);
                 i++;
             }
             printf("} ");

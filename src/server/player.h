@@ -6,6 +6,10 @@
 
 #define DEFAULT_MEEPLE_NUMBER 8 //With one for score counting
 
+////////////////////////////////////////////////////////////////////
+///     STRUCTURE
+////////////////////////////////////////////////////////////////////
+
 struct player
 {
     unsigned int score;
@@ -18,11 +22,17 @@ struct player
     void (*finalize)(void);
 };
 
+
+////////////////////////////////////////////////////////////////////
+///     FUNCTIONS
+////////////////////////////////////////////////////////////////////
+
 /**
  * @brief Inits the player
  * @return a newly allocated struct player pointer
  */
 struct player *player__init(unsigned int id, void *lib_ptr);
+
 
 /**
  * @brief Release memory of a player
