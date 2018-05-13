@@ -464,7 +464,7 @@ int test_set__debug_data(void)
     if (set__add(set, &v7)) test_result = !TEST_SUCCESS;
 
     printf("(expected: 0 3 4 7), Got: ");
-    set__debug_data(set, true);
+    set__debug(set, true);
 
     set__free(set);
 

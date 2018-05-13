@@ -45,7 +45,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
     int was_card_added = board__add_card(b, card) == SUCCESS;
 
     if(!was_card_added) {
-        set__debug_data(b->cards_set, false);
+        set__debug(b->cards_set, false);
         printf("\t[SERVER] The card sent by the client isn't valid.");
         //exit(EXIT_FAILURE);
     }
@@ -56,7 +56,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
     int was_meeple_added = meeple == NULL ? NOT_APPLICABLE : board__add_meeple(b, meeple) == SUCCESS;
 
     if(!was_meeple_added) {
-        set__debug_data(b->meeples_set, false);
+        set__debug(b->meeples_set, false);
         printf("\t[SERVER] The meeple position sent by the client isn't valid.");
         //exit(EXIT_FAILURE);
     }

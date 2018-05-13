@@ -176,6 +176,6 @@ void set__free(struct set *s);
  * @param set is the set you want to print
  * @param is_compact to display a compact debug (only values)
  */
-void set__debug_data(const struct set *set, int is_compact);
+void set__debug(const struct set *set, int is_compact);
 
 #endif

@@ -32,12 +32,12 @@ void client__update_board(struct client *client, struct move const previous_move
             if (micro_board__is_card_adding_possible(client->board, c)) {
                 if (micro_board__add_card_to_board(client->board, c) != SUCCESS) {
                     card_debug_op(c);
-                    set__debug_data(client->board->cards_set, false);
+                    set__debug(client->board->cards_set, false);
                     exit_on_error("\n The card sent by the server hasn't been added");
                 }
             } else {
                 card_debug_op(c);
-                set__debug_data(client->board->cards_set, false);
+                set__debug(client->board->cards_set, false);
                 exit_on_error("\nThe card sent my the server can't be added");
             }
             card__free(c);
@@ -110,5 +110,5 @@ void client__debug(struct client *client)
            client->id, client->nb_players, client->nb_meeples);
     printf("Board: first card: %d and card set: \n", client->board->first_card->type.id);
     printf("Card set: ");
-    set__debug_data(client->board->cards_set, false);
+    set__debug(client->board->cards_set, false);
 }

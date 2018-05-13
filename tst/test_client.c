@@ -104,9 +104,9 @@ int test_client__client_update_board_mixed_moves()
         return !TEST_SUCCESS;
     }
 
-    set__debug_data(cl.board->cards_set, false);
+    set__debug(cl.board->cards_set, false);
     client__update_board(&cl, previous_moves, nb_players);
-    set__debug_data(cl.board->cards_set, false);
+    set__debug(cl.board->cards_set, false);
 
     if (set__size(cl.board->cards_set) != 3) {
         client__free(&cl);

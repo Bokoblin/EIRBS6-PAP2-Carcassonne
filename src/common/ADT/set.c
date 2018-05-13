@@ -257,7 +257,7 @@ void set__free(struct set *set)
     free(set);
 }
 
-void set__debug_data(const struct set *set, int is_compact)
+void set__debug(const struct set *set, int is_compact)
 {
     setvbuf (stdout, NULL, _IONBF, 0);
     if (set == NULL || set->s == NULL)
