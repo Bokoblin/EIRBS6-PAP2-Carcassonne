@@ -246,6 +246,41 @@ void* set__get_umpteenth_no_copy(struct set const *set, size_t i)
     return set->s[i];
 }
 
+
+struct set *set__fusion(struct set const *set1, struct set const *set2)
+{
+    assert_not_null(set1, __func__, "set1 parameter");
+    assert_not_null(set1->s, __func__, "set1 array");
+    assert_not_null(set2, __func__, "set2 parameter");
+    assert_not_null(set2->s, __func__, "set2 array");
+
+    if (((void*) set1->copy   != (void*) set2->copy)
+    || ((void*)  set1->cmp    != (void*) set2->cmp)
+    || ((void*)  set1->delete != (void*) set2->delete)
+    || ((void*)  set1->debug  != (void*) set2->debug)){
+        printf("Set's operator functions unmatching in set__fusion.");
+        return NULL;
+    }
+
+    struct set *fusioned_set = set__empty(set1->copy, set1->delete, set1->delete, set1->debug);
+
+    size_t i = 0;
+    size_t size = set__size(set1);
+    while (i < size){
+        set__add(fusioned_set, set1->copy(set1->s[i]));
+        i++;
+    }
+
+    i = 0;
+    size = set__size(set2);
+    while (i < size){
+        set__add(fusioned_set, set2->copy(set2->s[i]));
+        i++;
+    }
+
+    return fusioned_set;
+}
+
 void set__free(struct set *set)
 {
     if (set == NULL)

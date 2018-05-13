@@ -163,6 +163,15 @@ void* set__get_umpteenth_no_copy(struct set const *set, size_t i);
 
 
 /**
+ * @brief Realise the fusion of the two given set
+ * WARNING:The functions given in the initialisation MUST BE the same for the two sets.
+ * 
+ * @return a struct set which is the fusion of the two given set
+ */
+struct set *set__fusion(struct set const *set1, struct set const *set2);
+
+
+/**
  * @brief Free all the allocated memory in the set.
  * 
  * @param s is the set you want to free
