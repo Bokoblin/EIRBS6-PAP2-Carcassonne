@@ -36,21 +36,6 @@ enum area_type card__get_relative_area(struct card *card, enum place place)
     return card->type.areas[(place + DIRECTION_ROTATION_SHIFT - PLACE_SHIFT) % MAX_SIDE_ZONES];
 }
 
-//!!! ALPHA FUNCTION !!!
-enum area_type card__get_absolute_area(struct card *card, enum place place)
-{
-    assert_not_null(card, __func__, "card parameter");
-
-    if (place >= LAST_POS)
-        return INVALID_AREA;
-
-    if (place == POS_CENTER)
-        return card->type.areas[place-1];
-
-    //Get absolute direction and not where direction is on card's sides
-    return card->type.areas[(MAX_SIDE_ZONES - (NB_SUB_DIRECTIONS * card->direction) + place) % MAX_ZONES];
-}
-
 unsigned int card__get_neighbour_number(struct card *card)
 {
     assert_not_null(card, __func__, "card parameter");

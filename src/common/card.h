@@ -53,16 +53,6 @@ enum area_type card__get_relative_area(struct card *card, enum place place);
 
 
 /**
- * @warning !!! ALPHA FUNCTION !!!
- * @brief Get the area type at place relatively of the environment
- * @param card a card
- * @param place the zone that we want to get
- * @return the area_type of the area place
- */
-enum area_type card__get_absolute_area(struct card *card, enum place place); //FIXME: remove unused alpha function?
-
-
-/**
  * @brief Get the number of neighbours a card has
  * @param card a card
  * @return
