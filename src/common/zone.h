@@ -60,6 +60,17 @@ struct set *zone__matching_area_set(enum area_type *area);
 
 
 /**
+ * @brief Searches a pointor the the area in "allowed_positions" in the same zone as the given area pointor
+ * 
+ * @param c is the card where the researched is done
+ * @param area_type is a pointor to one of the areas on the given card
+ * @return enum area_type* a pointor to the position on the card having to same area as the area parameter,
+ * and which is into the "allowed_positions" array according the the given card c
+ */
+enum area_type *zone__serach_allowed_position_area(struct card *c, enum area_type *area);
+
+
+/**
  * @brief Adds all the areas on the card that makes a same zone
  * @note also update the score and the holes numbers on the given struct zone
  * 
@@ -84,10 +95,11 @@ int *zone__is_fusion_required(struct card *c);
 
 
 /**
- * @brief Make a fusion of z1 and z2
- * @return a new zone which is the fusion of z1 and z2
+ * @brief Make a fusion of z1 and z2 into z1, and remove z2 from the global set.
+ * Please note that the card making the fusion have to be already in one of the two zones
+ * @return SUCCESS or FAILED (both z1 and z2 aren't modified if the fusion failed)
  */
-struct zone *zone__fusion_zone(struct zone *z1, struct zone *z2);
+int zone__fusion_zone(struct set *global_zone_set, struct zone *z1, struct zone *z2);
 
 
 /**

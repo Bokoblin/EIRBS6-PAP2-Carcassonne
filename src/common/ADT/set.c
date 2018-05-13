@@ -258,7 +258,7 @@ struct set *set__fusion(struct set const *set1, struct set const *set2)
     || ((void*)  set1->cmp    != (void*) set2->cmp)
     || ((void*)  set1->delete != (void*) set2->delete)
     || ((void*)  set1->debug  != (void*) set2->debug)){
-        printf("Set's operator functions unmatching in set__fusion.");
+        printf("Set's operator functions unmatching in set__fusion.\n");
         return NULL;
     }
 
