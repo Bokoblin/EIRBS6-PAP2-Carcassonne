@@ -112,8 +112,8 @@ void queue__debug(struct queue *q, int is_compact);
 typedef void (*applying_func_t)(void *object);
 
 /**
- * @brief Applies a function with only a set object as parameters
- * @param s the set
+ * @brief Applies a function with only a queue object as parameter
+ * @param q the queue
  * @param f the applying function
  */
 void queue__apply_to_all(struct queue *q, applying_func_t f);

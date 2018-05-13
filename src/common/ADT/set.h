@@ -196,7 +196,7 @@ void set__debug(const struct set *s, int is_compact);
 typedef void (*applying_func_t)(void *object);
 
 /**
- * @brief Applies a function with only a set object as parameters
+ * @brief Applies a function with only a set object as parameter
  * @param s the set
  * @param f the applying function
  */

@@ -107,8 +107,8 @@ void stack__debug(struct stack *s, int is_compact);
 typedef void (*applying_func_t)(void *object);
 
 /**
- * @brief Applies a function with only a set object as parameters
- * @param s the set
+ * @brief Applies a function with only a stack object as parameter
+ * @param s the stack
  * @param f the applying function
  */
 void stack__apply_to_all(struct stack *s, applying_func_t f);
