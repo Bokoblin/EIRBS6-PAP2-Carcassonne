@@ -357,6 +357,32 @@ int test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug()
 }
 
 
+
+int test_queue__apply_to_all()
+{
+    printf("%s ", __func__);
+
+    struct queue *q = queue__empty(&operator_copy, &operator_delete, &operator_debug);
+    enum card_id card1 = CARD_CITY_TUNNEL_SHLD;
+    enum card_id card2 = CARD_CITY_TUNNEL;
+    enum card_id card3 = CARD_PLAIN_TUNNEL;
+    enum card_id card4 = CARD_PLAIN_TWO_CITIES;
+
+    queue__enqueue(q, &card1);
+    queue__enqueue(q, &card2);
+    queue__enqueue(q, &card3);
+    queue__enqueue(q, &card4);
+    queue__enqueue(q, &card1);
+
+    queue__apply_to_all(q, (applying_func_t) plus_op);
+
+    printf("Expected: (6 7 8 9 6)... Got: ");
+    queue__debug(q, true);
+
+    return TEST_SUCCESS;
+}
+
+
 int main()
 {
     printf("----------- TEST QUEUE -----------\n");
@@ -376,6 +402,7 @@ int main()
     print_test_result(test_queue__dequeue_on_non_empty_queue(), &nb_success, &nb_tests);
     print_test_result(test_queue_length(), &nb_success, &nb_tests);
     print_test_result(test_queue_debug(), &nb_success, &nb_tests);
+    print_test_result(test_queue__apply_to_all(), &nb_success, &nb_tests);
     print_test_result(test_queue__enqueue_and_dequeue_on_multiple_elements_with_debug(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);

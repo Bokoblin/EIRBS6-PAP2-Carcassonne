@@ -60,3 +60,8 @@ void operator_debug(const enum card_id *p_card_id)
     else
         printf("%d ", *p_card_id);
 }
+
+void plus_op(enum card_id *ci)
+{
+    *ci += 1;
+}

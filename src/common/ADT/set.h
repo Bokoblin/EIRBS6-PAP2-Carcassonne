@@ -189,4 +189,17 @@ void set__free(struct set *s);
  */
 void set__debug(const struct set *s, int is_compact);
 
+
+/**
+ * function pointer for lambda applying
+ */
+typedef void (*applying_func_t)(void *object);
+
+/**
+ * @brief Applies a function with only a set object as parameters
+ * @param s the set
+ * @param f the applying function
+ */
+void set__apply_to_all(struct set *s, applying_func_t f);
+
 #endif

@@ -75,7 +75,7 @@ int test_stack__push_on_non_empty_stack()
     return TEST_SUCCESS;
 }
 
-int test_stack_NULL()
+int test_stack__NULL()
 {
     printf("%s... ", __func__);
 
@@ -183,7 +183,7 @@ int test_stack__pop_on_non_empty_stack()
     return TEST_SUCCESS;
 }
 
-int test_stack_length()
+int test_stack__length()
 {
     printf("%s... ", __func__);
 
@@ -209,7 +209,7 @@ int test_stack_length()
     return TEST_SUCCESS;
 }
 
-int test_stack_debug()
+int test_stack__debug()
 {
     printf("%s (expected 5 6 7 8 5)... ", __func__);
 
@@ -232,6 +232,30 @@ int test_stack_debug()
     return TEST_SUCCESS;
 }
 
+int test_stack__apply_to_all()
+{
+    printf("%s ", __func__);
+
+    struct stack *s = stack__empty(&operator_copy, &operator_delete, &operator_debug);
+    enum card_id card1 = CARD_CITY_TUNNEL_SHLD;
+    enum card_id card2 = CARD_CITY_TUNNEL;
+    enum card_id card3 = CARD_PLAIN_TUNNEL;
+    enum card_id card4 = CARD_PLAIN_TWO_CITIES;
+
+    stack__push(s, &card1);
+    stack__push(s, &card2);
+    stack__push(s, &card3);
+    stack__push(s, &card4);
+    stack__push(s, &card1);
+
+    stack__apply_to_all(s, (applying_func_t) plus_op);
+
+    printf("Expected: (6 7 8 9 6)... Got: ");
+    stack__debug(s, true);
+
+    return TEST_SUCCESS;
+}
+
 int main()
 {
     printf("----------- TEST STACK -----------\n");
@@ -243,13 +267,14 @@ int main()
     print_test_result(test_stack__is_empty_on_empty_stack(), &nb_success, &nb_tests);
     print_test_result(test_stack__is_empty_on_non_empty_stack(), &nb_success, &nb_tests);
     print_test_result(test_stack__push_on_non_empty_stack(), &nb_success, &nb_tests);
-    print_test_result(test_stack_NULL(), &nb_success, &nb_tests);
+    print_test_result(test_stack__NULL(), &nb_success, &nb_tests);
     print_test_result(test_stack__push_on_multiple_elements(), &nb_success, &nb_tests);
     print_test_result(test_stack__peek(), &nb_success, &nb_tests);
     print_test_result(test_stack__pop_on_empty_stack(), &nb_success, &nb_tests);
     print_test_result(test_stack__pop_on_non_empty_stack(), &nb_success, &nb_tests);
-    print_test_result(test_stack_length(), &nb_success, &nb_tests);
-    print_test_result(test_stack_debug(), &nb_success, &nb_tests);
+    print_test_result(test_stack__length(), &nb_success, &nb_tests);
+    print_test_result(test_stack__debug(), &nb_success, &nb_tests);
+    print_test_result(test_stack__apply_to_all(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
 

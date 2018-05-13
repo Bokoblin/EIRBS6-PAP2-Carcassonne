@@ -40,6 +40,6 @@ void* operator_copy(const enum card_id *p_card_id);
 void operator_delete(enum card_id *p_card_id);
 int operator_compare(const enum card_id *ci1, const enum card_id *ci2);
 void operator_debug(const enum card_id *p_card_id);
-
+void plus_op(enum card_id *ci);
 
 #endif

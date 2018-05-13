@@ -155,3 +155,11 @@ void stack__debug(struct stack *s, int is_compact)
             printf("\n)\n");
     }
 }
+
+void stack__apply_to_all(struct stack *s, applying_func_t f)
+{
+    for (size_t i = 0; i < s->head; i++){
+        if (s->array[i] != NULL)
+            f(s->array[i]);
+    }
+}

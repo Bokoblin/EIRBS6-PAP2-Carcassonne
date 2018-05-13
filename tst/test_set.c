@@ -471,6 +471,29 @@ int test_set__debug_data(void)
     return test_result;
 }
 
+int test_stack__apply_to_all()
+{
+    printf("%s ", __func__);
+
+    struct set *s = set__empty(&operator_copy, &operator_delete, &operator_compare, &operator_debug);
+    enum card_id card1 = CARD_CITY_TUNNEL_SHLD;
+    enum card_id card2 = CARD_CITY_TUNNEL;
+    enum card_id card3 = CARD_PLAIN_TUNNEL;
+    enum card_id card4 = CARD_PLAIN_TWO_CITIES;
+
+    set__add(s, &card1);
+    set__add(s, &card2);
+    set__add(s, &card3);
+    set__add(s, &card4);
+
+    set__apply_to_all(s, (applying_func_t) plus_op);
+
+    printf("Expected: (6 7 8 9)... Got: ");
+    set__debug(s, true);
+
+    return TEST_SUCCESS;
+}
+
 int main()
 {
     printf("----------- TEST SET -----------\n");
@@ -490,6 +513,7 @@ int main()
     print_test_result(test_set__get_umpteenth(), &nb_success, &nb_tests);
     print_test_result(test_set__get_umpteenth_no_copy(), &nb_success, &nb_tests);
     print_test_result(test_set__debug_data(), &nb_success, &nb_tests);
+    print_test_result(test_stack__apply_to_all(), &nb_success, &nb_tests);
 
     print_test_summary(nb_success, nb_tests);
 
