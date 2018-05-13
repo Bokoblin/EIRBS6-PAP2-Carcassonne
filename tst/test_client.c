@@ -1,6 +1,5 @@
 #include "common_tests_utils.h"
 #include "../src/client/common_clients_functions/client.h"
-#include "../src/common/com_func_ptrs.h"
 
 
 int test_client__client_init()
@@ -134,7 +133,7 @@ int test_client__client_populate_possible_moves_list()
 
     client__update_board(&cl, previous_moves, nb_players);
 
-    struct set *possible_moves = set__empty(move_copy_op, move_delete_op, move_compare_op, move_debug_op);
+    struct set *possible_moves = set__empty(move__copy_op, move__delete_op, move__compare_op, move__debug_op);
     client__populate_possible_moves_list(&cl, possible_moves, CARD_PLAIN_CITY_ROAD);
 
     if (set__is_empty(possible_moves)) {

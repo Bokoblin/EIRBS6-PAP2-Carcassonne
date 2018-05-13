@@ -1,7 +1,7 @@
 #ifndef CARD_TYPE_DEF_H
 #define CARD_TYPE_DEF_H
 
-#include "common_interface.h"
+#include "interface.h"
 #include "area_type.h"
 
 #define MAX_ZONES 13

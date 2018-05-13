@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "../common/common_interface.h"
+#include "../common/interface.h"
 #include "../common/utils.h"
 
 #define DEFAULT_MEEPLE_NUMBER 8 //With one for score counting
@@ -29,5 +29,15 @@ struct player *player__init(unsigned int id, void *lib_ptr);
  * @param p the player
  */
 void player__free(struct player *p);
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS (COPY, DELETE, COMPARE, DEBUG)
+////////////////////////////////////////////////////////////////////
+
+void* player__copy_op(const struct player *p);
+void player__delete_op(struct player *p);
+int player__compare_op(const struct player *p1, const struct player *p2);
+void player__debug_op(const struct player *p);
 
 #endif

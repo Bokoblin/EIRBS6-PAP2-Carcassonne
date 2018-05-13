@@ -1,5 +1,4 @@
-#include "../common/common_interface.h"
-#include "../common/com_func_ptrs.h"
+#include "../common/interface.h"
 #include "common_clients_functions/client.h"
 #include <stdio.h>
 
@@ -46,7 +45,7 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     client__update_board(&client, previous_moves, n_moves);
 
     //=== Choosing next move following board and drawn card
-    struct set *possible_moves = set__empty(move_copy_op, move_delete_op, move_compare_op, move_debug_op);
+    struct set *possible_moves = set__empty(move__copy_op, move__delete_op, move__compare_op, move__debug_op);
     client__populate_possible_moves_list(&client, possible_moves, card);
     struct move m = client__chose_move_strategy(possible_moves);
     set__free(possible_moves);

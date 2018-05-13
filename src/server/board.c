@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "board.h"
-#include "../common/com_func_ptrs.h"
 #include "../common/deck.h"
 #include "../common/meeple.h"
 #include "../common/utils.h"
@@ -9,10 +8,10 @@ struct board *board__init()
 {
     struct board *b = safe_malloc(sizeof(struct board));
 
-    b->cards_set = set__empty(card_copy_op, card_delete_op, card_compare_op, card_debug_op);
+    b->cards_set = set__empty(card__copy_op, card__delete_op, card__compare_op, card__debug_op);
     b->meeples_set = set__empty(meeple_copy_op, meeple_delete_op, meeple_compare_op, meeple_debug_op);
-    b->moves_queue = queue__empty(move_copy_op, move_delete_op, move_debug_op);
-    b->drawing_stack = stack__empty(&cardid_copy_op, &cardid_delete_op, &cardid_debug_op);;
+    b->moves_queue = queue__empty(move__copy_op, move__delete_op, move__debug_op);
+    b->drawing_stack = stack__empty(&card_id__copy_op, &card_id__delete_op, &card_id__debug_op);;
     b->first_card = NULL;
 
     return b;
@@ -32,7 +31,7 @@ int board__init_deck_and_first_card(struct board *b)
 
     enum card_id *ci = stack__pop(b->drawing_stack);
     int res = board__add_custom_first_card(b, *ci, (struct position){ 0, 0}, NORTH);
-    cardid_delete_op(ci);
+    card_id__delete_op(ci);
 
     return res;
 }

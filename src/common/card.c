@@ -154,3 +154,76 @@ void card__unlink_neighbours(struct card* c)
         }
     }
 }
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS (COPY, DELETE, COMPARE, DEBUG)
+////////////////////////////////////////////////////////////////////
+
+void* card__copy_op(const struct card *c)
+{
+    assert_not_null(c, __func__, "c parameter");
+
+    struct card *new_card = safe_malloc(sizeof(struct card));
+    new_card->type = c->type;
+    new_card->direction = c->direction;
+    new_card->pos = c->pos;
+
+    for (int i = 0; i < NB_DIRECTIONS; i++)
+        new_card->neighbors[i] = c->neighbors[i];
+
+    return new_card;
+}
+
+void card__delete_op(struct card *c)
+{
+    card__free(c);
+}
+
+int card__compare_op(const struct card *c1, const struct card *c2)
+{
+    assert_not_null(c1, __func__, "c1 parameter");
+    assert_not_null(c2, __func__, "c2 parameter");
+
+    if (c1->pos.x < c2->pos.x)
+        return -1;
+    else if ((c1->pos.x == c2->pos.x) && (c1->pos.y == c2->pos.y))
+        return 0;
+    else if (c1->pos.x == c2->pos.x)
+        return (c1->pos.y < c2->pos.y) ? -1 : 1;
+    else
+        return 1;
+}
+
+void card__debug_op(const struct card *c)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (c == NULL)
+        printf("NULL");
+    else {
+        printf("Card (type id: %d, areas: {", c->type.id);
+        for (int i = 0; i < MAX_ZONES; i++) {
+            if (i < MAX_ZONES-1)
+                printf("%d, ", c->type.areas[i]);
+            else
+                printf("%d", c->type.areas[i]);
+        }
+        printf("}, direction: %d, pos: { %d, %d }, neighbours: {", c->direction, c->pos.x, c->pos.y);
+
+        for (int i = 0; i < NB_DIRECTIONS; i++) {
+            if (c->neighbors[i] != NULL) {
+                if (i < NB_DIRECTIONS-1)
+                    printf("\x1B[33m%p (%d)\x1B[0m, ", c->neighbors[i], c->neighbors[i]->type.id);
+                else
+                    printf("\x1B[33m%p (%d)\x1B[0m", c->neighbors[i], c->neighbors[i]->type.id);
+            } else {
+                if (i < NB_DIRECTIONS-1)
+                    printf("\x1B[32mNULL\x1B[0m, ");
+                else
+                    printf("\x1B[32mNULL\x1B[0m");
+            }
+        }
+
+        printf("})\n");
+    }
+}

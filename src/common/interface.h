@@ -205,4 +205,31 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
 void finalize();
 
 
-#endif // CARCASSONNE_INTERFACE_H
+////////////////////////////////////////////////////////////////////
+///     OPERATORS (COPY, DELETE, COMPARE, DEBUG)
+////////////////////////////////////////////////////////////////////
+
+//=== OPERATORS FOR MOVE ENUM
+
+void* move__copy_op(const struct move *m);
+void move__delete_op(struct move *m);
+int move__compare_op(const struct move *m1, const struct move *m2);
+void move__debug_op(const struct move *m);
+
+
+//=== OPERATORS FOR CARD_ID ENUM
+
+void* card_id__copy_op(const enum card_id *ci);
+void card_id__delete_op(enum card_id *ci);
+int card_id__compare_op(const enum card_id *ci1, const enum card_id *ci2);
+void card_id__debug_op(const enum card_id *ci);
+
+
+//=== OPERATORS FOR PLACE ENUM
+
+void* place__copy_op(const enum place *p);
+void place__delete_op(enum place *p);
+int place__compare_op(const enum place *p1, const enum place *p2);
+void place__debug_op(const enum place *p);
+
+#endif

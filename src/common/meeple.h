@@ -1,7 +1,7 @@
 #ifndef MEEPLE_H
 #define MEEPLE_H
 
-#include "common_interface.h"
+#include "interface.h"
 #include "card.h"
 
 #define MAX_MEEPLES 8
@@ -42,5 +42,15 @@ struct meeple *meeple__init(unsigned int player_id, struct card *card, enum plac
  * @param m the meeple to free
  */
 void meeple__free(struct meeple *m);
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS (COPY, DELETE, COMPARE, DEBUG)
+////////////////////////////////////////////////////////////////////
+
+void* meeple_copy_op(const struct meeple *m);
+void meeple_delete_op(struct meeple *m);
+int meeple_compare_op(const struct meeple *m1, const struct meeple *m2);
+void meeple_debug_op(const struct meeple *m);        
 
 #endif

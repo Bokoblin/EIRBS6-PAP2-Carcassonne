@@ -1,5 +1,4 @@
 #include "client.h"
-#include "../../common/com_func_ptrs.h"
 #include "../../common/utils.h"
 #include "../../common/ADT/stack.h"
 
@@ -31,12 +30,12 @@ void client__update_board(struct client *client, struct move const previous_move
             c->direction = move.dir;
             if (micro_board__is_card_adding_possible(client->board, c)) {
                 if (micro_board__add_card_to_board(client->board, c) != SUCCESS) {
-                    card_debug_op(c);
+                    card__debug_op(c);
                     set__debug(client->board->cards_set, false);
                     exit_on_error("\n The card sent by the server hasn't been added");
                 }
             } else {
-                card_debug_op(c);
+                card__debug_op(c);
                 set__debug(client->board->cards_set, false);
                 exit_on_error("\nThe card sent my the server can't be added");
             }

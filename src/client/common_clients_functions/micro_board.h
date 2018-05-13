@@ -1,7 +1,7 @@
 #ifndef MICRO_BOARD_H
 #define MICRO_BOARD_H
 
-#include "../../common/common_interface.h"
+#include "../../common/interface.h"
 #include "../../common/card.h"
 #include "../../common/ADT/set.h"
 #include "../../common/ADT/queue.h"

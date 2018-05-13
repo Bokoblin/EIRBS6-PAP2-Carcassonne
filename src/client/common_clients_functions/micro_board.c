@@ -1,12 +1,11 @@
 #include "micro_board.h"
-#include "../../common/com_func_ptrs.h"
 #include "../../common/utils.h"
 
 struct micro_board *micro_board__init()
 {
     struct micro_board *b = safe_malloc(sizeof(struct micro_board));
 
-    b->cards_set = set__empty(card_copy_op, card_delete_op, card_compare_op, card_debug_op);
+    b->cards_set = set__empty(card__copy_op, card__delete_op, card__compare_op, card__debug_op);
 
     struct card *c = card__init(FIRST_CARD_ID);
     c->pos.x = 0; c->pos.y = 0;

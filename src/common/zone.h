@@ -2,11 +2,10 @@
 #define ZONE_H
 
 #include "ADT/set.h"
+#include "area_type.h"
 #include "card.h"
 #include "meeple.h"
-#include "area_type.h"
 #include "utils.h"
-#include "com_func_ptrs.h"
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURE
@@ -60,14 +59,14 @@ struct set *zone__matching_area_set(enum area_type *area);
 
 
 /**
- * @brief Searches a pointor the the area in "allowed_positions" in the same zone as the given area pointor
+ * @brief Searches a pointer the the area in "allowed_positions" in the same zone as the given area pointer
  * 
  * @param c is the card where the researched is done
- * @param area_type is a pointor to one of the areas on the given card
- * @return enum area_type* a pointor to the position on the card having to same area as the area parameter,
+ * @param area_type is a pointer to one of the areas on the given card
+ * @return enum area_type* a pointer to the position on the card having to same area as the area parameter,
  * and which is into the "allowed_positions" array according the the given card c
  */
-enum area_type *zone__serach_allowed_position_area(struct card *c, enum area_type *area);
+enum area_type *zone__search_allowed_position_area(struct card *c, enum area_type *area);
 
 
 /**

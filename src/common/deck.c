@@ -1,4 +1,4 @@
-#include "common_interface.h"
+#include "interface.h"
 #include "deck.h"
 #include "utils.h"
 

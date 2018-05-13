@@ -1,7 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "../../common/common_interface.h"
+#include "../../common/interface.h"
 #include "../../common/meeple.h"
 #include "../../common/utils.h"
 #include "micro_board.h"

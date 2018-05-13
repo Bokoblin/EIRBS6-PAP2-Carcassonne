@@ -1,7 +1,7 @@
 #ifndef CARDS_H
 #define CARDS_H
 
-#include "common_interface.h"
+#include "interface.h"
 #include "card_type.h"
 
 #define NB_DIRECTIONS 4
@@ -116,5 +116,15 @@ int card__link_at_directions(struct card *c1, struct card *c2, enum direction d1
  * @param c the card
  */
 void card__unlink_neighbours(struct card* c);
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS (COPY, DELETE, COMPARE, DEBUG)
+////////////////////////////////////////////////////////////////////
+
+void* card__copy_op(const struct card *c);
+void card__delete_op(struct card *c);
+int card__compare_op(const struct card *c1, const struct card *c2);
+void card__debug_op(const struct card *c);
 
 #endif

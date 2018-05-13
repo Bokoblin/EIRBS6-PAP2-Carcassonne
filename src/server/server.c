@@ -35,7 +35,7 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
 {
     printf(SRV_PREF"Validating move..."CLR"\n");
     printf("\tPlayer %d has sent the following move :\n\t", p->id);
-    move_debug_op(m);
+    move__debug_op(m);
 
     //=== Card checking
 
@@ -221,7 +221,7 @@ int main(int argc, char** argv)
 
     //=== Register players
 
-    struct queue *players_queue = queue__empty(player_copy_op, player_delete_op, player_debug_op);
+    struct queue *players_queue = queue__empty(player__copy_op, player__delete_op, player__debug_op);
     register_players(argc, (const char **) argv, players_queue, clients_count);
 
     //=== Start the game

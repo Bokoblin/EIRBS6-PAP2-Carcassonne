@@ -15,4 +15,14 @@ enum area_type
     INVALID_AREA,
 };
 
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS (COPY, DELETE, COMPARE, DEBUG)
+////////////////////////////////////////////////////////////////////
+
+void* area_type__copy_op(const enum area_type *area);
+void area_type__delete_op(enum area_type *area);
+int area_type__compare_op(const enum area_type *area1, const enum area_type *area2);
+void area_type__debug_op(const enum area_type *area);
+
 #endif

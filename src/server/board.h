@@ -1,7 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "../common/common_interface.h"
+#include "../common/interface.h"
 #include "../common/card.h"
 #include "../common/meeple.h"
 #include "../common/ADT/set.h"

@@ -28,11 +28,13 @@ int test_zone__cards_available_zones()
 
     struct set *p_place = zone__cards_available_zones(c);
 
-    //if (!set__find(p_place, &allowed_positions[c->type.id][0])) result = !TEST_SUCCESS;
-    //if (!set__find(p_place, &allowed_positions[c->type.id][1])) result = !TEST_SUCCESS;
-    //if (!set__find(p_place, &allowed_positions[c->type.id][2])) result = !TEST_SUCCESS;
+    //if (!set__find(p_place, (void *) &allowed_positions[c->type.id][0])) result = !TEST_SUCCESS; //FIXME?
+    //if (!set__find(p_place, (void *) &allowed_positions[c->type.id][1])) result = !TEST_SUCCESS; //FIXME?
+    //if (!set__find(p_place, (void *) &allowed_positions[c->type.id][2])) result = !TEST_SUCCESS; //FIXME?
     if (set__size(p_place) != 3) result = !TEST_SUCCESS;
+
     set__free(p_place);
+    card__free(c);
 
     return result;
 }
@@ -45,7 +47,7 @@ int test_zone__matching_area_set()
     enum area_type at = FIELD;
     struct set *area_set = zone__matching_area_set(&at);
 
-    //if (!set__find(area_set, &at)) result = !TEST_SUCCESS;
+    //if (!set__find(area_set, &at)) result = !TEST_SUCCESS; //FIXME?
     if (set__size(area_set) != 1) result = !TEST_SUCCESS;
 
     set__free(area_set);

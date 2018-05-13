@@ -4,12 +4,10 @@
 #include "../common/ADT/queue.h"
 #include "../common/ADT/stack.h"
 #include "../common/card.h"
-#include "../common/com_func_ptrs.h"
 #include "../common/deck.h"
 #include "../common/utils.h"
 #include "../server/board.h"
 #include "../server/player.h"
-#include "../server/server_func_ptrs.h"
 
 #define DEFAULT_GRAPHIC_MODE_FLAG 0
 #define DEFAULT_CLIENT_COUNT 0

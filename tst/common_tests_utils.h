@@ -7,7 +7,7 @@
 
 #define TEST_SUCCESS 0
 
-#include "../src/common/common_interface.h"
+#include "../src/common/interface.h"
 #include <stdio.h>
 #include <stdlib.h>
 

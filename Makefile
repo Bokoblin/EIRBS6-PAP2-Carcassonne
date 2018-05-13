@@ -209,25 +209,25 @@ docs:
 #######################################################
 
 test_board: $(TST_DIR)/test_board.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(SRV_DIR)/board.o \
-			$(COM_DIR)/card.o $(COM_DIR)/meeple.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o \
+			$(COM_DIR)/card.o $(COM_DIR)/meeple.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o $(COM_DIR)/interface.o \
 			$(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_card: 	$(TST_DIR)/test_card.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
-			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_client: $(TST_DIR)/test_client.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
-			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/com_func_ptrs.o $(CLF_DIR)/micro_board.o \
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/interface.o $(CLF_DIR)/micro_board.o \
 			$(CLF_DIR)/client.o $(ADT_DIR)/set.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
-test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(COM_DIR)/deck.o \
-			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
+test_deck: 	$(TST_DIR)/test_deck.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
+			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/deck.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_meeple: $(TST_DIR)/test_meeple.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o \
-			$(COM_DIR)/meeple.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(ADT_DIR)/stack.o
+			$(COM_DIR)/meeple.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 test_queue:	$(TST_DIR)/test_queue.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/queue.o
@@ -239,8 +239,9 @@ test_set:	$(TST_DIR)/test_set.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils
 test_stack:	$(TST_DIR)/test_stack.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(ADT_DIR)/stack.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
-test_zone: 	$(TST_DIR)/test_zone.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(COM_DIR)/com_func_ptrs.o \
-			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/meeple.o $(COM_DIR)/zone.o $(ADT_DIR)/set.o
+test_zone: 	$(TST_DIR)/test_zone.o $(TST_DIR)/common_tests_utils.o $(COM_DIR)/utils.o $(COM_DIR)/interface.o \
+			$(COM_DIR)/area_type.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/meeple.o $(COM_DIR)/zone.o \
+			$(ADT_DIR)/set.o
 	${CC} $(CPPFLAGS) $^ -o $@ $(LFFLAGS)
 
 
