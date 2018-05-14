@@ -29,7 +29,7 @@ void parse_opts(int argc, char **argv, unsigned int *is_graphic, unsigned int *c
             else
                 printf(SRV_PREF"The client %s does not exist."CLR"\n", argv[i]);
         } else {
-            exit_on_error("The argument is invalid. It must be a '.so' file");
+            printf(SRV_PREF"The argument is invalid. It must be a '.so' file"CLR"\n");
         }
     }
 

@@ -51,6 +51,7 @@ int stack__push(struct stack *s, void* element);
 
 /**
  * @brief Retrieve the element on the top of the stack without removing it
+ * @note No copy is done, don't free it
  * @note Complexity: O(1)
  * @param s the stack
  * @return an enumeration representing the element on top

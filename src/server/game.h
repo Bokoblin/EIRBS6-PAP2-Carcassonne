@@ -19,6 +19,7 @@ struct game
 {
     unsigned int nb_players;
     struct queue *players_queue;
+    struct board* board;
 };
 
 
@@ -55,6 +56,14 @@ void register_players(int argc, const char **argv, struct queue *players, unsign
 
 
 /**
+ * @brief Init the first player of the queue
+ * @param players_queue the player queue
+ * @param nb_player the players number
+ */
+void init_next_player(struct queue *players_queue, unsigned int nb_player);
+
+
+/**
  * @brief Verify that a player move is valid
  * @param b the board
  * @param p the player
@@ -82,37 +91,23 @@ struct move *build_previous_moves_array(struct queue *moves);
 
 
 /**
- * @brief Free resources used by player structure
+ * @brief Finalize a player and close the library usage
  * @param p a player
  */
-void free_player_resources(struct player *p);
-
-/**
- * @brief Free all resources used
- * @param players_queue the player list in a queue
- */
-void free_resources(struct queue *players_queue);
+void finalize_and_free_player(struct player *p);
 
 
 /**
- * @brief Contain the game main (game initialization, game loop and game finalization)
+ * @brief Contain the game loop
  * @param game the game core
  */
-void game__main(struct game *game);
+void game__loop(struct game *game);
 
 
 /**
- * @brief Init the first player of the queue
- * @param players_queue the player queue
- * @param nb_player the players number
+ * @brief Contain the game end part
+ * @param game the game core
  */
-void init_next_player(struct queue *players_queue, unsigned int nb_player);
-
-
-/**
- * @brief Finalize the first player of the queue
- * @param players_queue the player queue
- */
-void finalize_next_player(struct queue *players_queue);
+void game__end(struct game *game);
 
 #endif

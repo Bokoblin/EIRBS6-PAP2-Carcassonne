@@ -491,6 +491,8 @@ int test_stack__apply_to_all()
     printf("Expected: (6 7 8 9)... Got: ");
     set__debug(s, true);
 
+    set__free(s);
+
     return TEST_SUCCESS;
 }
 

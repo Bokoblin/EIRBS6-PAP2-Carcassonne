@@ -379,6 +379,8 @@ int test_queue__apply_to_all()
     printf("Expected: (6 7 8 9 6)... Got: ");
     queue__debug(q, true);
 
+    queue__free(q);
+
     return TEST_SUCCESS;
 }
 

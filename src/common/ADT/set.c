@@ -320,6 +320,8 @@ void set__debug(const struct set *s, int is_compact)
 
 void set__apply_to_all(struct set *s, applying_func_t f)
 {
+    if (s == NULL) return;
+
     for (size_t i = 0; i < s->size; i++)
         if (s->array[i] != NULL)
             f(s->array[i]);

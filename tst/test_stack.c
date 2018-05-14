@@ -128,11 +128,9 @@ int test_stack__peek()
 
     enum card_id *peek = stack__peek(s);
     if (stack__is_empty(s) ||  *peek != CARD_CITY_THREE) {
-        free(peek);
         stack__free(s);
         return !TEST_SUCCESS;
     }
-    free(peek);
     stack__free(s);
 
     return TEST_SUCCESS;
@@ -252,6 +250,8 @@ int test_stack__apply_to_all()
 
     printf("Expected: (6 7 8 9 6)... Got: ");
     stack__debug(s, true);
+
+    stack__free(s);
 
     return TEST_SUCCESS;
 }

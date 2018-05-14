@@ -77,7 +77,7 @@ void* stack__peek(struct stack *s)
     if (stack__is_empty(s))
         return NULL;
 
-    return s->operator_copy(s->array[s->head-1]);
+    return s->array[s->head-1];
 }
 
 void* stack__pop(struct stack *s)
@@ -158,6 +158,8 @@ void stack__debug(struct stack *s, int is_compact)
 
 void stack__apply_to_all(struct stack *s, applying_func_t f)
 {
+    if (s == NULL) return;
+
     for (size_t i = 0; i < s->head; i++){
         if (s->array[i] != NULL)
             f(s->array[i]);

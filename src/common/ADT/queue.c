@@ -95,7 +95,7 @@ int queue__dequeue(struct queue *q)
     if (queue__length(q) < q->capacity / 2 && q->capacity >  DEFAULT_QUEUE_CAPACITY) {
         size_t new_pos = 0;
         void **new_array = safe_malloc(sizeof(void *) * q->capacity / 2);
-        for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+        for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity) {
             new_array[new_pos] = q->array[i];
             new_pos++;
         }
@@ -171,7 +171,7 @@ void queue__debug(struct queue *q, int is_compact)
         if (!is_compact) {
             printf("Queue (capacity: %zu, size: %zu, content: \n", q->capacity, queue__length(q));
             printf("\t in queue order: { \n");
-            for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+            for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity) {
                 printf("\t");
                 q->operator_debug(q->array[i]);
                 printf("\n");
@@ -185,7 +185,7 @@ void queue__debug(struct queue *q, int is_compact)
             printf("}\n)\n");
         } else {
             printf("{ ");
-            for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+            for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity) {
                 q->operator_debug(q->array[i]);
             }
             printf("}");
@@ -195,7 +195,9 @@ void queue__debug(struct queue *q, int is_compact)
 
 void queue__apply_to_all(struct queue *q, applying_func_t f)
 {
-    for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity ) {
+    if (q == NULL) return;
+
+    for (size_t i = q->front; i != q->back; i = (i+1) % q->capacity) {
         if (q->array[i] != NULL)
             f(q->array[i]);
     }

@@ -13,10 +13,11 @@ int main(int argc, char** argv)
 
     if (clients_count > 0) {
         struct game *g = game__init(argc, argv, clients_count);
-        game__main(g);
+        game__loop(g);
+        game__end(g);
         game__free(g);
     } else {
-        printf(SRV_PREF"There are no clients\n"CLR);
+        printf(SRV_PREF"There are no clients"CLR"\n");
     }
 
 
