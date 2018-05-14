@@ -181,7 +181,7 @@ void game__end(struct game *g)
 
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if (!stack__is_empty(g->board->drawing_stack))
-        printf("\x1B[31mInvalid game stopping, the drawing card stack still contains %zu cards! \x1B[0m\n",
+        printf("\t\x1B[31mInvalid game stopping, the drawing card stack still contains %zu cards! \x1B[0m\n",
                stack__length(g->board->drawing_stack));
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

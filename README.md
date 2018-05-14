@@ -46,6 +46,7 @@ make install #To install the project in /install
 make clean   #To remove objects files, executables and installation
 make run     #To run program once installed (make install before required)
 make vrun    #To run program once installed (make install before required) with valgrind check
+make grun    #To run program once installed (make install before required) with the UI
 make docs    #To generate documentation with doxygen in /doc (open /doc/html/index.html in your browser)
 ```
     

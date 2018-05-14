@@ -14,16 +14,19 @@ CLF_DIR = $(CLI_DIR)/common_clients_functions
 COM_DIR = $(SRC_DIR)/common
 ADT_DIR = $(COM_DIR)/ADT
 SRV_DIR = $(SRC_DIR)/server
+GUI_DIR = $(SRC_DIR)/ui
 
 CC			= gcc
 CFLAGS		= -Wall -Wextra -std=c99 -g -O0 -fPIC
 CPPFLAGS	= -I ${SRC_DIR} -I ${TST_DIR} -I ${INS_DIR}
 LFFLAGS		= -lm -ldl
-SRVFLAGS	=
+SRVFLAGS	= -lSDL2 -lSDL2_image -lSDL2_ttf `sdl2-config --libs`
 
-SERVER_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(SRV_DIR)/*.c)
-CLIENT_SRC 	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c $(CLF_DIR)/*.c)
+COMMON_SRC	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c)
+SERVER_SRC	= $(wildcard $(SRV_DIR)/*.c $(GUI_DIR)/*.c)
+CLIENT_SRC 	= $(wildcard $(CLF_DIR)/*.c)
 
+COMMON_OBJ	= $(COMMON_SRC:%.c=%.o)
 SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
 CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
 
@@ -35,7 +38,7 @@ TESTS_EXEC 	= test_board test_card test_client test_deck test_meeple test_queue 
 ###				MAKE DEFAULT COMMAND
 #######################################################
 
-.PHONY: all help prebuild build test vtest enable_coverage ctest install clean run vrun docs
+.PHONY: all help prebuild build test vtest enable_sdl enable_coverage ctest install clean run vrun grun docs
 all: help
 
 
@@ -54,6 +57,7 @@ help:
 		'\t' make clean			'\n' \
 		'\t' make run			'\n' \
 		'\t' make vrun			'\n' \
+		'\t' make grun			'\n' \
 		'\t' make docs			'\n' \
 								'\n' \
 		Commands details can be found in the README
@@ -66,18 +70,21 @@ help:
 prebuild:
 	@echo Starting building...
 
-build: prebuild $(SERVER_EXEC) $(CLIENT_OBJ)
+build: prebuild $(SERVER_EXEC) $(COMMON_OBJ) $(CLIENT_OBJ)
 	@echo building clients...
 	@for client in `find $(CLI_DIR) -name "client_4410_*.c" | sed -e "s/\.c$$//" `; do \
 		echo building $${client}.c; \
 		$(CC) $(CFLAGS) -c $${client}.c -o $${client}.o; \
-		$(CC) -shared -o $${client}.so $${client}.o $(CLIENT_OBJ); \
+		$(CC) -shared -o $${client}.so $${client}.o $(COMMON_OBJ) $(CLIENT_OBJ); \
 	done
 	@echo Building complete.
 
-$(SERVER_EXEC): $(SERVER_OBJ)
+enable_sdl:
+	$(eval CFLAGS += `sdl2-config --cflags`)
+
+$(SERVER_EXEC): $(COMMON_OBJ) enable_sdl $(SERVER_OBJ)
 	@echo building server...
-	$(CC) $(CPPFLAGS) $(SERVER_OBJ) -o $@ $(LFFLAGS) $(SRVFLAGS)
+	$(CC) $(CPPFLAGS) $(COMMON_OBJ) $(SERVER_OBJ) -o $@ $(LFFLAGS) $(SRVFLAGS)
 
 
 #######################################################
@@ -155,6 +162,7 @@ install: build
 	@echo Installation directory: "${PWD}/$(INS_DIR)"
 	@mv $(SERVER_EXEC) $(INS_DIR)
 	@mv $(CLI_DIR)/*.so $(INS_DIR)
+	@rm -rf $(COMMON_OBJ)
 	@rm -rf $(CLIENT_OBJ)
 	@rm -rf $(SERVER_OBJ)
 	@echo Installation complete.
@@ -192,8 +200,17 @@ run:
 #######################################################
 
 vrun:
-	@echo Running program...
+	@echo Running program with valgrind...
 	@valgrind ./$(INS_DIR)/$(SERVER_EXEC) ./$(INS_DIR)/*.so
+
+
+#######################################################
+###				MAKE RUN IN GRAPHIC MODE
+#######################################################
+
+grun:
+	@echo Running program in graphic mode...
+	@./$(INS_DIR)/$(SERVER_EXEC) -g ./$(INS_DIR)/*.so
 
 
 #######################################################

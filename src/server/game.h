@@ -99,14 +99,14 @@ void finalize_and_free_player(struct player *p);
 
 /**
  * @brief Contain the game loop
- * @param game the game core
+ * @param game the game
  */
 void game__loop(struct game *game);
 
 
 /**
  * @brief Contain the game end part
- * @param game the game core
+ * @param game the game
  */
 void game__end(struct game *game);
 
