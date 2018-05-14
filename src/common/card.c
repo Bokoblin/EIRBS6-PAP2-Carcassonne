@@ -89,7 +89,7 @@ int card__are_matching_directions(struct card *c1, struct card *c2, enum directi
     if (c1 == c2)
         return false;
 
-    if (d1 < 0 || d2 < 0 || d1 >= NB_DIRECTIONS || d2 >= NB_DIRECTIONS)
+    if (d1 >= NB_DIRECTIONS || d2 >= NB_DIRECTIONS)
         return false;
 
     for (int i = 0; i < NB_SUB_DIRECTIONS; i++) {
@@ -118,7 +118,7 @@ int card__link_at_directions(struct card *c1, struct card *c2, enum direction d1
     if (c1 == c2)
         return false;
 
-    if (d1 < 0 || d2 < 0 || d1 >= NB_DIRECTIONS || d2 >= NB_DIRECTIONS)
+    if (d1 >= NB_DIRECTIONS || d2 >= NB_DIRECTIONS)
         return false;
 
     if (c1->neighbors[d1] != NULL || c2->neighbors[d2] != NULL)
