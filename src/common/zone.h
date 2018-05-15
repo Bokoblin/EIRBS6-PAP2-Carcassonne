@@ -7,7 +7,7 @@
 #include "meeple.h"
 #include "utils.h"
 
-#define MAX_ZONES 9
+#define MAX_ZONE 9
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURE
@@ -27,7 +27,7 @@ struct zone
 
 struct partition
 {
-    struct set * zones[MAX_ZONES];
+    struct set * zones[MAX_ZONE];
     int size;
 };
 
