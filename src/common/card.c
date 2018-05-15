@@ -92,22 +92,18 @@ int card__are_matching_directions(struct card *c1, struct card *c2, enum directi
     if (d1 >= NB_DIRECTIONS || d2 >= NB_DIRECTIONS)
         return false;
 
-    for (int i = 0; i < NB_SUB_DIRECTIONS; i++) {
-        enum place c1_area_index = (enum place) (PLACE_SHIFT + (NB_SUB_DIRECTIONS * d1) + i);
-        enum place c2_area_index = (enum place) (PLACE_SHIFT + (NB_SUB_DIRECTIONS * d2) + 2 - i);
+    //Getting center of the direction
+    const int CENTER = 1;
+    enum place c1_area_index = (enum place) (PLACE_SHIFT + (NB_SUB_DIRECTIONS * d1) + CENTER);
+    enum place c2_area_index = (enum place) (PLACE_SHIFT + (NB_SUB_DIRECTIONS * d2) + CENTER);
 
-        if (c1_area_index > LAST_POS || c2_area_index > LAST_POS)
-            return false;
+    if (c1_area_index > LAST_POS || c2_area_index > LAST_POS)
+        return false;
 
-        enum area_type c1_a = card__get_relative_area(c1, c1_area_index);
-        enum area_type c2_a = card__get_relative_area(c2, c2_area_index);
+    enum area_type c1_a = card__get_relative_area(c1, c1_area_index);
+    enum area_type c2_a = card__get_relative_area(c2, c2_area_index);
 
-        //Check sub areas matching
-        if (c1_a != c2_a)
-            return false;
-    }
-
-    return true;
+    return c1_a == c2_a;
 }
 
 int card__link_at_directions(struct card *c1, struct card *c2, enum direction d1, enum direction d2)
