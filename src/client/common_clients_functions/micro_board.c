@@ -44,7 +44,7 @@ int micro_board__is_card_adding_possible(struct micro_board *b, struct card *car
             enum direction i_neighbour_dir = (i_card_dir + 2) % NB_DIRECTIONS;
             if (card__are_matching_directions(card, neighbour, i_card_dir, i_neighbour_dir))
                 neighbour_count++;
-            else if (neighbour_count != 0) //Check full matching or nothing
+            else
                 return false;
         }
     }

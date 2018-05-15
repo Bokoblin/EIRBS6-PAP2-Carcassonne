@@ -91,7 +91,7 @@ int board__add_card(struct board *b, struct card *card_to_add)
     struct card* card_to_link = board__retrieve_card_by_position(b->cards_set, card_to_add->pos);
 
     for (enum direction i_card_to_link_dir = NORTH; i_card_to_link_dir < NB_DIRECTIONS; i_card_to_link_dir++) {
-        struct position neighbour_pos = card__get_position_at_direction(card_to_add, i_card_to_link_dir);
+        struct position neighbour_pos = card__get_position_at_direction(card_to_link, i_card_to_link_dir);
         struct card *neighbour = board__retrieve_card_by_position(b->cards_set, neighbour_pos);
 
         if (neighbour != NULL && card__get_neighbour_number(neighbour) < NB_DIRECTIONS) {
@@ -103,11 +103,11 @@ int board__add_card(struct board *b, struct card *card_to_add)
                     return !SUCCESS;
                 }
             } else { //Full matching or nothing
-                if (card__get_neighbour_number(card_to_link) != 0) {
+                //if (card__get_neighbour_number(card_to_link) != 0) {
                     card__unlink_neighbours(card_to_link);
                     set__remove(b->cards_set, card_to_link);
                     return !SUCCESS;
-                }
+                //}
             }
         }
     }
