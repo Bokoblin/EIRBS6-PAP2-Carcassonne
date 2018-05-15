@@ -30,6 +30,7 @@ struct text
 {
     SDL_Surface *surface;
     SDL_Texture *texture;
+    SDL_Renderer *renderer;
     SDL_Color color;
     SDL_Rect texture_rect_origin;
     SDL_Rect texture_rect;
@@ -98,7 +99,7 @@ void text__update(struct text* text);
  * @param text the text to render
  * @param renderer the app's renderer
  */
-void text__render(struct text* text, SDL_Renderer* renderer);
+void text__render(struct text *text);
 
 
 /**
@@ -106,6 +107,16 @@ void text__render(struct text* text, SDL_Renderer* renderer);
  * @param text the text to free
  */
 void text__free(struct text* text);
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS (COPY, DELETE, COMPARE, DEBUG)
+////////////////////////////////////////////////////////////////////
+
+void* text__copy_op(struct text *t);
+void text__delete_op(struct text *t);
+void text__debug_op(struct text *t);
+int text__compare_op(struct text *t1, struct text * t2);
 
 
 #endif

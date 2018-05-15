@@ -35,7 +35,7 @@ struct app* app__init()
     this->width = SCREEN_WIDTH;
     this->height = SCREEN_HEIGHT;
     this->bpp = SCREEN_BPP;
-    this->title = "Projet Carcassonne (by Team 4410)";
+    this->title = "Project Carcassonne (by Team 4410)";
     this->state = MENU;
 
     this->font = TTF_OpenFont(ROBOTO_CONDENSED_FONT, 25);
@@ -81,7 +81,7 @@ void app__run(struct app* app, int argc, char **argv, unsigned int clients_count
             struct game *game_model = game__init(argc, argv, clients_count);
             struct game_view *game_view = game_view__init(app, game_model);
 
-            while (app->state == GAME && game_view__handle_events(app->event, game_view)) {
+            while ((app->state == GAME || app->state == PAUSE) && game_view__handle_events(app->event, game_view)) {
                 game_view__loop(game_view);
                 game_view__update(game_view);
                 game_view__render(game_view);
@@ -89,6 +89,15 @@ void app__run(struct app* app, int argc, char **argv, unsigned int clients_count
             }
 
             game__end(game_model);
+            game_view__init_end(game_view);
+
+            while (app->state == END && game_view__handle_events(app->event, game_view)) {
+                game_view__loop(game_view);
+                game_view__update(game_view);
+                game_view__render(game_view);
+                SDL_Delay(1000 / FRAMERATE);
+            }
+
             game_view__free(game_view);
             game__free(game_model);
         }

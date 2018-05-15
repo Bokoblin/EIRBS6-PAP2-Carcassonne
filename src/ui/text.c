@@ -8,6 +8,7 @@ struct text *text__init(int x, int y, int w, int h, const char *content, SDL_Ren
     struct text* this = safe_malloc(sizeof(struct text));
 
     this->font = font;
+    this->renderer = renderer;
     this->content = (char *) content;
     this->color.r = 255;
     this->color.g = 255;
@@ -86,16 +87,65 @@ void text__update(struct text* text)
     (void) text;
 }
 
-void text__render(struct text* text, SDL_Renderer* renderer)
+void text__render(struct text *text)
 {
     if (text != NULL) {
-        SDL_RenderCopy(renderer, text->texture, NULL, &text->texture_rect);
+        SDL_RenderCopy(text->renderer, text->texture, NULL, &text->texture_rect);
     }
 }
 
 void text__free(struct text* text)
 {
+    if (text == NULL)
+        return;
+    
     SDL_DestroyTexture(text->texture);
     SDL_FreeSurface(text->surface);
     free(text);
+}
+
+
+////////////////////////////////////////////////////////////////////
+///     OPERATORS (COPY, DELETE, COMPARE, DEBUG)
+////////////////////////////////////////////////////////////////////
+
+void* text__copy_op(struct text *t)
+{
+    assert_not_null(t, __func__, "t parameter");
+
+    struct text *new_text = text__init(t->texture_rect.x, t->texture_rect.y, t->texture_rect.w, t->texture_rect.h,
+                                          t->content, t->renderer, t->font);
+    new_text->color = t->color;
+    new_text->text_origin = t->text_origin;
+
+    return new_text;
+}
+
+void text__delete_op(struct text *t)
+{
+    text__free(t);
+}
+
+void text__debug_op(struct text *t)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    if (t == NULL)
+        printf("NULL");
+    else {
+        printf("Text (content: %s, position {%d, %d}, width: %d, height: %d, origin: %d )\n", t->content,
+               t->texture_rect.x, t->texture_rect.y, t->texture_rect.w, t->texture_rect.h, t->text_origin);
+    }
+}
+
+int text__compare_op(struct text *t1, struct text * t2)
+{
+    assert_not_null(t1, __func__, "t2 parameter");
+    assert_not_null(t2, __func__, "t2 parameter");
+
+    if (t1 < t2)
+        return -1;
+    else if (t1 == t2)
+        return 0;
+    else
+        return 1;
 }

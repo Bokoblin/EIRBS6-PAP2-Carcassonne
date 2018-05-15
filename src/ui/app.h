@@ -28,6 +28,8 @@ enum app_state
 {
     MENU,
     GAME,
+    PAUSE,
+    END,
     QUIT
 };
 

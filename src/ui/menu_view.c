@@ -5,7 +5,7 @@
 ///     FILENAME DEFINITIONS / STRINGS
 ////////////////////////////////////////////////////////////////////
 
-const char* TITLE_TEXT = "Projet Carcassonne";
+const char* TITLE_TEXT = "Project Carcassonne";
 const char *CLIENT_TEXT = " clients are ready to play";
 
 const char* TITLE_IMAGE = "res/menu/title.png";
@@ -115,8 +115,8 @@ void menu__render(struct menu *menu)
     image__render(menu->title_image);
     image__render(menu->play_image);
     image__render(menu->quit_image);
-    text__render(menu->title_text, menu->app->renderer);
-    text__render(menu->client_count_text, menu->app->renderer);
+    text__render(menu->title_text);
+    text__render(menu->client_count_text);
 
     SDL_RenderPresent(menu->app->renderer);
 }
