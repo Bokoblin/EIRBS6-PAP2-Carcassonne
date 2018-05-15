@@ -85,8 +85,22 @@ int test_zone__update()
 
 int test_zone__add_meeple()
 {
-    printf("%s... NOT IMPLEMENTED YET - ", __func__);
+    printf("%s... ", __func__);
 
+    struct zone *z = zone__empty(FIELD);
+
+    struct card *c = card__init(CARD_CITY_ONE_SIDE);
+
+    struct meeple *m = meeple__init(1, c, POS_CENTER);
+
+    if (!zone__add_meeple(z, m)){
+        card__free(c);
+        zone__free(z);
+        return TEST_SUCCESS;
+    }
+
+    card__free(c);
+    zone__free(z);
     return !TEST_SUCCESS;
 }
 

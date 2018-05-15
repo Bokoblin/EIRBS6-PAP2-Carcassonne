@@ -7,6 +7,8 @@
 #include "meeple.h"
 #include "utils.h"
 
+#define MAX_ZONES 9
+
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURE
 ////////////////////////////////////////////////////////////////////
@@ -23,6 +25,11 @@ struct zone
     unsigned int holes;
 };
 
+struct partition
+{
+    struct set * zones[MAX_ZONES];
+    int size;
+};
 
 ////////////////////////////////////////////////////////////////////
 ///     FUNCTIONS
@@ -63,11 +70,18 @@ struct set *zone__matching_area_set(enum area_type *area);
  * 
  * @param c is the card where the researched is done
  * @param area is a pointer to one of the areas on the given card
- * @return enum area_type* a pointer to the positions on the card having to same area as the area parameter,
+ * @return enum area_type* a pointer to the position on the card having to same area as the area parameter,
  * and which is into the "allowed_positions" array according to the given card c
  */
 enum area_type *zone__search_allowed_position_area(struct card *c, enum area_type *area);
 
+
+/**
+  *@brief gives the partition
+  *
+  *
+  */
+struct partition zone__zones_by_card_id(enum card_id id);
 
 /**
  * @brief Adds all the areas on the card that makes a same zone
@@ -111,7 +125,7 @@ int zone__update();
  * @brief Adds a meeple to the zone
  * @param z is the zone where you want to place a meeple
  * @param m is the already-initialised meeple
- * @return SUCCESS if the areas were added, FAILURE else
+ * @return SUCCESS if the meeple was added, FAILURE else
  */
 int zone__add_meeple(struct zone *z, struct meeple *m);
 

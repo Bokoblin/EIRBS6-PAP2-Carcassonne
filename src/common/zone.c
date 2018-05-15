@@ -99,11 +99,8 @@ int zone__update()
 
 int zone__add_meeple(struct zone *z, struct meeple *m)
 {
-    //TODO: zone__add_meeple
-    (void) z;
-    (void) m;
-
-    return 0;
+    if (!set__add_no_copy(z->meeple_set, m)) return SUCCESS;
+    return !SUCCESS;
 }
 
 void zone__free(struct zone *z)
