@@ -147,30 +147,28 @@ struct move *build_previous_moves_array(struct queue *moves)
 
 void game__loop(struct game *g)
 {
-    while (!stack__is_empty(g->board->drawing_stack) && g->nb_players > 1) {
-        struct move *moves_array = build_previous_moves_array(g->board->moves_queue);
-        enum card_id c = draw_until_valid(g->board, g->board->drawing_stack);
-        struct player *p = queue__front(g->players_queue);
-        struct move m = p->play(c, moves_array, queue__length(g->board->moves_queue));
+    struct move *moves_array = build_previous_moves_array(g->board->moves_queue);
+    enum card_id c = draw_until_valid(g->board, g->board->drawing_stack);
+    struct player *p = queue__front(g->players_queue);
+    struct move m = p->play(c, moves_array, queue__length(g->board->moves_queue));
 
-        queue__dequeue(g->players_queue);
-        if (queue__length(g->board->moves_queue) == g->nb_players)
-            queue__dequeue(g->board->moves_queue);
+    queue__dequeue(g->players_queue);
+    if (queue__length(g->board->moves_queue) == g->nb_players)
+        queue__dequeue(g->board->moves_queue);
 
-        if (is_valid_play(g->board, p, &m)) {
-            queue__enqueue(g->players_queue, p);
-            board__check_sub_completion(g->board);
-        } else {
-            printf("\tThe player named %s was expelled.\n", p->get_player_name());
-            g->nb_players--;
-            finalize_and_free_player(p);
-        }
-
-        queue__enqueue(g->board->moves_queue, &m);
-
-        player__free(p);
-        free(moves_array);
+    if (is_valid_play(g->board, p, &m)) {
+        queue__enqueue(g->players_queue, p);
+        board__check_sub_completion(g->board);
+    } else {
+        printf("\tThe player named %s was expelled.\n", p->get_player_name());
+        g->nb_players--;
+        finalize_and_free_player(p);
     }
+
+    queue__enqueue(g->board->moves_queue, &m);
+
+    player__free(p);
+    free(moves_array);
 }
 
 void game__end(struct game *g)

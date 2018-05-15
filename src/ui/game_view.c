@@ -87,7 +87,7 @@ enum card_id game_view__draw_until_valid(struct game_view *game_view)
         struct card_view *popped_view = stack__peek(game_view->card_view_stack);
         card_view__set_front(popped_view, ci);
         game_view__render(game_view);
-        SDL_Delay(500); //to keep in order to see the card on stack before it is moved
+        SDL_Delay(800); //to keep in order to see the card on stack before it is moved
 
         if (board__is_valid_card(game_view->game->board, ci)) {
             is_valid = true;
@@ -153,7 +153,13 @@ struct game_view *game_view__init(struct app *app, struct game *game)
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
 
-    SDL_ShowCursor(SDL_DISABLE);
+    SDL_ShowCursor(SDL_ENABLE);
+
+    //=== loop delay init
+
+    this->time_start_ms = clock();
+    this->delay_ms = 500;
+
 
     return this;
 }
@@ -186,31 +192,34 @@ int game_view__handle_events(SDL_Event *event, struct game_view *game_view)
 
 void game_view__loop(struct game_view *game_view)
 {
-    struct move *moves_array = build_previous_moves_array(game_view->game->board->moves_queue);
-    enum card_id c = game_view__draw_until_valid(game_view);
-    struct player *p = queue__front(game_view->game->players_queue);
-    struct move m = p->play(c, moves_array, queue__length(game_view->game->board->moves_queue));
+    clock_t current_ms = clock();
 
-    queue__dequeue(game_view->game->players_queue);
-    if (queue__length(game_view->game->board->moves_queue) == game_view->game->nb_players)
-        queue__dequeue(game_view->game->board->moves_queue);
+    if (((current_ms - game_view->time_start_ms) / (CLOCKS_PER_SEC / 1000)) > game_view->delay_ms) {
+        struct move *moves_array = build_previous_moves_array(game_view->game->board->moves_queue);
+        enum card_id c = game_view__draw_until_valid(game_view);
+        struct player *p = queue__front(game_view->game->players_queue);
+        struct move m = p->play(c, moves_array, queue__length(game_view->game->board->moves_queue));
 
-    if (game_view__is_valid_play(game_view, game_view->game->board, p, &m)) {
-        queue__enqueue(game_view->game->players_queue, p);
-        board__check_sub_completion(game_view->game->board);
-    } else {
-        printf("\tThe player named %s was expelled.\n", p->get_player_name());
-        game_view->game->nb_players--;
-        finalize_and_free_player(p);
+        queue__dequeue(game_view->game->players_queue);
+        if (queue__length(game_view->game->board->moves_queue) == game_view->game->nb_players)
+            queue__dequeue(game_view->game->board->moves_queue);
+
+        if (game_view__is_valid_play(game_view, game_view->game->board, p, &m)) {
+            queue__enqueue(game_view->game->players_queue, p);
+            board__check_sub_completion(game_view->game->board);
+        } else {
+            printf("\tThe player named %s was expelled.\n", p->get_player_name());
+            game_view->game->nb_players--;
+            finalize_and_free_player(p);
+        }
+
+        queue__enqueue(game_view->game->board->moves_queue, &m);
+
+        player__free(p);
+        free(moves_array);
+
+        game_view->time_start_ms = current_ms;
     }
-
-    queue__enqueue(game_view->game->board->moves_queue, &m);
-
-    player__free(p);
-    free(moves_array);
-
-    //FIXME: temporary game slowdown method
-    SDL_Delay(500);
 }
 
 void game_view__update(struct game_view *game_view)

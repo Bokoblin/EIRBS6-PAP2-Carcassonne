@@ -6,6 +6,7 @@
 #include <SDL_system.h>
 #include "app.h"
 #include "image.h"
+#include <time.h>
 
 #define SHELF_TEXT_X 0.05
 #define SHELF_TEXT_Y 0.8
@@ -28,6 +29,10 @@ struct game_view
     struct text *drawing_stack_text;
     struct set *card_view_set;
     struct stack *card_view_stack;
+
+    //=== loop delay
+    clock_t time_start_ms;
+    clock_t delay_ms;
 };
 
 

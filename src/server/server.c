@@ -19,20 +19,30 @@ struct server* server__init(int argc, char **argv)
     return this;
 }
 
+void server__run_console_app(struct server* s)
+{
+    if (s->clients_count > 0) {
+        struct game *g = game__init(s->argc, s->argv, s->clients_count);
+        while (!stack__is_empty(g->board->drawing_stack) && g->nb_players > 1)
+            game__loop(g);
+        game__end(g);
+        game__free(g);
+    } else {
+        printf(SRV_PREF"There are no clients"CLR"\n");
+    }
+}
+
+void server__run_graphic_app(struct server* s)
+{
+    app__run(s->app, s->argc, s->argv, s->clients_count);
+}
+
 void server__run(struct server* s)
 {
-    if (s->is_graphic) {
-        app__run(s->app, s->argc, s->argv, s->clients_count);
-    } else {
-        if (s->clients_count > 0) {
-            struct game *g = game__init(s->argc, s->argv, s->clients_count);
-            game__loop(g);
-            game__end(g);
-            game__free(g);
-        } else {
-            printf(SRV_PREF"There are no clients"CLR"\n");
-        }
-    }
+    if (s->is_graphic)
+        server__run_graphic_app(s);
+    else
+        server__run_console_app(s);
 }
 
 void server__free(struct server *s)

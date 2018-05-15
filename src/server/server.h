@@ -42,6 +42,20 @@ void server__run(struct server* s);
 
 
 /**
+ * @brief Runs the server console app part
+ * @param s the server
+ */
+void server__run_console_app(struct server* s);
+
+
+/**
+ * @brief Runs the server graphic app part
+ * @param s the server
+ */
+void server__run_graphic_app(struct server* s);
+
+
+/**
  * @brief Frees the memory used by the server
  * @param s the server
  */
