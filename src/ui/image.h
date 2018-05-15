@@ -17,7 +17,7 @@ struct image
     SDL_Renderer *renderer;
     SDL_Rect text_rect;
     double angle;
-    const char *filename;
+    char *filename;
 };
 
 
@@ -44,6 +44,14 @@ struct image *image__init(int x, int y, int w, int h, const char *filename, SDL_
  * @param renderer
  */
 void image__set_renderer(struct image* image, SDL_Renderer* renderer);
+
+
+/**
+ * @brief Replace the image texture
+ * @param im the image
+ * @param filename the filename to create the texture
+ */
+void image__set_texture(struct image* im, char *filename);
 
 
 /**

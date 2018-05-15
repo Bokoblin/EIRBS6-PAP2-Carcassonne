@@ -5,8 +5,8 @@
 ///     DEFINITION
 ////////////////////////////////////////////////////////////////////
 
-const char *CARD_BACK_DARK_IMAGE = "res/game/cards/back_dark.jpg";
-const char *CARD_BACK_LIGHT_IMAGE = "res/game/cards/back_light.jpg";
+const char *CARD_BACK_DARK_IMAGE = "res/game/cards/back_dark.png";
+const char *CARD_BACK_LIGHT_IMAGE = "res/game/cards/back_light.png";
 
 
 ////////////////////////////////////////////////////////////////////
@@ -16,63 +16,63 @@ const char *CARD_BACK_LIGHT_IMAGE = "res/game/cards/back_light.jpg";
 struct card_view *card_view__init(int x, int y, int w, int h, SDL_Renderer *app_renderer, int is_first)
 {
     struct card_view* this = safe_malloc(sizeof(struct card_view));
-    this->front = NULL;
-    this->back = image__init(x, y, w, h, is_first ? CARD_BACK_DARK_IMAGE : CARD_BACK_LIGHT_IMAGE, app_renderer);
-    this->back->angle = (double) NORTH;
+    this->image = image__init(x, y, w, h, is_first ? CARD_BACK_DARK_IMAGE : CARD_BACK_LIGHT_IMAGE, app_renderer);
+    this->image->angle = (double) NORTH;
     this->card_model = NULL;
-    this->is_shown = false;
-    this->front_filename = malloc(29 * sizeof(char));
-    strcpy(this->front_filename, "");
 
     return this;
 }
 
 void card_view__set_front(struct card_view* cv, enum card_id c)
 {
-    if (cv->front != NULL)
-        image__free(cv->front);
-
-    sprintf(cv->front_filename, "res/game/cards/card_%d.jpg", c);
-    cv->front = image__init(cv->back->text_rect.x, cv->back->text_rect.y, cv->back->text_rect.w, cv->back->text_rect.h,
-                            cv->front_filename, cv->back->renderer);
-    cv->is_shown = true;
+    char name[29];
+    sprintf(name, "res/game/cards/card_%d.png", c);
+    image__set_texture(cv->image, name);
 }
 
 void card_view__set_model_card(struct card_view *cv, struct card *c)
 {
-    if (cv->front != NULL)
-        image__free(cv->front);
-
-    sprintf(cv->front_filename, "res/game/cards/card_%d.jpg", c->type.id);
-    cv->front = image__init(cv->back->text_rect.x, cv->back->text_rect.y, cv->back->text_rect.w, cv->back->text_rect.h,
-                            cv->front_filename, cv->back->renderer);
-
     cv->card_model = c;
-    cv->front->angle = 90 * c->direction;
-    cv->back->angle = 90 * c->direction;
-    cv->is_shown = true;
+    card_view__set_front(cv, c->type.id);
 }
 
 void card_view__set_viewable_position(struct card_view* cv, int x, int y)
 {
     assert_not_null(cv, __func__, "cv parameter");
 
-    if (cv->front == NULL || cv->card_model == NULL)
+    if (cv->image == NULL || cv->card_model == NULL)
         exit_on_error("Set the card model first");
 
-    int view_x = x + cv->front->text_rect.w * cv->card_model->pos.x - (cv->back->text_rect.w / 2);
+    int view_x = x + cv->image->text_rect.w * cv->card_model->pos.x - (cv->image->text_rect.w / 2);
     //-1 due to model position design guidelines
-    int view_y = y + cv->front->text_rect.h * (-1 * cv->card_model->pos.y) - (cv->back->text_rect.h / 2);
+    int view_y = y + cv->image->text_rect.h * (-1 * cv->card_model->pos.y) - (cv->image->text_rect.h / 2);
 
-    cv->back->text_rect.x = view_x;
-    cv->back->text_rect.y = view_y;
-    cv->front->text_rect.x = view_x;
-    cv->front->text_rect.y = view_y;
+    cv->image->text_rect.x = view_x;
+    cv->image->text_rect.y = view_y;
+
+    //TODO: zooming system to always have all cards on the view
+}
+
+void card_view__update(struct card_view* cv)
+{
+    if (cv->card_model != NULL) {
+        //Fix for SDL rotation order different than imposed order
+        switch (cv->card_model->direction) {
+            case NORTH:
+            case SOUTH:
+                cv->image->angle = 90 * cv->card_model->direction;
+                break;
+            case WEST:
+            case EAST:
+                cv->image->angle = 90 * ((cv->card_model->direction + 2) % NB_DIRECTIONS);
+                break;
+        }
+    }
 }
 
 void card_view__render(struct card_view* cv)
 {
-    image__render(cv->is_shown ? cv->front : cv->back);
+    image__render(cv->image);
 }
 
 void card_view__free(struct card_view* cv)
@@ -80,10 +80,9 @@ void card_view__free(struct card_view* cv)
     if (cv == NULL)
         return;
 
-    image__free(cv->front);
-    image__free(cv->back);
+    image__free(cv->image);
+    cv->image = NULL;
     cv->card_model = NULL;
-    free(cv->front_filename);
 
     free(cv);
 }
@@ -99,11 +98,7 @@ void* card_view__copy_op(struct card_view *c)
 
     struct card_view *new_card_view = safe_malloc(sizeof(struct card_view));
     new_card_view->card_model = c->card_model == NULL ? NULL : card__copy_op(c->card_model);
-    new_card_view->back = c->back == NULL ? NULL : image__copy_op(c->back);
-    new_card_view->front = c->front == NULL ? NULL : image__copy_op(c->front);
-    new_card_view->is_shown = c->is_shown;
-    new_card_view->front_filename = malloc(29 * sizeof(char));
-    strcpy(new_card_view->front_filename, c->front_filename);
+    new_card_view->image = c->image == NULL ? NULL : image__copy_op(c->image);
 
     return new_card_view;
 }
@@ -127,11 +122,9 @@ void card_view__debug_op(const struct card_view *cv)
     if (cv == NULL)
         printf("NULL");
     else {
-        printf("Card View (shown: %d, front: ", cv->is_shown);
-        cv->front == NULL ?  printf("NULL, ") : image__debug_op(cv->front);
-        printf("back: ");
-        cv->back == NULL ?  printf("NULL, ") : image__debug_op(cv->back);
-        printf("card model: ");
+        printf("Card View (image: ");
+        cv->image == NULL ?  printf("NULL, ") : image__debug_op(cv->image);
+        printf(", card model: ");
         cv->card_model == NULL ?  printf("NULL, \n") : card__debug_op(cv->card_model);
         printf(")\n");
     }

@@ -29,10 +29,6 @@ struct game_view
     struct text *drawing_stack_text;
     struct set *card_view_set;
     struct stack *card_view_stack;
-
-    //=== loop delay
-    clock_t time_start_ms;
-    clock_t delay_ms;
 };
 
 

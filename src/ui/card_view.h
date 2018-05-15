@@ -12,11 +12,8 @@
 
 struct card_view
 {
-    struct image *front;
-    struct image *back;
+    struct image *image;
     struct card *card_model;
-    int is_shown;
-    char* front_filename;
 };
 
 
@@ -61,6 +58,13 @@ void card_view__set_model_card(struct card_view *cv, struct card *c);
  * @param y the height
  */
 void card_view__set_viewable_position(struct card_view* cv, int x, int y);
+
+
+/**
+ * @brief Updates the card view rotation
+ * @param cv the card view
+ */
+void card_view__update(struct card_view* cv);
 
 
 /**

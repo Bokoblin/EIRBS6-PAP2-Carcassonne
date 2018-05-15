@@ -20,8 +20,9 @@ struct image *image__init(int x, int y, int w, int h, const char *filename, SDL_
         this->text_rect.h = h == -1 ? this->text_rect.h : h;
     }
     this->renderer = app_renderer;
-    this->angle = 0;
-    this->filename = filename;
+    this->angle = 0.0;
+    this->filename = malloc(29 * sizeof(char));
+    strcpy(this->filename, filename);
 
     return this;
 }
@@ -29,6 +30,20 @@ struct image *image__init(int x, int y, int w, int h, const char *filename, SDL_
 void image__set_renderer(struct image* image, SDL_Renderer* renderer)
 {
     image->renderer = renderer;
+}
+
+void image__set_texture(struct image* im, char *filename)
+{
+    if (im->texture != NULL)
+        SDL_DestroyTexture(im->texture);
+
+    strcpy(im->filename, filename);
+    im->texture = IMG_LoadTexture(im->renderer, im->filename);
+    if (im->texture == NULL)
+        SDL_Log("IMG_LoadTexture() failed: %s", SDL_GetError());
+    else {
+        SDL_QueryTexture(im->texture, NULL, NULL, NULL, NULL);
+    }
 }
 
 int image__contains(struct image* image, int x, int y)
@@ -55,6 +70,7 @@ void image__free(struct image* image)
         return;
 
     SDL_DestroyTexture(image->texture);
+    free(image->filename);
     free(image);
 }
 
@@ -67,20 +83,9 @@ void* image__copy_op(struct image *im)
 {
     assert_not_null(im, __func__, "im parameter");
 
-    struct image *new_image = safe_malloc(sizeof(struct image));
+    struct image *new_image = image__init(im->text_rect.x, im->text_rect.y, im->text_rect.w, im->text_rect.h,
+                                          im->filename, im->renderer);
     new_image->angle = im->angle;
-    new_image->filename = im->filename;
-    new_image->text_rect = im->text_rect;
-    new_image->renderer = im->renderer;
-
-    new_image->texture = IMG_LoadTexture(new_image->renderer, new_image->filename);
-    if (new_image->texture == NULL) {
-        printf("old filename was %s\n", im->filename);
-        printf("new filename was %s\n", new_image->filename);
-        SDL_Log("IMG_LoadTexture() failed: %s", SDL_GetError());
-    } else {
-        SDL_QueryTexture(new_image->texture, NULL, NULL, NULL, NULL);
-    }
 
     return new_image;
 }
