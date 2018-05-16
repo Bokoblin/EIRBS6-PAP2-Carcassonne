@@ -8,7 +8,7 @@
 ///     DEFINITIONS
 ////////////////////////////////////////////////////////////////////
 
-#define SCREEN_WIDTH 900
+#define SCREEN_WIDTH 950
 #define SCREEN_HEIGHT 600
 #define SCREEN_BPP 32
 #define FRAMERATE 30

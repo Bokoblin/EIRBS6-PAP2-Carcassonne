@@ -14,7 +14,6 @@
 #define SHELF_TEXT_Y 0.8
 #define SHELF_CARD_X 0.02
 #define SHELF_CARD_Y 0.88
-#define DEFAULT_CARD_SIZE 50
 #define PAUSE_SIZE 36
 
 ////////////////////////////////////////////////////////////////////
@@ -28,6 +27,8 @@ struct game_view
     struct app* app;
 
     //=== components
+    int board_card_number_width;
+    int board_card_number_height;
     struct image *table_background_image;
     struct image *pause_image;
     struct text *drawing_stack_text;
@@ -58,6 +59,13 @@ struct game_view* game_view__init(struct app *app, struct game *game);
  * @return 0 on app state change, 1 otherwise
  */
 int game_view__handle_events(SDL_Event *event, struct game_view *game_view);
+
+
+/**
+ * @brief Update the board view size values to scale the cards
+ * @param game_view the game view
+ */
+void game_view__update_board_size(struct game_view *game_view);
 
 
 /**

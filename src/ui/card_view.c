@@ -36,21 +36,23 @@ void card_view__set_model_card(struct card_view *cv, struct card *c)
     card_view__set_front(cv, c->type.id);
 }
 
-void card_view__set_viewable_position(struct card_view* cv, int x, int y)
+void card_view__set_viewable_position(struct card_view *cv, int x, int y, int board_width, int board_height)
 {
     assert_not_null(cv, __func__, "cv parameter");
 
     if (cv->image == NULL || cv->card_model == NULL)
         exit_on_error("Set the card model first");
 
+    const int VPOS_REVERSE = -1; //due to model position design guidelines
     int view_x = x + cv->image->text_rect.w * cv->card_model->pos.x - (cv->image->text_rect.w / 2);
-    //-1 due to model position design guidelines
-    int view_y = y + cv->image->text_rect.h * (-1 * cv->card_model->pos.y) - (cv->image->text_rect.h / 2);
+    int view_y = y + cv->image->text_rect.h * (VPOS_REVERSE * cv->card_model->pos.y) - (cv->image->text_rect.h / 2);
 
+    int max = board_width > board_height ? board_width : board_height;
+    int scaled_size = (int) (DEFAULT_CARD_SIZE / (1 + 0.03 * max));
     cv->image->text_rect.x = view_x;
     cv->image->text_rect.y = view_y;
-
-    //TODO: zooming system to always have all cards on the view
+    cv->image->text_rect.w = scaled_size;
+    cv->image->text_rect.h = scaled_size;
 }
 
 void card_view__update(struct card_view* cv)

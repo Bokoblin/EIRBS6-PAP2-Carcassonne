@@ -5,6 +5,7 @@
 #include "../common/card.h"
 #include "image.h"
 
+#define DEFAULT_CARD_SIZE 50
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURE
@@ -57,7 +58,7 @@ void card_view__set_model_card(struct card_view *cv, struct card *c);
  * @param x the view center
  * @param y the height
  */
-void card_view__set_viewable_position(struct card_view* cv, int x, int y);
+void card_view__set_viewable_position(struct card_view *cv, int x, int y, int board_width, int board_height);
 
 
 /**

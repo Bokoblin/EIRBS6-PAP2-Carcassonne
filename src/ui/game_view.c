@@ -15,6 +15,41 @@ const char* TABLE_BACKGROUND_IMAGE = "res/game/table.png";
 const char* PAUSE_IMAGE = "res/game/pause.png";
 const char* RESUME_IMAGE = "res/game/resume.png";
 
+////////////////////////////////////////////////////////////////////
+///     FUNCTIONS POINTERS FOR SCALING
+////////////////////////////////////////////////////////////////////
+
+void* int_copy_op(const int *i)
+{
+    if (i == NULL) return NULL;
+    int *new_i = safe_malloc(sizeof(int));
+    *new_i = *i;
+    return new_i;
+}
+
+void int_delete_op(int *i)
+{
+    free(i);
+}
+
+int int_compare_op(const int *i1, const int *i2)
+{
+    if (i1 == NULL || i2 == NULL) {
+        printf("NULL value compared");
+        exit(EXIT_FAILURE);
+    }
+
+    if (*i1 < *i2)
+        return -1;
+    else
+        return *i1 != *i2;
+}
+
+void int_debug_op(const int *i)
+{
+    setvbuf (stdout, NULL, _IONBF, 0);
+    i == NULL ? printf("NULL ") : printf("%d ", *i);
+}
 
 ////////////////////////////////////////////////////////////////////
 ///     FUNCTIONS IMPLEMENTATION
@@ -26,6 +61,8 @@ struct game_view *game_view__init(struct app *app, struct game *game)
 
     struct game_view *this = safe_malloc(sizeof(struct game_view));
 
+    this->board_card_number_width = 0;
+    this->board_card_number_height = 0;
     this->game = game;
     this->app = app;
 
@@ -63,12 +100,12 @@ struct game_view *game_view__init(struct app *app, struct game *game)
 
     //=== First card's view init
 
-    struct card_view * cv_first = card_view__init(app->width / 2, app->height / 2, DEFAULT_CARD_SIZE, DEFAULT_CARD_SIZE,
-                                                  this->app->renderer, true);
+    struct card_view * cv_first = card_view__init(app->width / 2, (int) ((SHELF_TEXT_Y * app->height) / 2),
+                                                  DEFAULT_CARD_SIZE, DEFAULT_CARD_SIZE, this->app->renderer, true);
     card_view__set_model_card(cv_first, this->game->board->first_card);
-    card_view__set_viewable_position(cv_first, app->width / 2, app->height / 2);
     set__add(this->card_view_set, cv_first);
     card_view__free(cv_first);
+    game_view__update_board_size(this);
 
     //=== Renderer init
 
@@ -128,6 +165,24 @@ int game_view__handle_events(SDL_Event *event, struct game_view *game_view)
     return true;
 }
 
+void game_view__update_board_size(struct game_view *game_view)
+{
+    struct set * x_set = set__empty(int_copy_op, int_delete_op, int_compare_op, int_debug_op);
+    struct set * y_set = set__empty(int_copy_op, int_delete_op, int_compare_op, int_debug_op);
+
+    size_t set_size = set__size(game_view->card_view_set);
+    for (size_t i = 0; i < set_size; i++) {
+        struct card_view *cv = set__get_umpteenth_no_copy(game_view->card_view_set, i);
+        set__add(x_set, &cv->card_model->pos.x);
+        set__add(y_set, &cv->card_model->pos.y);
+    }
+
+    game_view->board_card_number_width = (int) set__size(x_set);
+    game_view->board_card_number_height = (int) set__size(y_set);
+
+    printf("Board size (w: %d, h: %d\n", game_view->board_card_number_width, game_view->board_card_number_height);
+}
+
 enum card_id game_view__draw_until_valid(struct game_view *game_view)
 {
     int is_valid;
@@ -152,6 +207,7 @@ int game_view__handle_card_drawing_view_update(struct game_view *game_view, enum
 
     struct card_view *popped_view = stack__peek(game_view->card_view_stack);
     card_view__set_front(popped_view, ci);
+    game_view__update(game_view);
     game_view__render(game_view);
     SDL_Delay(800); //to keep in order to see the card on stack before it is moved
 
@@ -176,7 +232,6 @@ void game_view__handle_valid_play_view_update(struct game_view *game_view, struc
 
     //Updating the view card
     card_view__set_model_card(popped, card);
-    card_view__set_viewable_position(popped, game_view->app->width / 2, game_view->app->height / 2);
 
     //Adding the view card to the set and freeing base pointer
     set__add(game_view->card_view_set, popped);
@@ -237,6 +292,14 @@ void game_view__update(struct game_view *game_view)
         stack__apply_to_all(game_view->card_view_stack, (applying_func_t) card_view__update);
         set__apply_to_all(game_view->card_view_set, (applying_func_t) card_view__update);
         text__update(game_view->drawing_stack_text);
+
+        game_view__update_board_size(game_view);
+        int height_center = (int) ((SHELF_TEXT_Y * game_view->app->height) / 2);
+        for (size_t i = 0; i < set__size(game_view->card_view_set); i++) {
+            struct card_view *cv = set__get_umpteenth_no_copy(game_view->card_view_set, i);
+            card_view__set_viewable_position(cv, game_view->app->width / 2, height_center,
+                                             game_view->board_card_number_width, game_view->board_card_number_height);
+        }
     } else {
         text__update(game_view->end_title_text);
         set__apply_to_all(game_view->results_text_set, (applying_func_t) text__update);
