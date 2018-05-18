@@ -55,10 +55,11 @@ void card_view__set_model_card(struct card_view *cv, struct card *c);
 /**
  * @brief Set the viewable position following window dimensions
  * @param cv the card view
- * @param x the view center
- * @param y the height
+ * @param board_center_x the board center x
+ * @param board_center_y the board center y
+ * @param scale_amount the scaling amount to apply to a card
  */
-void card_view__set_viewable_position(struct card_view *cv, int x, int y, int board_width, int board_height);
+void card_view__set_viewable_position(struct card_view *cv, double board_center_x, double board_center_y, int scale_amount);
 
 
 /**

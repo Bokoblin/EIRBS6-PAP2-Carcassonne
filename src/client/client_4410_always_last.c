@@ -8,10 +8,13 @@ struct client client;
 /// Implementation of interface functions from client
 /////////////////////////////////////////////////////////
 
-struct move client__chose_move_strategy(struct set *possible_moves)
+struct move client__choose_move_strategy(struct micro_board *board, unsigned int nb_meeples, struct set *possible_moves)
 {
     //CLIENT 4410 - ALWAYS LAST STRATEGY
+    (void) board; //not used in this strategy
+    (void) nb_meeples; //not used in this strategy
 
+    assert_not_null(board, __func__ , "board parameter");
     assert_not_null(possible_moves, __func__ , "possible_moves parameter");
 
     size_t moves_number = set__size(possible_moves);
@@ -47,7 +50,7 @@ struct move play(enum card_id card, struct move const previous_moves[], size_t n
     //=== Choosing next move following board and drawn card
     struct set *possible_moves = set__empty(move__copy_op, move__delete_op, move__compare_op, move__debug_op);
     client__populate_possible_moves_list(&client, possible_moves, card);
-    struct move m = client__chose_move_strategy(possible_moves);
+    struct move m = client__choose_move_strategy(client.board, client.nb_meeples, possible_moves);
     set__free(possible_moves);
 
     return m;

@@ -36,23 +36,29 @@ void card_view__set_model_card(struct card_view *cv, struct card *c)
     card_view__set_front(cv, c->type.id);
 }
 
-void card_view__set_viewable_position(struct card_view *cv, int x, int y, int board_width, int board_height)
+void card_view__set_viewable_position(struct card_view *cv, double board_center_x, double board_center_y, int scale_amount)
 {
     assert_not_null(cv, __func__, "cv parameter");
 
     if (cv->image == NULL || cv->card_model == NULL)
         exit_on_error("Set the card model first");
 
-    const int VPOS_REVERSE = -1; //due to model position design guidelines
-    int view_x = x + cv->image->text_rect.w * cv->card_model->pos.x - (cv->image->text_rect.w / 2);
-    int view_y = y + cv->image->text_rect.h * (VPOS_REVERSE * cv->card_model->pos.y) - (cv->image->text_rect.h / 2);
+    //=== Cards scaling
 
-    int max = board_width > board_height ? board_width : board_height;
-    int scaled_size = (int) (DEFAULT_CARD_SIZE / (1 + 0.03 * max));
-    cv->image->text_rect.x = view_x;
-    cv->image->text_rect.y = view_y;
-    cv->image->text_rect.w = scaled_size;
-    cv->image->text_rect.h = scaled_size;
+    if (DEFAULT_CARD_SIZE - scale_amount > 5)  {
+        cv->image->text_rect.w = DEFAULT_CARD_SIZE - scale_amount;
+        cv->image->text_rect.h = DEFAULT_CARD_SIZE - scale_amount;
+    }
+
+    //=== Cards positionning
+
+    const int VPOS_REVERSE = -1; //due to model position design guidelines
+    double cv_new_x = board_center_x + cv->image->text_rect.w * cv->card_model->pos.x - (cv->image->text_rect.w / 2);
+    double cv_new_y = board_center_y + cv->image->text_rect.h *
+            (VPOS_REVERSE * cv->card_model->pos.y) - (cv->image->text_rect.h / 2);
+
+    cv->image->text_rect.x = (int) cv_new_x;
+    cv->image->text_rect.y = (int) cv_new_y;
 }
 
 void card_view__update(struct card_view* cv)

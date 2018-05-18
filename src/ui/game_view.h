@@ -27,8 +27,7 @@ struct game_view
     struct app* app;
 
     //=== components
-    int board_card_number_width;
-    int board_card_number_height;
+    int scale_amount;
     struct image *table_background_image;
     struct image *pause_image;
     struct text *drawing_stack_text;
@@ -60,6 +59,8 @@ struct game_view* game_view__init(struct app *app, struct game *game);
  */
 int game_view__handle_events(SDL_Event *event, struct game_view *game_view);
 
+//TODO
+struct card_view *get_card_view_at_dir(struct set * s, enum direction d);
 
 /**
  * @brief Update the board view size values to scale the cards

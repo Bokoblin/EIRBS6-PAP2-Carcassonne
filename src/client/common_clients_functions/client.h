@@ -70,10 +70,12 @@ void client__populate_possible_moves_list(struct client *c, struct set *possible
 /**
  * @brief Handle how the client chooses a move among all possibles
  * @note This function must be implemented foreach client
+ * @param board the client's board
+ * @param nb_meeples the number of meeples remaining
  * @param possible_moves the list of possible moves
  * @return the chosen move
  */
-struct move client__chose_move_strategy(struct set *possible_moves);
+struct move client__choose_move_strategy(struct micro_board *board, unsigned int nb_meeples, struct set *possible_moves);
 
 
 /**

@@ -15,41 +15,6 @@ const char* TABLE_BACKGROUND_IMAGE = "res/game/table.png";
 const char* PAUSE_IMAGE = "res/game/pause.png";
 const char* RESUME_IMAGE = "res/game/resume.png";
 
-////////////////////////////////////////////////////////////////////
-///     FUNCTIONS POINTERS FOR SCALING
-////////////////////////////////////////////////////////////////////
-
-void* int_copy_op(const int *i)
-{
-    if (i == NULL) return NULL;
-    int *new_i = safe_malloc(sizeof(int));
-    *new_i = *i;
-    return new_i;
-}
-
-void int_delete_op(int *i)
-{
-    free(i);
-}
-
-int int_compare_op(const int *i1, const int *i2)
-{
-    if (i1 == NULL || i2 == NULL) {
-        printf("NULL value compared");
-        exit(EXIT_FAILURE);
-    }
-
-    if (*i1 < *i2)
-        return -1;
-    else
-        return *i1 != *i2;
-}
-
-void int_debug_op(const int *i)
-{
-    setvbuf (stdout, NULL, _IONBF, 0);
-    i == NULL ? printf("NULL ") : printf("%d ", *i);
-}
 
 ////////////////////////////////////////////////////////////////////
 ///     FUNCTIONS IMPLEMENTATION
@@ -61,8 +26,7 @@ struct game_view *game_view__init(struct app *app, struct game *game)
 
     struct game_view *this = safe_malloc(sizeof(struct game_view));
 
-    this->board_card_number_width = 0;
-    this->board_card_number_height = 0;
+    this->scale_amount = 0;
     this->game = game;
     this->app = app;
 
@@ -105,7 +69,6 @@ struct game_view *game_view__init(struct app *app, struct game *game)
     card_view__set_model_card(cv_first, this->game->board->first_card);
     set__add(this->card_view_set, cv_first);
     card_view__free(cv_first);
-    game_view__update_board_size(this);
 
     //=== Renderer init
 
@@ -165,22 +128,55 @@ int game_view__handle_events(SDL_Event *event, struct game_view *game_view)
     return true;
 }
 
-void game_view__update_board_size(struct game_view *game_view)
+struct card_view *get_card_view_at_dir(struct set * s, enum direction d)
 {
-    struct set * x_set = set__empty(int_copy_op, int_delete_op, int_compare_op, int_debug_op);
-    struct set * y_set = set__empty(int_copy_op, int_delete_op, int_compare_op, int_debug_op);
+    struct card_view *found = set__get_umpteenth_no_copy(s, 0);
 
-    size_t set_size = set__size(game_view->card_view_set);
-    for (size_t i = 0; i < set_size; i++) {
-        struct card_view *cv = set__get_umpteenth_no_copy(game_view->card_view_set, i);
-        set__add(x_set, &cv->card_model->pos.x);
-        set__add(y_set, &cv->card_model->pos.y);
+    switch (d)
+    {
+        case WEST:
+            found = set__get_umpteenth_no_copy(s, 0);
+            break;
+        case EAST:
+            found = set__get_umpteenth_no_copy(s, set__size(s) - 1);
+            break;
+        case NORTH:
+            for (size_t i = 0; i < set__size(s); i++) {
+                struct card_view *umpteenth = set__get_umpteenth_no_copy(s, i);
+                if (umpteenth->card_model->pos.y > found->card_model->pos.y)
+                    found = umpteenth;
+            }
+            break;
+        case SOUTH:
+            for (size_t i = 0; i < set__size(s); i++) {
+                struct card_view *umpteenth = set__get_umpteenth_no_copy(s, i);
+                if (umpteenth->card_model->pos.y < found->card_model->pos.y)
+                    found = umpteenth;
+            }
+            break;
     }
 
-    game_view->board_card_number_width = (int) set__size(x_set);
-    game_view->board_card_number_height = (int) set__size(y_set);
+    return found;
+}
 
-    printf("Board size (w: %d, h: %d\n", game_view->board_card_number_width, game_view->board_card_number_height);
+void game_view__update_board_size(struct game_view *game_view)
+{
+    const int MARGIN = 5;
+    double board_width = game_view->app->width;
+    double board_height = 0.75 * game_view->app->height;
+
+    while (get_card_view_at_dir(game_view->card_view_set, NORTH)->image->text_rect.y <= MARGIN
+            || (get_card_view_at_dir(game_view->card_view_set, SOUTH)->image->text_rect.y
+                + get_card_view_at_dir(game_view->card_view_set, SOUTH)->image->text_rect.h) >= board_height - MARGIN
+            || get_card_view_at_dir(game_view->card_view_set, WEST)->image->text_rect.x <= MARGIN
+            || (get_card_view_at_dir(game_view->card_view_set, EAST)->image->text_rect.x
+                + get_card_view_at_dir(game_view->card_view_set, EAST)->image->text_rect.w) >= board_width - MARGIN) {
+        game_view->scale_amount++;
+        for (size_t i = 0; i < set__size(game_view->card_view_set); i++) {
+            struct card_view *cv = set__get_umpteenth_no_copy(game_view->card_view_set, i);
+            card_view__set_viewable_position(cv, board_width / 2, board_height / 2, game_view->scale_amount);
+        }
+    }
 }
 
 enum card_id game_view__draw_until_valid(struct game_view *game_view)
@@ -293,13 +289,13 @@ void game_view__update(struct game_view *game_view)
         set__apply_to_all(game_view->card_view_set, (applying_func_t) card_view__update);
         text__update(game_view->drawing_stack_text);
 
-        game_view__update_board_size(game_view);
-        int height_center = (int) ((SHELF_TEXT_Y * game_view->app->height) / 2);
+        double board_width = game_view->app->width;
+        double board_height = 0.75 * game_view->app->height;
         for (size_t i = 0; i < set__size(game_view->card_view_set); i++) {
             struct card_view *cv = set__get_umpteenth_no_copy(game_view->card_view_set, i);
-            card_view__set_viewable_position(cv, game_view->app->width / 2, height_center,
-                                             game_view->board_card_number_width, game_view->board_card_number_height);
+            card_view__set_viewable_position(cv, board_width / 2, board_height / 2, game_view->scale_amount);
         }
+        game_view__update_board_size(game_view);
     } else {
         text__update(game_view->end_title_text);
         set__apply_to_all(game_view->results_text_set, (applying_func_t) text__update);
