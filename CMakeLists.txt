@@ -42,7 +42,7 @@ file(GLOB CLIENT1_SOURCE_FILES
         "src/common/*.c"
         "src/client/common_clients_functions/*.h"
         "src/client/common_clients_functions/*.c"
-        "src/client/client_4410_random_valid.c"
+        "src/client/client_4410_choose_always_random_valid.c"
         )
 
 file(GLOB CLIENT2_SOURCE_FILES
@@ -50,7 +50,7 @@ file(GLOB CLIENT2_SOURCE_FILES
         "src/common/*.c"
         "src/client/common_clients_functions/*.h"
         "src/client/common_clients_functions/*.c"
-        "src/client/client_4410_always_first.c"
+        "src/client/client_4410_always_choose_lower_left.c"
         )
 
 file(GLOB CLIENT3_SOURCE_FILES

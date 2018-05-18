@@ -10,17 +10,28 @@ struct client client;
 
 struct move client__choose_move_strategy(struct micro_board *board, unsigned int nb_meeples, struct set *possible_moves)
 {
-    //CLIENT 4410 - RANDOM STRATEGY
-    (void) board; //not used in this strategy
-    (void) nb_meeples; //not used in this strategy
+    //CLIENT 4410 - CHOOSE A RANDOM MOVE AMONG POSSIBLE ONES STRATEGY
 
+    assert_not_null(board, __func__ , "board parameter");
     assert_not_null(possible_moves, __func__ , "possible_moves parameter");
 
     if (set__size(possible_moves) == 0)
         exit_on_error("There are no valid possibilities");
 
+    //=== Select a move
+
     size_t r = rand() % set__size(possible_moves);
-    return *((struct move *)set__get_umpteenth_no_copy(possible_moves, r));
+    struct move chosen_move = *((struct move *) set__get_umpteenth_no_copy(possible_moves, r));
+
+    //=== Place a meeple in trivial conditions
+
+    if (nb_meeples > 0) {
+        if (chosen_move.card == CARD_MONASTERY_ROAD || chosen_move.card == CARD_MONASTERY_ALONE) {
+            chosen_move.place = POS_CENTER;
+        }
+    }
+
+    return chosen_move;
 }
 
 

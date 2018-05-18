@@ -10,18 +10,27 @@ struct client client;
 
 struct move client__choose_move_strategy(struct micro_board *board, unsigned int nb_meeples, struct set *possible_moves)
 {
-    //CLIENT 4410 - ALWAYS LAST STRATEGY
-    (void) board; //not used in this strategy
-    (void) nb_meeples; //not used in this strategy
+    //CLIENT 4410 - ALWAYS CHOOSE THE MOVE WITH THE MOST LOWER LEFT CARD
 
     assert_not_null(board, __func__ , "board parameter");
     assert_not_null(possible_moves, __func__ , "possible_moves parameter");
 
-    size_t moves_number = set__size(possible_moves);
-    if (moves_number == 0)
+    if (set__size(possible_moves) == 0)
         exit_on_error("There are no valid possibilities");
 
-    return *((struct move *)set__get_umpteenth_no_copy(possible_moves, moves_number - 1));
+    //=== Select a move
+
+    struct move chosen_move = *((struct move *) set__get_umpteenth_no_copy(possible_moves, 0));
+
+    //=== Place a meeple in trivial conditions
+
+    if (nb_meeples > 0) {
+        if (chosen_move.card == CARD_MONASTERY_ROAD || chosen_move.card == CARD_MONASTERY_ALONE) {
+            chosen_move.place = POS_CENTER;
+        }
+    }
+
+    return chosen_move;
 }
 
 
@@ -31,7 +40,7 @@ struct move client__choose_move_strategy(struct micro_board *board, unsigned int
 
 char const* get_player_name()
 {
-    return("client4410-always_last");
+    return("client4410-always_first");
 }
 
 void initialize(unsigned int id, unsigned int n_players)
