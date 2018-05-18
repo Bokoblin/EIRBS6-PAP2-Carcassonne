@@ -78,6 +78,14 @@ void text__set_color(struct text* text, Uint8 r, Uint8 g, Uint8 b, Uint8 a);
 
 
 /**
+ * @brief Set the text's content
+ * @param text the text struct
+ * @param content the nex content
+ */
+void text__set_content(struct text* text, const char *content);
+
+
+/**
  * @brief Checks if coordinates belong to a text
  * @param text the text
  * @param x the x-axis coordinate
@@ -88,16 +96,15 @@ int text__contains(struct text* text, int x, int y);
 
 
 /**
- * @brief Updates an text
+ * @brief Updates a text
  * @param text the text
  */
 void text__update(struct text* text);
 
 
 /**
- * @brief Renders an text on renderer
+ * @brief Renders a text on its renderer
  * @param text the text to render
- * @param renderer the app's renderer
  */
 void text__render(struct text *text);
 

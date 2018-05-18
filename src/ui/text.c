@@ -71,6 +71,25 @@ void text__set_color(struct text* text, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
     SDL_SetTextureAlphaMod(text->texture, a);
 }
 
+void text__set_content(struct text* text, const char *content)
+{
+    SDL_FreeSurface(text->surface);
+
+    text->surface = TTF_RenderText_Blended(text->font, content, text->color);
+    if (text->surface == NULL) {
+        SDL_Log("TTF_RenderText_Solid() failed: %s", SDL_GetError());
+    }
+
+    SDL_DestroyTexture(text->texture);
+
+    text->texture = SDL_CreateTextureFromSurface(text->renderer, text->surface);
+    if (text->texture == NULL) {
+        SDL_Log("SDL_CreateTextureFromSurface() failed: %s", SDL_GetError());
+    } else {
+        SDL_QueryTexture(text->texture, NULL, NULL, &text->texture_rect.w, &text->texture_rect.h);
+    }
+}
+
 int text__contains(struct text* text, int x, int y)
 {
     if (text != NULL)

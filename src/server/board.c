@@ -102,12 +102,10 @@ int board__add_card(struct board *b, struct card *card_to_add)
                     set__remove(b->cards_set, card_to_link);
                     return !SUCCESS;
                 }
-            } else { //Full matching or nothing
-                //if (card__get_neighbour_number(card_to_link) != 0) {
-                    card__unlink_neighbours(card_to_link);
-                    set__remove(b->cards_set, card_to_link);
-                    return !SUCCESS;
-                //}
+            } else {
+                card__unlink_neighbours(card_to_link);
+                set__remove(b->cards_set, card_to_link);
+                return !SUCCESS;
             }
         }
     }
@@ -126,13 +124,10 @@ int board__add_meeple(struct board *b, struct meeple *m)
         return !SUCCESS;
 
     //TODO: [Due for May 18th] Add meeple to board after check
-    //Check if a meeple is already on the card
-    //Graph path-course to check if meeple is authorized to be placed on requested area.
     (void) b;
     (void) m;
 
-    //return set__add(b->meeples_set, m);
-    return SUCCESS; //Meeple handling not needed for due date May 4th
+    return SUCCESS;
 }
 
 void board__check_sub_completion(struct board *b)
@@ -140,7 +135,6 @@ void board__check_sub_completion(struct board *b)
     if (b == NULL) return;
 
     //TODO: [Due for May 18th] Check if new areas were closed in order to calculate sub-score
-    //-> mark already closed areas somewhere to avoid recalculation ?
     (void) b;
 }
 

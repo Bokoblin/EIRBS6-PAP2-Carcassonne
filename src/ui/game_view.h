@@ -15,6 +15,9 @@
 #define SHELF_CARD_X 0.02
 #define SHELF_CARD_Y 0.88
 #define PAUSE_SIZE 36
+#define PLAYER_MARGIN_X 0.05
+#define PLAYER_MARGIN_Y 0.20
+#define PLAYER_INTERLINE 50
 
 ////////////////////////////////////////////////////////////////////
 ///     STRUCTURE
@@ -31,6 +34,7 @@ struct game_view
     struct image *table_background_image;
     struct image *pause_image;
     struct text *drawing_stack_text;
+    struct text *current_player_text;
     struct text *end_title_text;
     struct set *card_view_set;
     struct set *results_text_set;
@@ -59,8 +63,15 @@ struct game_view* game_view__init(struct app *app, struct game *game);
  */
 int game_view__handle_events(SDL_Event *event, struct game_view *game_view);
 
-//TODO
-struct card_view *get_card_view_at_dir(struct set * s, enum direction d);
+
+/**
+ * @brief Get the view card located at a given edge of the board
+ * @param card_view_set the set of view cards
+ * @param edge an edge of the board
+ * @return a view card pointer
+ */
+struct card_view *get_card_view_at_edge(struct set *card_view_set, enum direction edge);
+
 
 /**
  * @brief Update the board view size values to scale the cards

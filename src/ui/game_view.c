@@ -11,6 +11,7 @@
 
 const char* END_TEXT = "Final results";
 const char* DRAWING_STACK_TEXT = "Card drawing stack";
+const char* CURRENT_PLAYER_TEXT = "Current player playing";
 const char* TABLE_BACKGROUND_IMAGE = "res/game/table.png";
 const char* PAUSE_IMAGE = "res/game/pause.png";
 const char* RESUME_IMAGE = "res/game/resume.png";
@@ -41,6 +42,10 @@ struct game_view *game_view__init(struct app *app, struct game *game)
 
     this->drawing_stack_text = text__init((int) (SHELF_TEXT_X * app->width), (int) (SHELF_TEXT_Y * app->height), -1, -1,
                                           DRAWING_STACK_TEXT, this->app->renderer, this->app->font);
+
+    this->current_player_text = text__init((int) ((int)(app->width / 2) + SHELF_TEXT_X * app->width),
+                                           (int) (SHELF_TEXT_Y * app->height), -1, -1,
+                                           CURRENT_PLAYER_TEXT, this->app->renderer, this->app->font);
 
     this->end_title_text = text__init(app->width / 2, (int) (0.05 * app->height), -1, -1,
                                       END_TEXT, this->app->renderer, this->app->font);
@@ -128,28 +133,28 @@ int game_view__handle_events(SDL_Event *event, struct game_view *game_view)
     return true;
 }
 
-struct card_view *get_card_view_at_dir(struct set * s, enum direction d)
+struct card_view *get_card_view_at_edge(struct set *card_view_set, enum direction edge)
 {
-    struct card_view *found = set__get_umpteenth_no_copy(s, 0);
+    struct card_view *found = set__get_umpteenth_no_copy(card_view_set, 0);
 
-    switch (d)
+    switch (edge)
     {
         case WEST:
-            found = set__get_umpteenth_no_copy(s, 0);
+            found = set__get_umpteenth_no_copy(card_view_set, 0);
             break;
         case EAST:
-            found = set__get_umpteenth_no_copy(s, set__size(s) - 1);
+            found = set__get_umpteenth_no_copy(card_view_set, set__size(card_view_set) - 1);
             break;
         case NORTH:
-            for (size_t i = 0; i < set__size(s); i++) {
-                struct card_view *umpteenth = set__get_umpteenth_no_copy(s, i);
+            for (size_t i = 0; i < set__size(card_view_set); i++) {
+                struct card_view *umpteenth = set__get_umpteenth_no_copy(card_view_set, i);
                 if (umpteenth->card_model->pos.y > found->card_model->pos.y)
                     found = umpteenth;
             }
             break;
         case SOUTH:
-            for (size_t i = 0; i < set__size(s); i++) {
-                struct card_view *umpteenth = set__get_umpteenth_no_copy(s, i);
+            for (size_t i = 0; i < set__size(card_view_set); i++) {
+                struct card_view *umpteenth = set__get_umpteenth_no_copy(card_view_set, i);
                 if (umpteenth->card_model->pos.y < found->card_model->pos.y)
                     found = umpteenth;
             }
@@ -165,12 +170,12 @@ void game_view__update_board_size(struct game_view *game_view)
     double board_width = game_view->app->width;
     double board_height = 0.75 * game_view->app->height;
 
-    while (get_card_view_at_dir(game_view->card_view_set, NORTH)->image->text_rect.y <= MARGIN
-            || (get_card_view_at_dir(game_view->card_view_set, SOUTH)->image->text_rect.y
-                + get_card_view_at_dir(game_view->card_view_set, SOUTH)->image->text_rect.h) >= board_height - MARGIN
-            || get_card_view_at_dir(game_view->card_view_set, WEST)->image->text_rect.x <= MARGIN
-            || (get_card_view_at_dir(game_view->card_view_set, EAST)->image->text_rect.x
-                + get_card_view_at_dir(game_view->card_view_set, EAST)->image->text_rect.w) >= board_width - MARGIN) {
+    while (get_card_view_at_edge(game_view->card_view_set, NORTH)->image->text_rect.y <= MARGIN
+            || (get_card_view_at_edge(game_view->card_view_set, SOUTH)->image->text_rect.y
+                + get_card_view_at_edge(game_view->card_view_set, SOUTH)->image->text_rect.h) >= board_height - MARGIN
+            || get_card_view_at_edge(game_view->card_view_set, WEST)->image->text_rect.x <= MARGIN
+            || (get_card_view_at_edge(game_view->card_view_set, EAST)->image->text_rect.x
+                + get_card_view_at_edge(game_view->card_view_set, EAST)->image->text_rect.w) >= board_width - MARGIN) {
         game_view->scale_amount++;
         for (size_t i = 0; i < set__size(game_view->card_view_set); i++) {
             struct card_view *cv = set__get_umpteenth_no_copy(game_view->card_view_set, i);
@@ -205,7 +210,7 @@ int game_view__handle_card_drawing_view_update(struct game_view *game_view, enum
     card_view__set_front(popped_view, ci);
     game_view__update(game_view);
     game_view__render(game_view);
-    SDL_Delay(800); //to keep in order to see the card on stack before it is moved
+    SDL_Delay(600); //to keep in order to see the card on stack before it is moved
 
     if (board__is_valid_card(game_view->game->board, ci)) {
         is_valid = true;
@@ -269,11 +274,23 @@ void game_view__init_end(struct game_view *game_view)
         struct player *p = queue__front(game_view->game->players_queue);
         queue__dequeue(game_view->game->players_queue);
 
-        char message[30];
-        sprintf(message, "Player %d     %d", p->id, p->score);
-        struct text *t_player = text__init((int) (0.10 * game_view->app->width),
-                                           (int) (0.20 * game_view->app->height + (50 * i)),
-                                           -1, -1, message, game_view->app->renderer, game_view->app->font);
+        int x_pos, y_pos;
+
+        if (i <= (game_view->game->nb_players / 2)) {
+            x_pos = (int) ((PLAYER_MARGIN_X * game_view->app->width));
+            y_pos = (int) ((PLAYER_MARGIN_Y * game_view->app->height)
+                    + (PLAYER_INTERLINE * i));
+        } else {
+            x_pos = (int) ((PLAYER_MARGIN_X * game_view->app->width) + (int)(game_view->app->width / 2));
+            y_pos = (int) ((PLAYER_MARGIN_Y * game_view->app->height)
+                    + (PLAYER_INTERLINE * (i - (1 + (int)(game_view->game->nb_players / 2)))));
+        }
+
+        char message[50];
+        sprintf(message, "Player %s :    %d",
+                (strlen(p->get_player_name()) < 30) ? p->get_player_name() : "...", p->score);
+        struct text *t_player = text__init(x_pos, y_pos, -1, -1, message,
+                game_view->app->renderer, game_view->app->font);
 
         set__add(game_view->results_text_set, t_player);
 
@@ -282,12 +299,25 @@ void game_view__init_end(struct game_view *game_view)
     }
 }
 
+void game_view__update_current_player(struct text *t, struct queue *player_queue)
+{
+    struct player *p = queue__front(player_queue);
+
+    char message[50];
+    sprintf(message, "%s : %d", CURRENT_PLAYER_TEXT, p->id);
+    text__set_content(t, message);
+
+    player__free(p);
+}
+
 void game_view__update(struct game_view *game_view)
 {
     if (game_view->app->state == GAME || game_view->app->state == PAUSE) {
         stack__apply_to_all(game_view->card_view_stack, (applying_func_t) card_view__update);
         set__apply_to_all(game_view->card_view_set, (applying_func_t) card_view__update);
         text__update(game_view->drawing_stack_text);
+        game_view__update_current_player(game_view->current_player_text, game_view->game->players_queue);
+        text__update(game_view->current_player_text);
 
         double board_width = game_view->app->width;
         double board_height = 0.75 * game_view->app->height;
@@ -309,12 +339,13 @@ void game_view__render(struct game_view *game_view)
     if (game_view->app->state == GAME || game_view->app->state == PAUSE) {
         //Render images
         image__render(game_view->table_background_image);
-        image__render(game_view->pause_image);
         stack__apply_to_all(game_view->card_view_stack, (applying_func_t) card_view__render);
         set__apply_to_all(game_view->card_view_set, (applying_func_t) card_view__render);
+        image__render(game_view->pause_image);
 
         //Render text
         text__render(game_view->drawing_stack_text);
+        text__render(game_view->current_player_text);
     } else {
         //Render images
         image__render(game_view->table_background_image);
@@ -332,6 +363,7 @@ void game_view__free(struct game_view *game_view)
     image__free(game_view->table_background_image);
     image__free(game_view->pause_image);
     text__free(game_view->drawing_stack_text);
+    text__free(game_view->current_player_text);
     text__free(game_view->end_title_text);
     set__free(game_view->card_view_set);
     set__free(game_view->results_text_set);

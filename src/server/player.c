@@ -17,6 +17,11 @@ struct player *player__init(unsigned int id, void *lib_ptr)
     return p;
 }
 
+void player__print_name_and_score(struct player *p)
+{
+    printf("\tPlayer #%d (%s) : %d\n", p->id, p->get_player_name(), p->score);
+}
+
 void player__free(struct player *p)
 {
     free(p);

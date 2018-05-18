@@ -35,6 +35,13 @@ struct player *player__init(unsigned int id, void *lib_ptr);
 
 
 /**
+ * @brief Print the player id, name and score
+ * @param p the player
+ */
+void player__print_name_and_score(struct player *p);
+
+
+/**
  * @brief Release memory of a player
  * @param p the player
  */

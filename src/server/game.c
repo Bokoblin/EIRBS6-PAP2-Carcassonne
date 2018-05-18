@@ -185,10 +185,12 @@ void game__end(struct game *g)
 
     //=== Final score counting
 
-    printf(SRV_PREF"Displaying final score..."CLR"\n");
-
     //TODO: [Due for May 18th] Final score counting
-    printf("\tWork in progress"CLR"\n");
+
+    //=== Score displaying
+
+    printf(SRV_PREF"Displaying final scores..."CLR"\n");
+    queue__apply_to_all(g->players_queue, (applying_func_t) player__print_name_and_score);
 }
 
 void finalize_and_free_player(struct player *p)
