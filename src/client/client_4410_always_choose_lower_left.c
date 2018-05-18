@@ -40,7 +40,7 @@ struct move client__choose_move_strategy(struct micro_board *board, unsigned int
 
 char const* get_player_name()
 {
-    return("client4410-always_first");
+    return("4410 - \"Always lower left\"");
 }
 
 void initialize(unsigned int id, unsigned int n_players)

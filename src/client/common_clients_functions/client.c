@@ -37,7 +37,7 @@ void client__update_board(struct client *client, struct move const previous_move
             } else {
                 card__debug_op(c);
                 set__debug(client->board->cards_set, false);
-                exit_on_error("\nThe card sent my the server can't be added");
+                exit_on_error("\nThe card sent by the server can't be added");
             }
             card__free(c);
         } else {
