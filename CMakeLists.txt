@@ -32,35 +32,16 @@ file(GLOB SERVER_SOURCE_FILES
         "src/ui/*.c"
         )
 
-
 #----------------------------
 #       CLIENTS SOURCES
 #----------------------------
 
-file(GLOB CLIENT1_SOURCE_FILES
+file(GLOB CLIENT_SOURCE_FILES
         "src/common/*.h"
         "src/common/*.c"
         "src/client/common_clients_functions/*.h"
         "src/client/common_clients_functions/*.c"
-        "src/client/client_4410_choose_always_random_valid.c"
         )
-
-file(GLOB CLIENT2_SOURCE_FILES
-        "src/common/*.h"
-        "src/common/*.c"
-        "src/client/common_clients_functions/*.h"
-        "src/client/common_clients_functions/*.c"
-        "src/client/client_4410_always_choose_lower_left.c"
-        )
-
-file(GLOB CLIENT3_SOURCE_FILES
-        "src/common/*.h"
-        "src/common/*.c"
-        "src/client/common_clients_functions/*.h"
-        "src/client/common_clients_functions/*.c"
-        "src/client/client_4410_random_valid_2_tmp.c"
-        )
-
 
 #----------------------------
 #       CONFIGURE BUILDING
@@ -75,9 +56,9 @@ find_package(SDL2_TTF)
 include_directories(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
 
 # Client
-add_library(client1 SHARED ${CLIENT1_SOURCE_FILES})
-add_library(client2 SHARED ${CLIENT2_SOURCE_FILES})
-add_library(client3 SHARED ${CLIENT3_SOURCE_FILES})
+add_library(client1 SHARED ${CLIENT_SOURCE_FILES} "src/client/client_4410_choose_always_random_valid.c")
+add_library(client2 SHARED ${CLIENT_SOURCE_FILES} "src/client/client_4410_always_choose_lower_left.c")
+add_library(client3 SHARED ${CLIENT_SOURCE_FILES} "src/client/client_4410_always_choose_upper_right.c")
 
 # Server
 add_executable(${APP_EXECUTABLE} ${SERVER_SOURCE_FILES})
