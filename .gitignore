@@ -1,0 +1,6 @@
+.idea/
+.svn/
+cmake-build-debug-wsl/
+doc/
+resources/
+run_n_times.sh
