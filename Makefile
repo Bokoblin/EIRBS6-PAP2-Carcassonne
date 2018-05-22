@@ -19,14 +19,16 @@ CC			= gcc
 CFLAGS		= -Wall -Wextra -std=c99 -g -O0 -fPIC
 CPPFLAGS	= -I ${SRC_DIR} -I ${TST_DIR}
 LFFLAGS		= -ldl
-SRVFLAGS	= -lSDL2 -lSDL2_image -lSDL2_ttf `sdl2-config --libs`
+SRVFLAGS	=
 
 COMMON_SRC	= $(wildcard $(COM_DIR)/*.c $(ADT_DIR)/*.c)
-SERVER_SRC	= $(wildcard $(SRV_DIR)/*.c $(GUI_DIR)/*.c)
+SERVER_SRC	= $(wildcard $(SRV_DIR)/*.c)
+GUI_SRC		= $(wildcard $(GUI_DIR)/*.c)
 CLIENT_SRC 	= $(wildcard $(CLF_DIR)/*.c)
 
 COMMON_OBJ	= $(COMMON_SRC:%.c=%.o)
 SERVER_OBJ	= $(SERVER_SRC:%.c=%.o)
+GUI_OBJ		= $(GUI_SRC:%.c=%.o)
 CLIENT_OBJ 	= $(CLIENT_SRC:%.c=%.o)
 
 SERVER_EXEC	= server
@@ -40,7 +42,7 @@ SERVER_EXEC	= server
 .PHONY: all help build install run vrun grun test vtest ctest docs clean
 
 # Helper commands
-.PHONY: --prebuild --enable_sdl 
+.PHONY: --prebuild --check_sdl --enable_sdl __build_with_sdl __build_without_sdl
 
 #######################################################
 ###				DEFAULT MAKE COMMAND
@@ -78,12 +80,31 @@ help:
 
 --prebuild:
 	@echo Starting building...
+	@rm -f $(SRV_DIR)/server.o
+
+--check_sdl:
+	@echo Checking computer configuration to enable SDL2...
+	@if hash "sdl2-config" 2>/dev/null; \
+	then \
+		echo "SDL2 is installed, enabling SDL2..."; \
+		$(MAKE) --no-print-directory __build_with_sdl; \
+	else \
+		echo "SDL2 isn't installed, moving to console-only building..."; \
+		$(MAKE) --no-print-directory __build_without_sdl; \
+	fi
 
 --enable_sdl:
-	@echo Enabling SDL2...
 	$(eval CFLAGS += `sdl2-config --cflags`)
+	$(eval CPPFLAGS += -DUSE_SDL)
+	$(eval SRVFLAGS += -lSDL2 -lSDL2_image -lSDL2_ttf `sdl2-config --libs`)
+	$(eval SERVER_OBJ += $(GUI_OBJ))
 
-build: --prebuild $(COMMON_OBJ) $(CLIENT_OBJ) --enable_sdl $(SERVER_OBJ)
+build: --prebuild $(COMMON_OBJ) $(CLIENT_OBJ) --check_sdl
+
+__build_with_sdl: --enable_sdl $(GUI_OBJ) --build_end
+__build_without_sdl: --build_end
+
+--build_end: $(SERVER_OBJ)
 	@echo building server...
 	$(CC) $(CPPFLAGS) $(COMMON_OBJ) $(SERVER_OBJ) -o $(SERVER_EXEC) $(LFFLAGS) $(SRVFLAGS)
 	@echo building clients...
@@ -191,5 +212,5 @@ clean:
 #######################################################
 
 %.o : %.c
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
 

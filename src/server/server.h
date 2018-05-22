@@ -2,7 +2,9 @@
 #define SERVER_H
 
 #include "game.h"
+#ifdef USE_SDL
 #include "../ui/app.h"
+#endif
 
 #define DEFAULT_GRAPHIC_MODE_FLAG 0
 #define DEFAULT_CLIENT_COUNT 0
@@ -17,7 +19,9 @@ struct server
     char ** argv;
     unsigned int is_graphic;
     unsigned int clients_count;
+#ifdef USE_SDL
     struct app* app;
+#endif
 };
 
 
@@ -42,17 +46,19 @@ void server__run(struct server* s);
 
 
 /**
- * @brief Runs the server console app part
+ * @brief Runs the server console part
  * @param s the server
  */
 void server__run_console_app(struct server* s);
 
 
+#ifdef USE_SDL
 /**
- * @brief Runs the server graphic app part
+ * @brief Runs the server graphic app
  * @param s the server
  */
 void server__run_graphic_app(struct server* s);
+#endif
 
 
 /**
