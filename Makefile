@@ -123,6 +123,7 @@ __build_without_sdl: --build_end
 install: build
 	@echo
 	@echo Starting installation...
+	@mkdir -p install
 	@echo Installation directory: "${PWD}/$(INS_DIR)"
 	@mv $(SERVER_EXEC) $(INS_DIR)
 	@mv $(CLI_DIR)/*.so $(INS_DIR)
