@@ -13,3 +13,6 @@ script:
   - make run
   - make ctest
   - make clean
+  - mkdir build && cd build
+  - cmake ..
+  - make

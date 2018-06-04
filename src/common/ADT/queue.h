@@ -40,7 +40,7 @@ struct queue *queue__empty(void* copy_op, void* delete_op, void* debug_op);
  */
 int queue__is_empty(struct queue *q);
 
-  
+
 /**
  * @brief Push an element in the queue
  * @note Complexity: O(n)
@@ -117,5 +117,5 @@ typedef void (*applying_func_t)(void *object);
  * @param f the applying function
  */
 void queue__apply_to_all(struct queue *q, applying_func_t f);
-  
+
 #endif

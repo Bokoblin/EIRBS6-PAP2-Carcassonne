@@ -51,6 +51,6 @@ void meeple__free(struct meeple *m);
 void* meeple_copy_op(const struct meeple *m);
 void meeple_delete_op(struct meeple *m);
 int meeple_compare_op(const struct meeple *m1, const struct meeple *m2);
-void meeple_debug_op(const struct meeple *m);        
+void meeple_debug_op(const struct meeple *m);
 
 #endif

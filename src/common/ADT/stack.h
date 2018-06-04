@@ -38,7 +38,7 @@ struct stack *stack__empty(void* copy_op, void* delete_op, void* debug_op);
  */
 int stack__is_empty(struct stack *s);
 
-  
+
 /**
  * @brief Push an element in the stack
  * @note Complexity: O(1)
@@ -113,5 +113,5 @@ typedef void (*applying_func_t)(void *object);
  * @param f the applying function
  */
 void stack__apply_to_all(struct stack *s, applying_func_t f);
-  
+
 #endif

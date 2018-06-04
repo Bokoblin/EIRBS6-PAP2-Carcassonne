@@ -136,4 +136,4 @@ int zone__add_meeple(struct zone *z, struct meeple *m);
  */
 void zone__free(struct zone *z);
 
-#endif 
+#endif
