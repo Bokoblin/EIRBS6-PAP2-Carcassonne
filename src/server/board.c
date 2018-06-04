@@ -123,7 +123,7 @@ int board__add_meeple(struct board *b, struct meeple *m)
     if (b == NULL || m == NULL)
         return !SUCCESS;
 
-    //TODO: [Due for May 18th] Add meeple to board after check
+    //TODO: Add meeple to board after check
     (void) b;
     (void) m;
 
@@ -134,7 +134,7 @@ void board__check_sub_completion(struct board *b)
 {
     if (b == NULL) return;
 
-    //TODO: [Due for May 18th] Check if new areas were closed in order to calculate sub-score
+    //TODO: Check if new areas were closed in order to calculate sub-score
     (void) b;
 }
 

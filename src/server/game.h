@@ -74,6 +74,13 @@ int is_valid_play(struct board *b, struct player *p, struct move *m);
 
 
 /**
+ * @brief Count the score at the end of the game
+ * @param b the board
+ */
+void count_score(struct board *b);
+
+
+/**
  * @brief Draw a card until it is valid
  * @param b the board
  * @param s the card stack

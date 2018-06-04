@@ -110,6 +110,13 @@ int is_valid_play(struct board *b, struct player *p, struct move *m)
     return m->check == VALID;
 }
 
+void count_score(struct board *b)
+{
+    //TODO - Final score counting
+    (void) b;
+    printf("\tThis feature isn't implemented\n");
+}
+
 enum card_id draw_until_valid(struct board* b, struct stack *s)
 {
     enum card_id ci;
@@ -119,7 +126,7 @@ enum card_id draw_until_valid(struct board* b, struct stack *s)
         ci = *p_popped_ci;
         free(p_popped_ci);
         printf(SRV_PREF"Drawing a new card (%d)..."CLR"\n", ci);
-    } while (!board__is_valid_card(b, ci));
+    } while (!board__is_valid_card(b, ci) && !stack__is_empty(s));
 
     return ci;
 }
@@ -175,17 +182,16 @@ void game__end(struct game *g)
 {
     printf(SRV_PREF"The game has ended."CLR"\n");
 
-    //=== Premature ending check (DEBUG)
+    //=== Premature ending check
 
-    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if (!stack__is_empty(g->board->drawing_stack))
         printf("\t\x1B[31mInvalid game stopping, the drawing card stack still contains %zu cards! \x1B[0m\n",
                stack__length(g->board->drawing_stack));
-    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     //=== Final score counting
 
-    //TODO: [Due for May 18th] Final score counting
+    printf(SRV_PREF"Calculating final scores..."CLR"\n");
+    count_score(g->board);
 
     //=== Score displaying
 
