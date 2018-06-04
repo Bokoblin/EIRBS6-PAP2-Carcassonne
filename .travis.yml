@@ -1,0 +1,15 @@
+dist: trusty
+language: c
+
+compiler:
+  - clang
+  - gcc
+  
+# Build steps
+script:
+  - make
+  - make test
+  - make install
+  - make run
+  - make ctest
+  - make clean
