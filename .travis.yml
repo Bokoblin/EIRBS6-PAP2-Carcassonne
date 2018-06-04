@@ -4,7 +4,7 @@ language: c
 compiler:
   - clang
   - gcc
-  
+
 # Build steps
 script:
   - make

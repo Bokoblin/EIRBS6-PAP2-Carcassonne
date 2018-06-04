@@ -16,7 +16,7 @@ set(CMAKE_C_STANDARD 99)
 #       ENABLE BUILD TARGETS
 #----------------------------
 option(ENABLE_TESTS "Enable unit tests" ON)
-option(ENABLE_UI "Enable UI" ON)
+option(ENABLE_UI "Enable UI" OFF)
 
 #----------------------------
 #       SERVER SOURCES
