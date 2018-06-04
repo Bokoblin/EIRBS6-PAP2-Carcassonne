@@ -6,7 +6,7 @@ struct card* card__init(enum card_id card_id)
 {
     struct card *c = safe_malloc(sizeof(struct card));
 
-    c->type = card__id_to_type(card_id);
+    c->type = card_types[card_id];
     c->direction = DEFAULT_DIRECTION;
     c->pos.x = INVALID_POSITION;
     c->pos.y = INVALID_POSITION;

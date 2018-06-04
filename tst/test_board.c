@@ -415,7 +415,7 @@ int test_board__add_card__middle()
                                 c9->direction = NORTH;
                                 if (board__add_card(b, c9) == SUCCESS)
                                     test_result = !TEST_SUCCESS;
-                                c9->type = card__id_to_type(CARD_JUNCTION_THREE);
+                                c9->type = card_types[CARD_JUNCTION_THREE];
                                 if (board__add_card(b, c9) != SUCCESS)
                                     test_result = !TEST_SUCCESS;
                             }

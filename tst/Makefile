@@ -151,25 +151,25 @@ clean:
 #######################################################
 
 test_board:	$(TESTCOM_OBJ) $(TST_DIR)/test_board.o \
-			$(SRV_DIR)/board.o $(COM_DIR)/card.o $(COM_DIR)/meeple.o $(COM_DIR)/deck.o $(COM_DIR)/card_type.o \
+			$(SRV_DIR)/board.o $(COM_DIR)/card.o $(COM_DIR)/meeple.o $(COM_DIR)/deck.o \
 			$(COM_DIR)/interface.o $(ADT_DIR)/set.o $(ADT_DIR)/stack.o $(ADT_DIR)/queue.o
 	${CC} $^ -o $@ $(LFFLAGS)
 
 test_card: 	$(TESTCOM_OBJ) $(TST_DIR)/test_card.o \
-			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
+			$(COM_DIR)/card.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
 	${CC} $^ -o $@ $(LFFLAGS)
 
 test_client:$(TESTCOM_OBJ) $(TST_DIR)/test_client.o \
-			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/interface.o $(CLF_DIR)/micro_board.o \
+			$(COM_DIR)/card.o $(COM_DIR)/interface.o $(CLF_DIR)/micro_board.o \
 			$(CLF_DIR)/client.o $(ADT_DIR)/set.o
 	${CC} $^ -o $@ $(LFFLAGS)
 
 test_deck: 	$(TESTCOM_OBJ) $(TST_DIR)/test_deck.o \
-			$(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/deck.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
+			$(COM_DIR)/card.o $(COM_DIR)/deck.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
 	${CC} $^ -o $@ $(LFFLAGS)
 
 test_meeple:$(TESTCOM_OBJ) $(TST_DIR)/test_meeple.o \
-			$(COM_DIR)/meeple.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
+			$(COM_DIR)/meeple.o $(COM_DIR)/card.o $(COM_DIR)/interface.o $(ADT_DIR)/stack.o
 	${CC} $^ -o $@ $(LFFLAGS)
 
 test_queue:	$(TESTCOM_OBJ) $(TST_DIR)/test_queue.o $(ADT_DIR)/queue.o
@@ -182,7 +182,7 @@ test_stack:	$(TESTCOM_OBJ) $(TST_DIR)/test_stack.o $(ADT_DIR)/stack.o
 	${CC} $^ -o $@ $(LFFLAGS)
 
 test_zone: 	$(TESTCOM_OBJ) $(TST_DIR)/test_zone.o \
-			$(COM_DIR)/area_type.o $(COM_DIR)/card.o $(COM_DIR)/card_type.o $(COM_DIR)/meeple.o $(COM_DIR)/zone.o \
+			$(COM_DIR)/area_type.o $(COM_DIR)/card.o $(COM_DIR)/meeple.o $(COM_DIR)/zone.o \
 			$(COM_DIR)/interface.o $(ADT_DIR)/set.o
 	${CC} $^ -o $@ $(LFFLAGS)
 
