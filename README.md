@@ -40,7 +40,7 @@ The report is located in the "report" repository in PDF format.
 
 #### Requirements
 
-To build project, the following programs must be installed and reachable from `PATH`:
+To build the project, the following programs must be installed and reachable from `PATH`:
 - make
 - gcc / clang
 
@@ -55,7 +55,8 @@ You can build the project using either make or CMake.
 By using make, the following commands are available in the `Makefile`:
 
 ```
-make [help]  #To show the available commands
+make [all]   #Defaulting to make build
+make help    #To show the available commands
 make build   #To build the project
 make test    #To build and start the tests
 make vtest   #To build and start the tests with valgrind check
@@ -79,7 +80,9 @@ cmake .. && make
 
 ### Licence
 
-TODO
+This project is licensed under Apache License 2.0
+NOTE: You shouldn't use our code for educational purposes though, if you do it's at your own risks.
+
 
 ### Code conventions
 
